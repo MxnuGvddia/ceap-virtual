@@ -130,12 +130,32 @@ let state = {
   slideIdx:0,notification:null,menuOpen:false,
   landingCategory:'Todas',landingSearch:'',newsEmail:'',
   payMethod:'card',calendarMonth:5,calendarYear:2026,
-  supportCategory:'Técnico'
+  supportCategory:'Técnico',
+  xp:0, level:1, streak:0, lastLoginDate:'',
+  notifList:[], unreadNotifs:0,
+  settings:{theme:'light',emailNotifs:true,desktopNotifs:true}
 };
 let slideInterval;
-function setState(p){Object.assign(state,p);render();}
-function notify(m,t){setState({notification:{msg:m,type:t}});setTimeout(()=>{if(state.notification)setState({notification:null})},4000);}
+function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings}))}catch(e){}render();}
+function loadState(){try{const d=JSON.parse(localStorage.getItem('ceap_state'));if(d)Object.assign(state,d)}catch(e){}}
+function notify(m,t){setState({notification:{msg:m,type:t}});if(m){const n={msg:m,type:t,time:Date.now(),id:Date.now()};const nl=[n,...state.notifList].slice(0,20);setState({notifList:nl,unreadNotifs:state.unreadNotifs+1});}setTimeout(()=>{if(state.notification)setState({notification:null})},4000);}
 function startSlideTimer(){if(slideInterval)clearInterval(slideInterval);slideInterval=setInterval(()=>{setState({slideIdx:(state.slideIdx+1)%SLIDES.length})},8000);}
+loadState();
+if(state.user)checkStreak();
+function checkStreak(){
+  const today=new Date().toDateString();
+  if(state.lastLoginDate!==today){
+    const yesterday=new Date(Date.now()-86400000).toDateString();
+    if(state.lastLoginDate===yesterday)setState({streak:state.streak+1,lastLoginDate:today});
+    else setState({streak:1,lastLoginDate:today});
+  }
+}
+function addXP(n){
+  let xp=state.xp+n,level=state.level;
+  const next=level*100;
+  if(xp>=next){xp-=next;level++;}
+  setState({xp,level});
+}
 startSlideTimer();
 function starRating(n){let r='';for(let i=0;i<5;i++)r+=i<n?'<svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>':'<svg class="w-4 h-4 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';return r;}
 
@@ -512,6 +532,7 @@ function renderDashboard(){
         ${sb('mensajes','MessageSquare','Mensajes')}
         ${sb('perfil','User','Mi Perfil')}
         ${sb('soporte','HelpCircle','Soporte')}
+        ${sb('settings','Zap','Configuración')}
       </nav>
     </div>
     <div class="p-6 border-t border-slate-800 bg-[#01142e] text-center space-y-3">
@@ -534,7 +555,7 @@ function renderDashboard(){
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <button class="btn-notif p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors relative">${ic('Bell','w-4 h-4')}<span class="absolute top-1.5 right-1.5 bg-red-500 w-2 h-2 rounded-full"></span></button>
+        <button class="btn-notif p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors relative">${ic('Bell','w-4 h-4')}${s.unreadNotifs>0?`<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow">${s.unreadNotifs>9?'9+':s.unreadNotifs}</span>`:'<span class="absolute top-1.5 right-1.5 bg-red-500 w-2 h-2 rounded-full"></span>'}</button>
         <button class="btn-messages-tab p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors hidden sm:block" data-tab="mensajes">${ic('MessageSquare','w-4 h-4')}</button>
         <button class="sidebar-btn p-1 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors" data-tab="perfil">
           <img src="${u.avatar}" alt="${u.name}" class="w-8 h-8 rounded-full object-cover border-2 border-emerald-500/30 cursor-pointer">
@@ -554,6 +575,7 @@ function renderDashboard(){
       ${s.tab==='mensajes'?renderMensajesTab():''}
       ${s.tab==='perfil'?renderPerfilTab():''}
       ${s.tab==='soporte'?renderSoporteTab():''}
+      ${s.tab==='settings'?renderSettingsTab():''}
     </div>
   </main>
 </div>`;}
@@ -567,28 +589,50 @@ function renderDashTab(){
   const tp=Math.round(cm/tm*100)||0;
   const slide=SLIDES[s.slideIdx];
   const sp=slide.title.split(slide.highlight);
+  const nextLvl=s.level*100;
   return `
-<div class="space-y-8">
-  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
-    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex items-center gap-4">
-      <div class="w-11 h-11 rounded-xl bg-emerald-50 text-[#4bae4f] flex items-center justify-center shrink-0">${ic('BookMarked','w-5 h-5')}</div>
-      <div><p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Cursos Activos</p><p class="text-xl font-black text-[#021b3d]">${ac.length}</p></div>
+<div class="space-y-8 animate-fade-up">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="bg-gradient-to-br from-[#021b3d] to-[#0a3a6e] text-white rounded-2xl p-6 shadow-lg lg:col-span-2 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-[#4bae4f]/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+      <div class="relative z-10 flex items-center gap-4">
+        <img src="${s.user.avatar}" alt="" class="w-16 h-16 rounded-full border-2 border-emerald-400/50 object-cover shadow-lg">
+        <div class="space-y-1">
+          <p class="text-[10px] text-emerald-300 font-bold uppercase tracking-wider">Bienvenido de vuelta</p>
+          <h3 class="text-2xl font-black">${s.user.name}</h3>
+          <div class="flex items-center gap-3 text-xs text-slate-300">
+            <span class="flex items-center gap-1">${ic('Zap','w-3.5 h-3.5 text-amber-400')} Nv. ${s.level}</span>
+            <span class="flex items-center gap-1">🔥 ${s.streak} días seg.</span>
+            <span class="flex items-center gap-1">${ic('Award','w-3.5 h-3.5 text-emerald-400')} ${cc} certificados</span>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 space-y-1.5 relative z-10">
+        <div class="flex justify-between text-[11px]"><span class="font-semibold text-emerald-200">XP ${s.xp}/${nextLvl}</span><span class="font-bold text-white">Nivel ${s.level}</span></div>
+        <div class="w-full bg-white/20 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-emerald-400 to-[#4bae4f] h-full rounded-full transition-all" style="width:${Math.min(100,s.xp/nextLvl*100)}%"></div></div>
+      </div>
     </div>
-    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex items-center gap-4">
-      <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">${ic('CheckCircle','w-5 h-5')}</div>
-      <div><p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Completados</p><p class="text-xl font-black text-[#021b3d]">${cc}</p></div>
-    </div>
-    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex items-center gap-4">
-      <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">${ic('BarChart2','w-5 h-5')}</div>
-      <div><p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Módulos</p><p class="text-xl font-black text-[#021b3d]">${cm}/${tm}</p></div>
-    </div>
-    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex items-center gap-4">
-      <div class="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">${ic('Zap','w-5 h-5')}</div>
-      <div><p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Racha</p><p class="text-xl font-black text-[#021b3d]">7 días</p></div>
-    </div>
-    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex items-center gap-4">
-      <div class="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">${ic('Award','w-5 h-5')}</div>
-      <div><p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Certificados</p><p class="text-xl font-black text-[#021b3d]">${cc}</p></div>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-[#4bae4f] flex items-center justify-center mb-2">${ic('BookMarked','w-5 h-5')}</div>
+        <p class="text-lg font-black text-[#021b3d]">${ac.length}</p>
+        <p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Activos</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-2">${ic('CheckCircle','w-5 h-5')}</div>
+        <p class="text-lg font-black text-[#021b3d]">${cc}</p>
+        <p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Completados</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-2">${ic('BarChart2','w-5 h-5')}</div>
+        <p class="text-lg font-black text-[#021b3d]">${cm}/${tm}</p>
+        <p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Módulos</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center text-center">
+        <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mb-2">${ic('Award','w-5 h-5')}</div>
+        <p class="text-lg font-black text-[#021b3d]">${cc}</p>
+        <p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Certificados</p>
+      </div>
     </div>
   </div>
 
@@ -671,7 +715,7 @@ function renderDashTab(){
 </div>`;}
 function renderCursosTab(){
   return `
-<div class="space-y-6">
+<div class="space-y-6 animate-fade-up">
   <div class="space-y-2"><h3 class="text-2xl font-black text-[#021b3d]">Mis Cursos Académicos</h3><p class="text-xs text-slate-500">Administra tus diplomados vigentes, su avance, y explora nuevos diplomados para inscribirte.</p></div>
   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
     ${state.courses.map(c=>{
@@ -898,6 +942,35 @@ function renderProfile(){
     </div>
   </div>
 </div>`;}
+function renderSettingsTab(){
+  const s=state,st=s.settings;
+  return `
+<div class="max-w-3xl mx-auto space-y-6 animate-fade-up">
+  <div class="space-y-2"><h3 class="text-2xl font-black text-[#021b3d]">Configuración</h3><p class="text-xs text-slate-500">Personaliza tu experiencia en CEAP Virtual.</p></div>
+  <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="p-8 space-y-8">
+      <div class="space-y-4">
+        <h4 class="font-black text-sm text-[#021b3d] flex items-center gap-2">${ic('Bell','w-4 h-4 text-[#4bae4f]')} Notificaciones</h4>
+        <label class="flex items-center justify-between p-4 bg-slate-50 rounded-xl cursor-pointer"><div><p class="text-xs font-bold text-slate-700">Notificaciones por correo</p><p class="text-[10px] text-slate-400">Recibe novedades y recordatorios en tu correo</p></div><input type="checkbox" class="input-setting-email toggle accent-[#4bae4f] w-5 h-5 rounded" ${st.emailNotifs?'checked':''}></label>
+        <label class="flex items-center justify-between p-4 bg-slate-50 rounded-xl cursor-pointer"><div><p class="text-xs font-bold text-slate-700">Notificaciones en escritorio</p><p class="text-[10px] text-slate-400">Muestra notificaciones en tiempo real</p></div><input type="checkbox" class="input-setting-desktop toggle accent-[#4bae4f] w-5 h-5 rounded" ${st.desktopNotifs?'checked':''}></label>
+      </div>
+      <div class="border-t border-slate-200 pt-6 space-y-4">
+        <h4 class="font-black text-sm text-[#021b3d] flex items-center gap-2">${ic('Zap','w-4 h-4 text-amber-500')} Progreso</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">${s.level}</p><p class="text-[10px] text-slate-500 font-bold">Nivel</p></div>
+          <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">${s.xp} XP</p><p class="text-[10px] text-slate-500 font-bold">Puntos</p></div>
+          <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">🔥 ${s.streak}</p><p class="text-[10px] text-slate-500 font-bold">Racha</p></div>
+          <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">${s.notifList.length}</p><p class="text-[10px] text-slate-500 font-bold">Notificaciones</p></div>
+        </div>
+      </div>
+      <div class="border-t border-slate-200 pt-6 space-y-4">
+        <h4 class="font-black text-sm text-[#021b3d] flex items-center gap-2">${ic('HelpCircle','w-4 h-4 text-blue-500')} Acerca de</h4>
+        <p class="text-xs text-slate-500">CEAP Virtual v2.0 — Plataforma educativa especializada en administración de proyectos.</p>
+        <p class="text-xs text-slate-400">© 2026 CEAP - Centro Especializado en Administración de Proyectos.</p>
+      </div>
+    </div>
+  </div>
+</div>`;}
 function renderSoporteTab(){
   const s=state;
   return `
@@ -951,7 +1024,7 @@ function renderViewer(){
       <h4 class="font-black text-sm uppercase tracking-wider text-slate-400">Contenido del Diplomado</h4>
       <div class="space-y-3">
         ${c.modules.map((mod,idx)=>`
-          <div class="p-4 rounded-xl border cursor-pointer transition-all ${mod.completed?'bg-[#021b3d]/40 border-emerald-500/30':'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800'}">
+          <div class="module-item p-4 rounded-xl border cursor-pointer transition-all ${mod.completed?'bg-[#021b3d]/40 border-emerald-500/30':'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800'}" data-idx="${idx}" data-course="${c.id}">
             <div class="flex justify-between items-start gap-3">
               <div class="space-y-1 text-left">
                 <span class="text-[9px] uppercase font-bold text-slate-500">Unidad ${idx+1}</span>
@@ -986,8 +1059,8 @@ function attachEvents(){
       const nameInput=document.querySelector('.input-username');
       const name=nameInput?nameInput.value.trim():'Carlos Ramírez';
       const fu={name,email:name.toLowerCase().replace(/\s/g,'')+'@ceap.edu.sv',phone:'',avatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',currentProgram:isReg?'Matriculado CEAP Virtual':'Diplomado en Gestión de Proyectos'};
-      if(isReg){setState({user:fu});notify('Cuenta creada con éxito. ¡Bienvenido a CEAP!','success');if(state.courseToPurchase)setState({view:'payment'});else setState({view:'dashboard',tab:'dashboard'});}
-      else{setState({user:fu,view:'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'!','success');}
+      if(isReg){setState({user:fu});addXP(50);notify('Cuenta creada con éxito. +50 XP','success');if(state.courseToPurchase)setState({view:'payment'});else setState({view:'dashboard',tab:'dashboard'});}
+      else{checkStreak();addXP(10);setState({user:fu,view:'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'! +10 XP','success');}
     });
     document.querySelectorAll('.btn-toggle-pw').forEach(el=>el.addEventListener('click',function(){
       const pw=document.querySelector('.input-password');
@@ -1002,8 +1075,9 @@ function attachEvents(){
   // Google
   document.querySelectorAll('.btn-google').forEach(el=>el.addEventListener('click',()=>{
     const fu={name:'Carlos Ramírez',email:'carlos.ramirez@ceap.edu.sv',phone:'+503 7000-1234',avatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',currentProgram:'Diplomado en Gestión de Proyectos'};
+    checkStreak();addXP(10);
     setState({user:fu});if(state.courseToPurchase)setState({view:'payment'});else setState({view:'dashboard',tab:'dashboard'});
-    notify('Sesión iniciada correctamente con Google.','success');
+    notify('Sesión iniciada correctamente con Google. +10 XP','success');
   }));
 
   // Purchase
@@ -1034,6 +1108,23 @@ function attachEvents(){
     else if(t)setState({tab:t,menuOpen:false});
   }));
 
+  // Settings: save notification preferences
+  document.querySelectorAll('.input-setting-email').forEach(el=>el.addEventListener('change',function(){
+    setState({settings:{...state.settings,emailNotifs:this.checked}});
+    notify('Preferencias de notificación actualizadas.','success');
+  }));
+  document.querySelectorAll('.input-setting-desktop').forEach(el=>el.addEventListener('change',function(){
+    setState({settings:{...state.settings,desktopNotifs:this.checked}});
+    notify('Preferencias de notificación actualizadas.','success');
+  }));
+  // Notification bell: mark as read
+  document.querySelectorAll('.btn-notif').forEach(el=>el.addEventListener('click',()=>{
+    if(state.unreadNotifs>0){
+      setState({unreadNotifs:0});
+      notify(state.notifList.length+' notificaciones en total.','info');
+    } else notify('No tienes notificaciones nuevas.','info');
+  }));
+
   // Toggle menu (mobile)
   document.querySelectorAll('.btn-toggle-menu').forEach(el=>el.addEventListener('click',()=>setState({menuOpen:!state.menuOpen})));
 
@@ -1046,6 +1137,18 @@ function attachEvents(){
     if(course)setState({selectedCourse:course,view:'viewer'});
   }));
 
+  // Module completion (viewer sidebar)
+  document.querySelectorAll('.module-item').forEach(el=>el.addEventListener('click',function(){
+    const idx=parseInt(this.dataset.idx),cid=this.dataset.course;
+    const course=state.courses.find(c=>c.id===cid);
+    if(!course||course.modules[idx].completed)return;
+    course.modules[idx].completed=true;
+    const completed=course.modules.filter(m=>m.completed).length;
+    course.progress=Math.round(completed/course.modules.length*100);
+    addXP(25);
+    notify('Unidad completada. +25 XP','success');
+    setState({selectedCourse:{...course},courses:state.courses.map(c=>c.id===cid?course:c)});
+  }));
   // Back from viewer
   document.querySelectorAll('.btn-back-dashboard').forEach(el=>el.addEventListener('click',()=>setState({view:'dashboard'})));
 
