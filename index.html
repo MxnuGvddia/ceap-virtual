@@ -67,7 +67,6 @@ const I = {
   GitHub:'<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>',
   Download:'<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
   Zap:'<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
-  Upload:'<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
   DollarSign:'<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
   Building:'<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="9" y2="18.01"/><line x1="15" y1="18" x2="15" y2="18.01"/></svg>',
 };
@@ -137,11 +136,7 @@ let state = {
   settings:{theme:'light',emailNotifs:true,desktopNotifs:true}
 };
 let slideInterval;
-function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user}))}catch(e){}render();}
-function avatarImg(src,name,cls){
-  if(src&&(src.startsWith('data:')||src.startsWith('http')))return `<img src="${src}" alt="${name||''}" class="${cls} object-cover">`;
-  return `<div class="${cls} bg-slate-200 flex items-center justify-center text-slate-500">${ic('User','w-6 h-6')}</div>`;
-}
+function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings}))}catch(e){}render();}
 function loadState(){try{const d=JSON.parse(localStorage.getItem('ceap_state'));if(d)Object.assign(state,d)}catch(e){}}
 function notify(m,t){setState({notification:{msg:m,type:t}});if(m){const n={msg:m,type:t,time:Date.now(),id:Date.now()};const nl=[n,...state.notifList].slice(0,20);setState({notifList:nl,unreadNotifs:state.unreadNotifs+1});}setTimeout(()=>{if(state.notification)setState({notification:null})},4000);}
 function startSlideTimer(){if(slideInterval)clearInterval(slideInterval);slideInterval=setInterval(()=>{setState({slideIdx:(state.slideIdx+1)%SLIDES.length})},8000);}
@@ -563,7 +558,7 @@ function renderDashboard(){
         <button class="btn-notif p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors relative">${ic('Bell','w-4 h-4')}${s.unreadNotifs>0?`<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow">${s.unreadNotifs>9?'9+':s.unreadNotifs}</span>`:'<span class="absolute top-1.5 right-1.5 bg-red-500 w-2 h-2 rounded-full"></span>'}</button>
         <button class="btn-messages-tab p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors hidden sm:block" data-tab="mensajes">${ic('MessageSquare','w-4 h-4')}</button>
         <button class="sidebar-btn p-1 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors" data-tab="perfil">
-          ${avatarImg(u.avatar,u.name,'w-8 h-8 rounded-full border-2 border-emerald-500/30')}
+          <img src="${u.avatar}" alt="${u.name}" class="w-8 h-8 rounded-full object-cover border-2 border-emerald-500/30 cursor-pointer">
         </button>
         <div class="hidden md:block text-left pl-2 border-l border-slate-200">
           <p class="font-extrabold text-xs text-slate-900 leading-none">${u.name}</p>
@@ -601,7 +596,7 @@ function renderDashTab(){
     <div class="bg-gradient-to-br from-[#021b3d] to-[#0a3a6e] text-white rounded-2xl p-6 shadow-lg lg:col-span-2 relative overflow-hidden">
       <div class="absolute top-0 right-0 w-32 h-32 bg-[#4bae4f]/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
       <div class="relative z-10 flex items-center gap-4">
-        ${avatarImg(s.user.avatar,s.user.name,'w-16 h-16 rounded-full border-2 border-emerald-400/50 shadow-lg')}
+        <img src="${s.user.avatar}" alt="" class="w-16 h-16 rounded-full border-2 border-emerald-400/50 object-cover shadow-lg">
         <div class="space-y-1">
           <p class="text-[10px] text-emerald-300 font-bold uppercase tracking-wider">Bienvenido de vuelta</p>
           <h3 class="text-2xl font-black">${s.user.name}</h3>
@@ -884,7 +879,7 @@ function renderPerfilTab(){
 <div class="max-w-4xl mx-auto space-y-6">
   <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
     <div class="bg-gradient-to-r from-[#021b3d] to-emerald-800 p-8 text-white text-center">
-      ${avatarImg(u.avatar,u.name,'w-24 h-24 rounded-full mx-auto border-4 border-white/30 shadow-lg mb-4')}
+      <img src="${u.avatar}" alt="" class="w-24 h-24 rounded-full mx-auto border-4 border-white/30 object-cover shadow-lg mb-4">
       <h2 class="text-2xl font-black">${u.name}</h2>
       <p class="text-sm text-emerald-300">${u.currentProgram}</p>
       <p class="text-[10px] text-slate-400 mt-1">${u.email}</p>
@@ -938,14 +933,6 @@ function renderProfile(){
         <div class="space-y-1.5">
           <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Programa actual</label>
           <input class="input-edit-program w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#4bae4f] focus:ring-2 focus:ring-[#4bae4f]/20 text-sm font-semibold text-slate-800 outline-none transition-all" value="${u.currentProgram||''}">
-        </div>
-      </div>
-      <div class="border-t border-slate-100 pt-6">
-        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-3">Foto de Perfil</label>
-        <div class="flex items-center gap-4">
-          <div class="avatar-preview">${avatarImg(u.avatar,u.name,'w-16 h-16 rounded-full border-2 border-slate-300 shadow-sm')}</div>
-          <label class="cursor-pointer bg-white border border-slate-200 hover:border-[#4bae4f] hover:bg-[#4bae4f]/5 text-slate-600 hover:text-[#4bae4f] font-semibold text-xs px-4 py-2.5 rounded-xl transition-all">${ic('Upload','w-3.5 h-3.5 inline mr-1')} Subir foto<input type="file" accept="image/*" class="input-avatar hidden"></label>
-          <span class="text-[10px] text-slate-400">PNG, JPG. Máx 2MB.</span>
         </div>
       </div>
       <div class="flex gap-3 pt-4 border-t border-slate-100">
@@ -1071,7 +1058,7 @@ function attachEvents(){
       const isReg=state.registering;
       const nameInput=document.querySelector('.input-username');
       const name=nameInput?nameInput.value.trim():'Carlos Ramírez';
-      const fu={name,email:name.toLowerCase().replace(/\s/g,'')+'@ceap.edu.sv',phone:'',avatar:'',currentProgram:isReg?'Matriculado CEAP Virtual':'Diplomado en Gestión de Proyectos'};
+      const fu={name,email:name.toLowerCase().replace(/\s/g,'')+'@ceap.edu.sv',phone:'',avatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',currentProgram:isReg?'Matriculado CEAP Virtual':'Diplomado en Gestión de Proyectos'};
       if(isReg){setState({user:fu});addXP(50);notify('Cuenta creada con éxito. +50 XP','success');if(state.courseToPurchase)setState({view:'payment'});else setState({view:'dashboard',tab:'dashboard'});}
       else{checkStreak();addXP(10);setState({user:fu,view:'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'! +10 XP','success');}
     });
@@ -1087,7 +1074,7 @@ function attachEvents(){
 
   // Google
   document.querySelectorAll('.btn-google').forEach(el=>el.addEventListener('click',()=>{
-    const fu={name:'Carlos Ramírez',email:'carlos.ramirez@ceap.edu.sv',phone:'+503 7000-1234',avatar:'',currentProgram:'Diplomado en Gestión de Proyectos'};
+    const fu={name:'Carlos Ramírez',email:'carlos.ramirez@ceap.edu.sv',phone:'+503 7000-1234',avatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',currentProgram:'Diplomado en Gestión de Proyectos'};
     checkStreak();addXP(10);
     setState({user:fu});if(state.courseToPurchase)setState({view:'payment'});else setState({view:'dashboard',tab:'dashboard'});
     notify('Sesión iniciada correctamente con Google. +10 XP','success');
@@ -1190,15 +1177,7 @@ function attachEvents(){
     const email=document.querySelector('.input-edit-email')?.value.trim()||state.user?.email||'';
     const phone=document.querySelector('.input-edit-phone')?.value.trim()||'';
     const program=document.querySelector('.input-edit-program')?.value.trim()||'';
-    const inputFile=document.querySelector('.input-avatar');
-    let avatar=state.user?.avatar||'';
-    if(inputFile&&inputFile.files&&inputFile.files[0]){
-      const reader=new FileReader();
-      reader.onload=function(e){const updated={...state.user,name,email,phone,currentProgram:program,avatar:e.target.result};setState({user:updated});notify('Cambios guardados correctamente.','success');};
-      reader.readAsDataURL(inputFile.files[0]);
-      return;
-    }
-    const updated={...state.user,name,email,phone,currentProgram:program,avatar};
+    const updated={...state.user,name,email,phone,currentProgram:program};
     setState({user:updated});
     notify('Cambios guardados correctamente.','success');
   }));
@@ -1208,18 +1187,6 @@ function attachEvents(){
   document.querySelectorAll('.btn-to-dashboard').forEach(el=>el.addEventListener('click',()=>setState({view:'dashboard',tab:'dashboard'})));
   // Cancel profile editing
   document.querySelectorAll('.btn-cancel-profile').forEach(el=>el.addEventListener('click',()=>setState({view:'dashboard',tab:'dashboard'})));
-
-  // Avatar preview on file select
-  document.querySelectorAll('.input-avatar').forEach(el=>el.addEventListener('change',function(){
-    if(this.files&&this.files[0]){
-      const reader=new FileReader();
-      reader.onload=function(e){
-        const preview=document.querySelector('.avatar-preview');
-        if(preview)preview.innerHTML=`<img src="${e.target.result}" class="w-16 h-16 rounded-full border-2 border-emerald-400 shadow-sm object-cover">`;
-      };
-      reader.readAsDataURL(this.files[0]);
-    }
-  }));
 
   // Notification bell
   document.querySelectorAll('.btn-notif').forEach(el=>el.addEventListener('click',()=>notify('Tienes 3 notificaciones sin leer.','info')));
