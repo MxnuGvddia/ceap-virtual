@@ -141,7 +141,7 @@ let state = {
   preferences:null
 };
 let slideInterval;
-function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user,preferences:state.preferences}))}catch(e){}render();}
+function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user,preferences:state.preferences}))}catch(e){}render();if(state.user)syncStateToDrive();}
 function avatarImg(src,name,cls){
   if(src&&(src.startsWith('data:')||src.startsWith('http')))return `<img src="${src}" alt="${name||''}" class="${cls} object-cover">`;
   return `<div class="${cls} bg-slate-200 flex items-center justify-center text-slate-500">${ic('User','w-6 h-6')}</div>`;
@@ -172,6 +172,13 @@ function handleGoogleCredentialResponse(r){
   const nextView=state.courseToPurchase?'payment':isNew?'preferences':'dashboard';
   setState({user:fu,preferences:state.preferences||null,view:nextView,tab:nextView==='dashboard'?'dashboard':state.tab});
   notify('Sesión iniciada correctamente con Google. +10 XP','success');
+  // Load data from Drive
+  loadFromDrive().then(d=>{
+    if(d&&d.user){
+      const merged={...d.user,googleId:fu.googleId,avatar:fu.avatar,name:fu.name,email:fu.email};
+      setState({user:merged,preferences:d.preferences||state.preferences,xp:d.xp||state.xp,level:d.level||state.level,streak:d.streak||state.streak,lastLoginDate:d.lastLoginDate||state.lastLoginDate,notifList:d.notifList||state.notifList,unreadNotifs:d.unreadNotifs||state.unreadNotifs,settings:d.settings||state.settings});
+    }
+  });
 }
 
 function initGoogleGIS(){
@@ -182,8 +189,58 @@ function initGoogleGIS(){
 
 function getGoogleToken(scopes,cb){
   if(typeof google==='undefined'||!google.accounts)return;
-  const t=google.accounts.oauth2.initTokenClient({client_id:GOOGLE_CLIENT_ID,scope:scopes||'https://www.googleapis.com/auth/drive.appdata',callback:r=>{googleAccessToken=r.access_token;if(cb)cb(r);}});
+  const t=google.accounts.oauth2.initTokenClient({client_id:GOOGLE_CLIENT_ID,scope:scopes||'https://www.googleapis.com/auth/drive.file',callback:r=>{googleAccessToken=r.access_token;if(cb)cb(r);},error_callback:()=>{}});
   t.requestAccessToken();
+}
+
+const DRIVE_FOLDER_ID='1oSaPl-N7THDUdGqu9MQk1KZM9U_qGmAS';
+const DRIVE_FILE_NAME='ceap_user_data.json';
+let driveFileId=localStorage.getItem('ceap_drive_file_id');
+let driveSaveTimer=null;
+
+function saveToDrive(data){
+  return new Promise((resolve,reject)=>{
+    getGoogleToken('https://www.googleapis.com/auth/drive.file',tr=>{
+      const b=new Blob([JSON.stringify(data)],{type:'application/json'});
+      const fd=new FormData();
+      fd.append('metadata',new Blob([JSON.stringify({})],{type:'application/json'}));
+      fd.append('file',b);
+      if(driveFileId){
+        fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=multipart`,{method:'PATCH',headers:{Authorization:'Bearer '+tr.access_token},body:fd})
+          .then(r=>r.json()).then(resolve).catch(()=>{});
+      }else{
+        fd.set('metadata',new Blob([JSON.stringify({name:DRIVE_FILE_NAME,parents:[DRIVE_FOLDER_ID]})],{type:'application/json'}));
+        fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+tr.access_token},body:fd})
+          .then(r=>r.json()).then(d=>{driveFileId=d.id;if(d.id)localStorage.setItem('ceap_drive_file_id',d.id);resolve(d);}).catch(()=>{});
+      }
+    });
+  });
+}
+
+function loadFromDrive(){
+  return new Promise((resolve,reject)=>{
+    getGoogleToken('https://www.googleapis.com/auth/drive.file',tr=>{
+      const h={headers:{Authorization:'Bearer '+tr.access_token}};
+      if(driveFileId){
+        fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`,h).then(r=>r.json()).then(resolve).catch(()=>resolve(null));
+      }else{
+        fetch(`https://www.googleapis.com/drive/v3/files?q=name='${DRIVE_FILE_NAME}'+and+'${DRIVE_FOLDER_ID}'+in+parents&fields=files(id)`,h)
+          .then(r=>r.json()).then(d=>{
+            if(d.files&&d.files.length>0){driveFileId=d.files[0].id;localStorage.setItem('ceap_drive_file_id',driveFileId);
+              return fetch(`https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`,h).then(r=>r.json());}
+            resolve(null);
+          }).then(resolve).catch(()=>resolve(null));
+      }
+    });
+  });
+}
+
+function syncStateToDrive(){
+  if(driveSaveTimer)clearTimeout(driveSaveTimer);
+  driveSaveTimer=setTimeout(()=>{
+    const data={xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user,preferences:state.preferences};
+    saveToDrive(data);
+  },2000);
 }
 
 (function(){const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.defer=true;s.onload=initGoogleGIS;document.head.appendChild(s);})();
