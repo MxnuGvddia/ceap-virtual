@@ -158,12 +158,17 @@ let googleAccessToken=null;
 
 function handleGoogleCredentialResponse(r){
   const p=JSON.parse(atob(r.credential.split('.')[1]));
+  const now=Date.now();
+  const existing=state.user?.googleId===p.sub?state.user:null;
   const fu={
     name:p.name,email:p.email,avatar:p.picture||'',phone:'',
-    currentProgram:'Diplomado en Gestión de Proyectos',googleId:p.sub,
+    currentProgram:'',googleId:p.sub,
+    registered:existing?.registered||true,
+    createdAt:existing?.createdAt||now,
+    lastLogin:now,
   };
   checkStreak();addXP(10);
-  const isNew=!state.preferences;
+  const isNew=!existing;
   const nextView=state.courseToPurchase?'payment':isNew?'preferences':'dashboard';
   setState({user:fu,preferences:state.preferences||null,view:nextView,tab:nextView==='dashboard'?'dashboard':state.tab});
   notify('Sesión iniciada correctamente con Google. +10 XP','success');
@@ -171,7 +176,7 @@ function handleGoogleCredentialResponse(r){
 
 function initGoogleGIS(){
   if(typeof google!=='undefined'&&google.accounts){
-    google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleCredentialResponse,auto_select:false});
+    google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleCredentialResponse,auto_select:true});
   }
 }
 
@@ -1010,7 +1015,7 @@ function renderProfile(){
         </div>
         <div class="space-y-1.5">
           <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Programa actual</label>
-          <input class="input-edit-program w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#4bae4f] focus:ring-2 focus:ring-[#4bae4f]/20 text-sm font-semibold text-slate-800 outline-none transition-all" value="${u.currentProgram||''}">
+          <input class="input-edit-program w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#4bae4f] focus:ring-2 focus:ring-[#4bae4f]/20 text-sm font-semibold text-slate-800 outline-none transition-all" value="----">
         </div>
       </div>
       <div class="border-t border-slate-100 pt-6">
@@ -1144,7 +1149,7 @@ function attachEvents(){
       const isReg=state.registering;
       const nameInput=document.querySelector('.input-username');
       const name=nameInput?nameInput.value.trim():'Carlos Ramírez';
-      const fu={name,email:name.toLowerCase().replace(/\s/g,'')+'@ceap.edu.sv',phone:'',avatar:'',currentProgram:isReg?'Matriculado CEAP Virtual':'Diplomado en Gestión de Proyectos'};
+      const fu={name,email:name.toLowerCase().replace(/\s/g,'')+'@ceap.edu.sv',phone:'',avatar:'',currentProgram:'',createdAt:Date.now(),lastLogin:Date.now(),registered:true};
       if(isReg){addXP(50);notify('Cuenta creada con éxito. +50 XP','success');setState({user:fu,view:state.courseToPurchase?'payment':'preferences'});}
       else{checkStreak();addXP(10);setState({user:fu,view:!state.preferences?'preferences':'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'! +10 XP','success');}
     });
