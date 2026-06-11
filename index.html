@@ -141,7 +141,7 @@ let state = {
   preferences:null
 };
 let slideInterval;
-function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user,preferences:state.preferences}))}catch(e){}render();if(state.user)syncStateToDrive();}
+function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user,preferences:state.preferences}))}catch(e){}render();}
 function avatarImg(src,name,cls){
   if(src&&(src.startsWith('data:')||src.startsWith('http')))return `<img src="${src}" alt="${name||''}" class="${cls} object-cover">`;
   return `<div class="${cls} bg-slate-200 flex items-center justify-center text-slate-500">${ic('User','w-6 h-6')}</div>`;
@@ -175,6 +175,7 @@ function handleGoogleCredentialResponse(r){
   if(isRegister){
     // Registration: show Drive auth popup immediately
     getGoogleToken('https://www.googleapis.com/auth/drive.file',tr=>{
+      googleAccessToken=tr.access_token;
       loadFromDriveWithToken(tr).then(d=>{
         if(d&&d.user&&d.user.googleId===fu.googleId){
           fu.createdAt=d.user.createdAt||fu.createdAt;
@@ -183,6 +184,9 @@ function handleGoogleCredentialResponse(r){
         }else{
           setState({user:fu,preferences:null,view:nextView,tab:nextView==='dashboard'?'dashboard':state.tab});
         }
+        // Save to Drive right now
+        const saveData={xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user,preferences:state.preferences};
+        saveToDriveWithToken(saveData,tr);
       }).catch(()=>{
         setState({user:fu,preferences:state.preferences||null,view:nextView,tab:nextView==='dashboard'?'dashboard':state.tab});
       });
@@ -202,10 +206,12 @@ function initGoogleGIS(){
   }
 }
 
-function getGoogleToken(scopes,cb,ecb){
+function getGoogleToken(scopes,cb,ecb,silent){
   if(typeof google==='undefined'||!google.accounts)return;
+  if(googleAccessToken&&cb){cb({access_token:googleAccessToken});return;}
   const t=google.accounts.oauth2.initTokenClient({client_id:GOOGLE_CLIENT_ID,scope:scopes||'https://www.googleapis.com/auth/drive.file',callback:r=>{googleAccessToken=r.access_token;if(cb)cb(r);},error_callback:()=>{if(ecb)ecb();}});
-  t.requestAccessToken();
+  if(silent){try{t.requestAccessToken({prompt:'none'})}catch(e){if(ecb)ecb();}}
+  else t.requestAccessToken();
 }
 
 const DRIVE_FOLDER_ID='1oSaPl-N7THDUdGqu9MQk1KZM9U_qGmAS';
@@ -215,7 +221,7 @@ let driveSaveTimer=null;
 
 function saveToDrive(data){
   return new Promise((resolve,reject)=>{
-    getGoogleToken('https://www.googleapis.com/auth/drive.file',tr=>{
+    const doSave=tr=>{
       const b=new Blob([JSON.stringify(data)],{type:'application/json'});
       const fd=new FormData();
       fd.append('metadata',new Blob([JSON.stringify({})],{type:'application/json'}));
@@ -228,7 +234,26 @@ function saveToDrive(data){
         fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+tr.access_token},body:fd})
           .then(r=>r.json()).then(d=>{driveFileId=d.id;if(d.id)localStorage.setItem('ceap_drive_file_id',d.id);resolve(d);}).catch(reject);
       }
-    },reject);
+    };
+    if(googleAccessToken)doSave({access_token:googleAccessToken});
+    else getGoogleToken('https://www.googleapis.com/auth/drive.file',doSave,reject);
+  });
+}
+
+function saveToDriveWithToken(data,tr){
+  const b=new Blob([JSON.stringify(data)],{type:'application/json'});
+  const fd=new FormData();
+  fd.append('metadata',new Blob([JSON.stringify({})],{type:'application/json'}));
+  fd.append('file',b);
+  return new Promise((resolve,reject)=>{
+    if(driveFileId){
+      fetch(`https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=multipart`,{method:'PATCH',headers:{Authorization:'Bearer '+tr.access_token},body:fd})
+        .then(r=>r.json()).then(resolve).catch(reject);
+    }else{
+      fd.set('metadata',new Blob([JSON.stringify({name:DRIVE_FILE_NAME,parents:[DRIVE_FOLDER_ID]})],{type:'application/json'}));
+      fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+tr.access_token},body:fd})
+        .then(r=>r.json()).then(d=>{driveFileId=d.id;if(d.id)localStorage.setItem('ceap_drive_file_id',d.id);resolve(d);}).catch(reject);
+    }
   });
 }
 
