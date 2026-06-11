@@ -640,7 +640,7 @@ function renderDashboard(){
         </button>
         <div class="hidden md:block text-left pl-2 border-l border-slate-200">
           <p class="font-extrabold text-xs text-slate-900 leading-none">${u.name}</p>
-          <p class="text-[9px] text-slate-500 mt-0.5 uppercase tracking-wide font-semibold">${u.currentProgram}</p>
+          <p class="text-[9px] text-slate-500 mt-0.5 uppercase tracking-wide font-semibold">----</p>
         </div>
       </div>
     </header>
@@ -752,7 +752,7 @@ function renderDashTab(){
       <div class="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
       <div class="relative space-y-6">
         <div class="space-y-1"><span class="text-[10px] uppercase font-bold tracking-widest text-slate-100">¡Bienvenido/a!</span><h4 class="text-2xl font-black">${s.user.name}</h4><p class="text-xs text-emerald-100">Estudiante Activo</p></div>
-        <div class="border-t border-white/20 pt-4 space-y-1.5"><span class="text-[9px] uppercase text-emerald-200 font-semibold">Programa actual:</span><p class="text-xs font-bold leading-snug">${s.user.currentProgram}</p></div>
+        <div class="border-t border-white/20 pt-4 space-y-1.5"><span class="text-[9px] uppercase text-emerald-200 font-semibold">Programa actual:</span><p class="text-xs font-bold leading-snug">----</p></div>
         <button class="sidebar-btn w-full bg-white text-[#021b3d] font-bold py-2.5 rounded-xl text-xs hover:bg-[#021b3d] hover:text-white transition-all shadow-md" data-tab="perfil">Ver Mi Perfil</button>
       </div>
     </div>
@@ -959,7 +959,7 @@ function renderPerfilTab(){
     <div class="bg-gradient-to-r from-[#021b3d] to-emerald-800 p-8 text-white text-center">
       ${avatarImg(u.avatar,u.name,'w-24 h-24 rounded-full mx-auto border-4 border-white/30 shadow-lg mb-4')}
       <h2 class="text-2xl font-black">${u.name}</h2>
-      <p class="text-sm text-emerald-300">${u.currentProgram}</p>
+      <p class="text-sm text-emerald-300">----</p>
       <p class="text-[10px] text-slate-400 mt-1">${u.email}</p>
     </div>
     <div class="p-8 space-y-8">
@@ -967,7 +967,7 @@ function renderPerfilTab(){
         <div class="space-y-2"><label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Nombre Completo</label><p class="font-bold text-slate-900">${u.name}</p></div>
         <div class="space-y-2"><label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Correo Electrónico</label><p class="font-bold text-slate-900">${u.email}</p></div>
         <div class="space-y-2"><label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Teléfono</label><p class="font-bold text-slate-900">${u.phone||'+503 7000-1234'}</p></div>
-        <div class="space-y-2"><label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Programa Actual</label><p class="font-bold text-slate-900">${u.currentProgram}</p></div>
+        <div class="space-y-2"><label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Programa Actual</label><p class="font-bold text-slate-900">----</p></div>
         <div class="space-y-2"><label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Miembro Desde</label><p class="font-bold text-slate-900">Enero 2026</p></div>
         <div class="space-y-2"><label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Idioma</label><p class="font-bold text-slate-900">Español</p></div>
       </div>
