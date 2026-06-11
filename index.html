@@ -137,10 +137,11 @@ let state = {
   supportCategory:'Técnico',
   xp:0, level:1, streak:0, lastLoginDate:'',
   notifList:[], unreadNotifs:0,
-  settings:{theme:'light',emailNotifs:true,desktopNotifs:true}
+  settings:{theme:'light',emailNotifs:true,desktopNotifs:true},
+  preferences:null
 };
 let slideInterval;
-function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user}))}catch(e){}render();}
+function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user,preferences:state.preferences}))}catch(e){}render();}
 function avatarImg(src,name,cls){
   if(src&&(src.startsWith('data:')||src.startsWith('http')))return `<img src="${src}" alt="${name||''}" class="${cls} object-cover">`;
   return `<div class="${cls} bg-slate-200 flex items-center justify-center text-slate-500">${ic('User','w-6 h-6')}</div>`;
@@ -162,8 +163,10 @@ function handleGoogleCredentialResponse(r){
     currentProgram:'Diplomado en Gestión de Proyectos',googleId:p.sub,
   };
   checkStreak();addXP(10);
-  setState({user:fu});
+  const isNew=!state.preferences;
+  setState({user:fu,preferences:state.preferences||null});
   if(state.courseToPurchase)setState({view:'payment'});
+  else if(isNew)setState({view:'preferences'});
   else setState({view:'dashboard',tab:'dashboard'});
   notify('Sesión iniciada correctamente con Google. +10 XP','success');
 }
@@ -212,6 +215,7 @@ function render(){
   }
   if(s.view==='landing')h+=renderLanding();
   else if(s.view==='login')h+=renderLogin();
+  else if(s.view==='preferences'&&s.user)h+=renderPreferences();
   else if(s.view==='payment'&&s.courseToPurchase)h+=renderPayment();
   else if(s.view==='dashboard'&&s.user)h+=renderDashboard();
   else if(s.view==='viewer'&&s.selectedCourse)h+=renderViewer();
@@ -482,6 +486,44 @@ function renderLogin(){
       <div class="flex gap-2 items-center">${ic('Globe','w-5 h-5 text-[#4bae4f]')}<div><p class="font-bold text-white">Sitio Web Oficial</p><p class="text-[10px]">www.ceap.edu.sv</p></div></div>
       <div class="flex gap-2 items-center">${ic('Shield','w-5 h-5 text-[#4bae4f]')}<div><p class="font-bold text-white">Sistemas de Ciberseguridad</p><p class="text-[10px]">Autenticación segura vía Google OAuth</p></div></div>
     </div>
+  </div>
+</div>`;}
+function renderPreferences(){
+  const s=state,p=s.preferences||{};
+  const areas=['Gestión de Proyectos','Ingeniería','Tecnología','Data & IA','Ciberseguridad'];
+  const modos=['Virtual','Presencial','Híbrido'];
+  const horarios=['Mañana (8am-12pm)','Tarde (1pm-5pm)','Noche (6pm-10pm)','Flexible'];
+  const niveles=['Principiante','Intermedio','Avanzado'];
+  return `
+<div class="flex-1 flex bg-gradient-to-br from-[#021b3d] to-slate-900 text-white">
+  <div class="max-w-2xl mx-auto w-full flex-1 flex flex-col justify-center p-6 md:p-12">
+    <div class="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-white/10 shadow-2xl">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="bg-[#4bae4f] p-2 rounded-xl">${ic('BookOpen','w-6 h-6 text-[#021b3d]')}</div>
+        <div><h2 class="text-xl font-black tracking-wider">Preferencias de Estudio</h2><p class="text-xs text-slate-400">Cuéntanos tus intereses para personalizar tu experiencia</p></div>
+      </div>
+      <form class="preferences-form space-y-6">
+        <div><label class="text-sm font-bold text-slate-300 block mb-2">${ic('Layers','w-4 h-4 inline mr-1.5')}Área de interés principal</label>
+          <div class="grid grid-cols-2 gap-2">${areas.map((a,i)=>`<label class="pref-option flex items-center gap-2 p-3 rounded-xl border text-xs font-medium cursor-pointer transition-all ${(p.area||'')===a?'bg-[#4bae4f]/20 border-[#4bae4f] text-white':'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:border-white/20'}"><input type="radio" name="pref-area" value="${a}" ${(p.area||i===0)?'checked':''} class="sr-only"><span>${a}</span></label>`).join('')}</div>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+          <div><label class="text-xs font-bold text-slate-400 block mb-2">Modalidad</label>
+            <div class="flex flex-wrap gap-1.5">${modos.map(m=>`<label class="pref-option px-3 py-2 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${(p.modalidad||'')===m?'bg-[#4bae4f]/20 border-[#4bae4f] text-white':'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'}"><input type="radio" name="pref-modalidad" value="${m}" ${(p.modalidad||m==='Virtual')?'checked':''} class="sr-only">${m}</label>`).join('')}</div>
+          </div>
+          <div><label class="text-xs font-bold text-slate-400 block mb-2">Horario</label>
+            <div class="flex flex-wrap gap-1.5">${horarios.map(h=>`<label class="pref-option px-3 py-2 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${(p.horario||'')===h?'bg-[#4bae4f]/20 border-[#4bae4f] text-white':'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'}"><input type="radio" name="pref-horario" value="${h}" ${(p.horario||h==='Noche (6pm-10pm)')?'checked':''} class="sr-only">${h}</label>`).join('')}</div>
+          </div>
+          <div><label class="text-xs font-bold text-slate-400 block mb-2">Nivel</label>
+            <div class="flex flex-wrap gap-1.5">${niveles.map(n=>`<label class="pref-option px-3 py-2 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${(p.nivel||'')===n?'bg-[#4bae4f]/20 border-[#4bae4f] text-white':'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'}"><input type="radio" name="pref-nivel" value="${n}" ${(p.nivel||n==='Principiante')?'checked':''} class="sr-only">${n}</label>`).join('')}</div>
+          </div>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-white/10">
+          <button type="button" class="btn-skip-preferences text-xs text-slate-500 hover:text-white transition-colors">Saltar por ahora</button>
+          <button type="submit" class="bg-[#4bae4f] hover:bg-emerald-500 text-[#021b3d] font-bold px-6 py-3 rounded-xl transition-all text-xs tracking-wider uppercase shadow-lg">Guardar preferencias</button>
+        </div>
+      </form>
+    </div>
+    <p class="text-center text-[10px] text-slate-600 mt-6">Puedes cambiar estas preferencias cuando quieras desde tu perfil.</p>
   </div>
 </div>`;}
 function renderPayment(){
@@ -1104,8 +1146,8 @@ function attachEvents(){
       const nameInput=document.querySelector('.input-username');
       const name=nameInput?nameInput.value.trim():'Carlos Ramírez';
       const fu={name,email:name.toLowerCase().replace(/\s/g,'')+'@ceap.edu.sv',phone:'',avatar:'',currentProgram:isReg?'Matriculado CEAP Virtual':'Diplomado en Gestión de Proyectos'};
-      if(isReg){setState({user:fu});addXP(50);notify('Cuenta creada con éxito. +50 XP','success');if(state.courseToPurchase)setState({view:'payment'});else setState({view:'dashboard',tab:'dashboard'});}
-      else{checkStreak();addXP(10);setState({user:fu,view:'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'! +10 XP','success');}
+      if(isReg){setState({user:fu});addXP(50);notify('Cuenta creada con éxito. +50 XP','success');if(state.courseToPurchase)setState({view:'payment'});else setState({view:'preferences'});}
+      else{checkStreak();addXP(10);setState({user:fu});if(!state.preferences)setState({view:'preferences'});else setState({view:'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'! +10 XP','success');}
     });
     document.querySelectorAll('.btn-toggle-pw').forEach(el=>el.addEventListener('click',function(){
       const pw=document.querySelector('.input-password');
@@ -1126,6 +1168,28 @@ function attachEvents(){
       logo_alignment:'left',
     });
     google.accounts.id.prompt();
+  }
+
+  // Preferences form
+  const pf_=document.querySelector('.preferences-form');
+  if(pf_){
+    pf_.addEventListener('submit',e=>{
+      e.preventDefault();
+      const area=document.querySelector('input[name="pref-area"]:checked');
+      const modalidad=document.querySelector('input[name="pref-modalidad"]:checked');
+      const horario=document.querySelector('input[name="pref-horario"]:checked');
+      const nivel=document.querySelector('input[name="pref-nivel"]:checked');
+      setState({preferences:{area:area?.value||'',modalidad:modalidad?.value||'',horario:horario?.value||'',nivel:nivel?.value||''}});
+      addXP(25);
+      if(state.courseToPurchase)setState({view:'payment'});
+      else setState({view:'dashboard',tab:'dashboard'});
+      notify('Preferencias guardadas. +25 XP','success');
+    });
+    document.querySelectorAll('.btn-skip-preferences').forEach(el=>el.addEventListener('click',()=>{
+      setState({preferences:{area:'',modalidad:'',horario:'',nivel:''}});
+      if(state.courseToPurchase)setState({view:'payment'});
+      else setState({view:'dashboard',tab:'dashboard'});
+    }));
   }
 
   // Purchase
