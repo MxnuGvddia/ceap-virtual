@@ -164,10 +164,8 @@ function handleGoogleCredentialResponse(r){
   };
   checkStreak();addXP(10);
   const isNew=!state.preferences;
-  setState({user:fu,preferences:state.preferences||null});
-  if(state.courseToPurchase)setState({view:'payment'});
-  else if(isNew)setState({view:'preferences'});
-  else setState({view:'dashboard',tab:'dashboard'});
+  const nextView=state.courseToPurchase?'payment':isNew?'preferences':'dashboard';
+  setState({user:fu,preferences:state.preferences||null,view:nextView,tab:nextView==='dashboard'?'dashboard':state.tab});
   notify('Sesión iniciada correctamente con Google. +10 XP','success');
 }
 
@@ -1147,8 +1145,8 @@ function attachEvents(){
       const nameInput=document.querySelector('.input-username');
       const name=nameInput?nameInput.value.trim():'Carlos Ramírez';
       const fu={name,email:name.toLowerCase().replace(/\s/g,'')+'@ceap.edu.sv',phone:'',avatar:'',currentProgram:isReg?'Matriculado CEAP Virtual':'Diplomado en Gestión de Proyectos'};
-      if(isReg){setState({user:fu});addXP(50);notify('Cuenta creada con éxito. +50 XP','success');if(state.courseToPurchase)setState({view:'payment'});else setState({view:'preferences'});}
-      else{checkStreak();addXP(10);setState({user:fu});if(!state.preferences)setState({view:'preferences'});else setState({view:'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'! +10 XP','success');}
+      if(isReg){addXP(50);notify('Cuenta creada con éxito. +50 XP','success');setState({user:fu,view:state.courseToPurchase?'payment':'preferences'});}
+      else{checkStreak();addXP(10);setState({user:fu,view:!state.preferences?'preferences':'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'! +10 XP','success');}
     });
     document.querySelectorAll('.btn-toggle-pw').forEach(el=>el.addEventListener('click',function(){
       const pw=document.querySelector('.input-password');
