@@ -494,32 +494,33 @@ function renderPreferences(){
   const modos=['Virtual','Presencial','Híbrido'];
   const horarios=['Mañana (8am-12pm)','Tarde (1pm-5pm)','Noche (6pm-10pm)','Flexible'];
   const niveles=['Principiante','Intermedio','Avanzado'];
+  const sel=(g,v)=>p[g]===v||(!p[g]&&v===['Gestión de Proyectos','Virtual','Noche (6pm-10pm)','Principiante'][['area','modalidad','horario','nivel'].indexOf(g)])?'bg-[#4bae4f]/20 border-[#4bae4f] text-white':'bg-slate-800/60 border-slate-700/60 text-slate-400 hover:bg-slate-700/60 hover:border-slate-500';
   return `
-<div class="flex-1 flex bg-gradient-to-br from-[#021b3d] to-slate-900 text-white">
+<div class="flex-1 flex bg-[#021b3d] text-white">
   <div class="max-w-2xl mx-auto w-full flex-1 flex flex-col justify-center p-6 md:p-12">
-    <div class="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-white/10 shadow-2xl">
+    <div class="bg-slate-900/80 rounded-3xl p-8 md:p-10 border border-slate-800 shadow-2xl">
       <div class="flex items-center gap-3 mb-6">
         <div class="bg-[#4bae4f] p-2 rounded-xl">${ic('BookOpen','w-6 h-6 text-[#021b3d]')}</div>
-        <div><h2 class="text-xl font-black tracking-wider">Preferencias de Estudio</h2><p class="text-xs text-slate-400">Cuéntanos tus intereses para personalizar tu experiencia</p></div>
+        <div><h2 class="text-xl font-black tracking-wider text-white">Preferencias de Estudio</h2><p class="text-xs text-slate-400">Cuéntanos tus intereses para personalizar tu experiencia</p></div>
       </div>
       <form class="preferences-form space-y-6">
-        <div><label class="text-sm font-bold text-slate-300 block mb-2">${ic('Layers','w-4 h-4 inline mr-1.5')}Área de interés principal</label>
-          <div class="grid grid-cols-2 gap-2">${areas.map((a,i)=>`<label class="pref-option flex items-center gap-2 p-3 rounded-xl border text-xs font-medium cursor-pointer transition-all ${(p.area||'')===a?'bg-[#4bae4f]/20 border-[#4bae4f] text-white':'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:border-white/20'}"><input type="radio" name="pref-area" value="${a}" ${(p.area||i===0)?'checked':''} class="sr-only"><span>${a}</span></label>`).join('')}</div>
+        <div><label class="text-sm font-bold text-slate-300 block mb-3">${ic('Layers','w-4 h-4 inline mr-1.5')}Área de interés principal</label>
+          <div class="grid grid-cols-2 gap-2" data-group="area">${areas.map((a,i)=>`<label class="pref-option flex items-center gap-2 p-3 rounded-xl border text-xs font-medium cursor-pointer transition-all ${sel('area',a)}" data-value="${a}"><input type="radio" name="pref-area" value="${a}" ${(!p.area&&i===0)||p.area===a?'checked':''} class="sr-only"><span>${a}</span></label>`).join('')}</div>
         </div>
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-3 gap-5">
           <div><label class="text-xs font-bold text-slate-400 block mb-2">Modalidad</label>
-            <div class="flex flex-wrap gap-1.5">${modos.map(m=>`<label class="pref-option px-3 py-2 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${(p.modalidad||'')===m?'bg-[#4bae4f]/20 border-[#4bae4f] text-white':'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'}"><input type="radio" name="pref-modalidad" value="${m}" ${(p.modalidad||m==='Virtual')?'checked':''} class="sr-only">${m}</label>`).join('')}</div>
+            <div class="flex flex-col gap-1.5" data-group="modalidad">${modos.map(m=>`<label class="pref-option px-3 py-2.5 rounded-lg border text-xs font-semibold cursor-pointer transition-all ${sel('modalidad',m)}" data-value="${m}"><input type="radio" name="pref-modalidad" value="${m}" ${(!p.modalidad&&m==='Virtual')||p.modalidad===m?'checked':''} class="sr-only">${m}</label>`).join('')}</div>
           </div>
           <div><label class="text-xs font-bold text-slate-400 block mb-2">Horario</label>
-            <div class="flex flex-wrap gap-1.5">${horarios.map(h=>`<label class="pref-option px-3 py-2 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${(p.horario||'')===h?'bg-[#4bae4f]/20 border-[#4bae4f] text-white':'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'}"><input type="radio" name="pref-horario" value="${h}" ${(p.horario||h==='Noche (6pm-10pm)')?'checked':''} class="sr-only">${h}</label>`).join('')}</div>
+            <div class="flex flex-col gap-1.5" data-group="horario">${horarios.map(h=>`<label class="pref-option px-3 py-2.5 rounded-lg border text-xs font-semibold cursor-pointer transition-all ${sel('horario',h)}" data-value="${h}"><input type="radio" name="pref-horario" value="${h}" ${(!p.horario&&h==='Noche (6pm-10pm)')||p.horario===h?'checked':''} class="sr-only">${h}</label>`).join('')}</div>
           </div>
           <div><label class="text-xs font-bold text-slate-400 block mb-2">Nivel</label>
-            <div class="flex flex-wrap gap-1.5">${niveles.map(n=>`<label class="pref-option px-3 py-2 rounded-lg border text-[10px] font-semibold cursor-pointer transition-all ${(p.nivel||'')===n?'bg-[#4bae4f]/20 border-[#4bae4f] text-white':'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'}"><input type="radio" name="pref-nivel" value="${n}" ${(p.nivel||n==='Principiante')?'checked':''} class="sr-only">${n}</label>`).join('')}</div>
+            <div class="flex flex-col gap-1.5" data-group="nivel">${niveles.map(n=>`<label class="pref-option px-3 py-2.5 rounded-lg border text-xs font-semibold cursor-pointer transition-all ${sel('nivel',n)}" data-value="${n}"><input type="radio" name="pref-nivel" value="${n}" ${(!p.nivel&&n==='Principiante')||p.nivel===n?'checked':''} class="sr-only">${n}</label>`).join('')}</div>
           </div>
         </div>
-        <div class="flex justify-between items-center pt-4 border-t border-white/10">
-          <button type="button" class="btn-skip-preferences text-xs text-slate-500 hover:text-white transition-colors">Saltar por ahora</button>
-          <button type="submit" class="bg-[#4bae4f] hover:bg-emerald-500 text-[#021b3d] font-bold px-6 py-3 rounded-xl transition-all text-xs tracking-wider uppercase shadow-lg">Guardar preferencias</button>
+        <div class="flex justify-between items-center pt-5 border-t border-slate-800">
+          <button type="button" class="btn-skip-preferences text-xs text-slate-500 hover:text-slate-300 transition-colors font-medium">Saltar por ahora</button>
+          <button type="submit" class="bg-[#4bae4f] hover:bg-emerald-500 text-[#021b3d] font-bold px-7 py-3 rounded-xl transition-all text-xs tracking-wider uppercase shadow-lg">Guardar preferencias</button>
         </div>
       </form>
     </div>
@@ -1173,6 +1174,18 @@ function attachEvents(){
   // Preferences form
   const pf_=document.querySelector('.preferences-form');
   if(pf_){
+    document.querySelectorAll('.pref-option').forEach(el=>el.addEventListener('click',function(){
+      const group=this.closest('[data-group]');
+      if(!group)return;
+      group.querySelectorAll('.pref-option').forEach(o=>{
+        o.classList.remove('bg-[#4bae4f]/20','border-[#4bae4f]','text-white');
+        o.classList.add('bg-slate-800/60','border-slate-700/60','text-slate-400');
+      });
+      this.classList.remove('bg-slate-800/60','border-slate-700/60','text-slate-400');
+      this.classList.add('bg-[#4bae4f]/20','border-[#4bae4f]','text-white');
+      const rb=this.querySelector('input[type="radio"]');
+      if(rb)rb.checked=true;
+    }));
     pf_.addEventListener('submit',e=>{
       e.preventDefault();
       const area=document.querySelector('input[name="pref-area"]:checked');
