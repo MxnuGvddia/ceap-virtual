@@ -169,25 +169,30 @@ function handleGoogleCredentialResponse(r){
   };
   checkStreak();addXP(10);
   const isNew=!existing;
+  const isRegister=state.registering;
   const nextView=state.courseToPurchase?'payment':isNew?'preferences':'dashboard';
 
-  // Request Drive authorization immediately (still on login page)
-  getGoogleToken('https://www.googleapis.com/auth/drive.file',tr=>{
-    loadFromDriveWithToken(tr).then(d=>{
-      if(d&&d.user&&d.user.googleId===fu.googleId){
-        fu.createdAt=d.user.createdAt||fu.createdAt;
-        const merged={...d.user,...fu,xp:d.xp||state.xp,level:d.level||state.level,streak:d.streak||state.streak,lastLoginDate:d.lastLoginDate||state.lastLoginDate,notifList:d.notifList||state.notifList,unreadNotifs:d.unreadNotifs||state.unreadNotifs,settings:d.settings||state.settings,preferences:d.preferences||state.preferences};
-        setState({user:merged,view:merged.preferences?'dashboard':'preferences',tab:'dashboard'});
-      }else{
-        setState({user:fu,preferences:null,view:nextView,tab:nextView==='dashboard'?'dashboard':state.tab});
-      }
-    }).catch(()=>{
+  if(isRegister){
+    // Registration: show Drive auth popup immediately
+    getGoogleToken('https://www.googleapis.com/auth/drive.file',tr=>{
+      loadFromDriveWithToken(tr).then(d=>{
+        if(d&&d.user&&d.user.googleId===fu.googleId){
+          fu.createdAt=d.user.createdAt||fu.createdAt;
+          const merged={...d.user,...fu,xp:d.xp||state.xp,level:d.level||state.level,streak:d.streak||state.streak,lastLoginDate:d.lastLoginDate||state.lastLoginDate,notifList:d.notifList||state.notifList,unreadNotifs:d.unreadNotifs||state.unreadNotifs,settings:d.settings||state.settings,preferences:d.preferences||state.preferences};
+          setState({user:merged,view:merged.preferences?'dashboard':'preferences',tab:'dashboard'});
+        }else{
+          setState({user:fu,preferences:null,view:nextView,tab:nextView==='dashboard'?'dashboard':state.tab});
+        }
+      }).catch(()=>{
+        setState({user:fu,preferences:state.preferences||null,view:nextView,tab:nextView==='dashboard'?'dashboard':state.tab});
+      });
+    },()=>{
       setState({user:fu,preferences:state.preferences||null,view:nextView,tab:nextView==='dashboard'?'dashboard':state.tab});
     });
-  },()=>{
-    // User denied Drive access — proceed with localStorage only
+  }else{
+    // Login: no Drive popup, just use localStorage
     setState({user:fu,preferences:state.preferences||null,view:nextView,tab:nextView==='dashboard'?'dashboard':state.tab});
-  });
+  }
   notify('Sesión iniciada correctamente con Google. +10 XP','success');
 }
 
