@@ -24,6 +24,8 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
 .animate-marquee{animation:marquee 30s linear infinite}
 @keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 .animate-scale-in{animation:scaleIn .4s ease-out forwards}
+@keyframes notifOut{0%,70%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-20px)}}
+.animate-notif-out{animation:notifOut 4s ease-in-out forwards}
 </style>
 </head>
 <body class="min-h-screen bg-[#f3f6f9] text-slate-800 font-sans flex flex-col selection:bg-[#4bae4f] selection:text-white">
@@ -143,8 +145,8 @@ function avatarImg(src,name,cls){
   return `<div class="${cls} bg-slate-200 flex items-center justify-center text-slate-500">${ic('User','w-6 h-6')}</div>`;
 }
 function loadState(){try{const d=JSON.parse(localStorage.getItem('ceap_state'));if(d)Object.assign(state,d)}catch(e){}}
-function notify(m,t){setState({notification:{msg:m,type:t}});if(m){const n={msg:m,type:t,time:Date.now(),id:Date.now()};const nl=[n,...state.notifList].slice(0,20);setState({notifList:nl,unreadNotifs:state.unreadNotifs+1});}setTimeout(()=>{if(state.notification)setState({notification:null})},4000);}
-function startSlideTimer(){if(slideInterval)clearInterval(slideInterval);slideInterval=setInterval(()=>{setState({slideIdx:(state.slideIdx+1)%SLIDES.length})},8000);}
+function notify(m,t){setState({notification:{msg:m,type:t}});if(m){const n={msg:m,type:t,time:Date.now(),id:Date.now()};const nl=[n,...state.notifList].slice(0,20);setState({notifList:nl,unreadNotifs:state.unreadNotifs+1});}setTimeout(()=>{state.notification=null},4000);}
+function startSlideTimer(){if(slideInterval)clearInterval(slideInterval);slideInterval=setInterval(()=>{if(state.view==='landing')setState({slideIdx:(state.slideIdx+1)%SLIDES.length})},8000);}
 loadState();
 if(state.user)checkStreak();
 function checkStreak(){
@@ -161,6 +163,7 @@ function addXP(n){
   if(xp>=next){xp-=next;level++;}
   setState({xp,level});
 }
+// Slide timer solo activo si estamos en landing
 startSlideTimer();
 function starRating(n){let r='';for(let i=0;i<5;i++)r+=i<n?'<svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>':'<svg class="w-4 h-4 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';return r;}
 
@@ -172,7 +175,7 @@ function render(){
     let bg='bg-green-600 text-white',icn=ic('CheckCircle','w-5 h-5');
     if(t==='error'){bg='bg-red-600 text-white';icn=ic('Shield','w-5 h-5')}
     else if(t==='info'){bg='bg-blue-600 text-white';icn=ic('Bell','w-5 h-5')}
-    h+='<div class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-2xl flex items-center gap-3 animate-bounce-alt '+bg+'">'+icn+'<span class="font-medium text-sm">'+s.notification.msg+'</span></div>';
+    h+='<div class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-2xl flex items-center gap-3 animate-bounce-alt animate-notif-out '+bg+'">'+icn+'<span class="font-medium text-sm">'+s.notification.msg+'</span></div>';
   }
   if(s.view==='landing')h+=renderLanding();
   else if(s.view==='login')h+=renderLogin();
