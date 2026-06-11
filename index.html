@@ -1,211 +1,168 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CEAP Virtual — Centro Especializado en Administración de Proyectos</title>
-  <meta name="description"
-    content="Plataforma educativa CEAP Virtual. Diplomados en Gestión de Proyectos, Automatización Industrial, Sistemas Eléctricos e Infraestructura Tecnológica.">
+  <meta name="description" content="Plataforma educativa CEAP Virtual. Diplomados en Gestión de Proyectos, Automatización Industrial, Sistemas Eléctricos e Infraestructura Tecnológica.">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
   <style>
-    * {
-      scroll-behavior: smooth;
-    }
-
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .line-clamp-3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
-    @keyframes bounceAlt {
-
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(-8px);
-      }
-    }
-
-    .animate-bounce-alt {
-      animation: bounceAlt 0.6s ease-in-out 2;
-    }
-
-    .faq-answer.open {
-      max-height: 300px;
-    }
-
-    .faq-arrow.open {
-      transform: rotate(180deg);
-    }
-    #hero-canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+    * { scroll-behavior: smooth; }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    @keyframes bounceAlt { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .animate-bounce-alt { animation: bounceAlt 0.6s ease-in-out 2; }
+    .faq-answer.open { max-height: 300px; }
+    .faq-arrow.open { transform: rotate(180deg); }
   </style>
 </head>
+<body class="min-h-screen bg-[#f3f6f9] text-slate-800 font-sans flex flex-col selection:bg-[#4bae4f] selection:text-white relative">
+<div id="root"></div>
 
-<body
-  class="min-h-screen bg-[#f3f6f9] text-slate-800 font-sans flex flex-col selection:bg-[#4bae4f] selection:text-white relative">
-  <div id="root"></div>
+<script>
+// ===== ICONS (inline SVGs) =====
+const I = {
+  BookOpen: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  Video: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>',
+  Calendar: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  MessageSquare: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  Award: '<svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>',
+  BarChart2: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+  HelpCircle: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+  Settings: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  LogIn: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>',
+  User: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  Lock: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+  Eye: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  EyeOff: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>',
+  ChevronRight: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
+  ChevronLeft: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>',
+  Bell: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+  BookMarked: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><polyline points="14 2 14 10 11 8 8 10 8 2"/></svg>',
+  Layers: '<svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+  Users: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  CheckCircle: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+  CreditCard: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>',
+  Shield: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  Play: '<svg class="w-8 h-8 fill-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+  ArrowRight: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+  Mail: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  Phone: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  Clock: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  Globe: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  Menu: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>',
+  X: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  LogOut: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
+  FileText: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
+  Search: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+  star: '<svg class="w-8 h-8 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  GitHub: '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>'
+};
+function ic(name, cls) { return I[name].replace('<svg ', '<svg class="'+cls+'" '); }
 
-  <script>
-    // ===== ICONS (inline SVGs) =====
-    const I = {
-      BookOpen: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
-      Video: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>',
-      Calendar: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
-      MessageSquare: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
-      Award: '<svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>',
-      BarChart2: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
-      HelpCircle: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
-      Settings: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
-      LogIn: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>',
-      User: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-      Lock: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
-      Eye: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
-      EyeOff: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>',
-      ChevronRight: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
-      ChevronLeft: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>',
-      Bell: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
-      BookMarked: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><polyline points="14 2 14 10 11 8 8 10 8 2"/></svg>',
-      Layers: '<svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
-      Users: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-      CheckCircle: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-      CreditCard: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>',
-      Shield: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
-      Play: '<svg class="w-8 h-8 fill-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
-      ArrowRight: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
-      Mail: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
-      Phone: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
-      Clock: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-      Globe: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
-      Menu: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>',
-      X: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
-      LogOut: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
-      FileText: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
-      Search: '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
-      star: '<svg class="w-8 h-8 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
-      GitHub: '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>'
-    };
-    function ic(name, cls) { return I[name].replace('<svg ', '<svg class="' + cls + '" '); }
+// ===== DATA =====
+const COURSES = [
+  { id:'pmi', title:'Gesti\u00f3n de Proyectos (PMI)', category:'Gesti\u00f3n', progress:75, dueDate:'15/08/2026', image:'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80', description:'Aprende las metodolog\u00edas del PMBOK y prep\u00e1rate para la certificaci\u00f3n PMP.', price:189.99, modules:[{id:1,title:'Introducci\u00f3n a la Gu\u00eda del PMBOK',completed:true,duration:'45 mins'},{id:2,title:'Gesti\u00f3n del Alcance del Proyecto',completed:true,duration:'1h 15 mins'},{id:3,title:'Planificaci\u00f3n de Cronograma y Ruta Cr\u00edtica',completed:false,duration:'2h 10 mins'},{id:4,title:'Gesti\u00f3n de Costos y Valor Ganado',completed:false,duration:'1h 45 mins'}] },
+  { id:'aut', title:'Automatizaci\u00f3n Industrial', category:'Ingenier\u00eda', progress:60, dueDate:'20/08/2026', image:'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80', description:'Control de procesos mediante PLCs, SCADA y sistemas embebidos de \u00faltima generaci\u00f3n.', price:249.99, modules:[{id:1,title:'Principios de Sensores y Actuadores',completed:true,duration:'1h 00 mins'},{id:2,title:'Programaci\u00f3n en Ladder (PLC)',completed:true,duration:'2h 30 mins'},{id:3,title:'Dise\u00f1o de Interfaces HMI',completed:false,duration:'1h 50 mins'},{id:4,title:'Integraci\u00f3n SCADA en Redes Industriales',completed:false,duration:'3h 15 mins'}] },
+  { id:'elec', title:'Sistemas El\u00e9ctricos Industriales', category:'Ingenier\u00eda', progress:40, dueDate:'25/08/2026', image:'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80', description:'Dise\u00f1o, an\u00e1lisis y mantenimiento preventivo de subestaciones y redes el\u00e9ctricas.', price:199.99, modules:[{id:1,title:'Fundamentos de Redes Trif\u00e1sicas',completed:true,duration:'1h 20 mins'},{id:2,title:'Protecciones El\u00e9ctricas y Coordinaci\u00f3n',completed:false,duration:'2h 00 mins'},{id:3,title:'Mantenimiento de Transformadores',completed:false,duration:'1h 45 mins'}] },
+  { id:'infra', title:'Proyectos de Infraestructura Tecnol\u00f3gica', category:'Tecnolog\u00eda', progress:0, dueDate:'10/09/2026', image:'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80', description:'Gesti\u00f3n y despliegue de Data Centers modernos, nubes h\u00edbridas y cableado estructurado.', price:279.99, modules:[{id:1,title:'Dise\u00f1o de Arquitecturas de TI',completed:false,duration:'1h 30 mins'},{id:2,title:'Normativas de Seguridad F\u00edsica de Data Centers',completed:false,duration:'2h 15 mins'},{id:3,title:'Plan de Continuidad del Negocio (BCP)',completed:false,duration:'1h 10 mins'}] }
+];
 
-    // ===== DATA =====
-    const COURSES = [
-      { id: 'pmi', title: 'Gesti\u00f3n de Proyectos (PMI)', category: 'Gesti\u00f3n', progress: 75, dueDate: '15/08/2026', image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80', description: 'Aprende las metodolog\u00edas del PMBOK y prep\u00e1rate para la certificaci\u00f3n PMP.', price: 189.99, modules: [{ id: 1, title: 'Introducci\u00f3n a la Gu\u00eda del PMBOK', completed: true, duration: '45 mins' }, { id: 2, title: 'Gesti\u00f3n del Alcance del Proyecto', completed: true, duration: '1h 15 mins' }, { id: 3, title: 'Planificaci\u00f3n de Cronograma y Ruta Cr\u00edtica', completed: false, duration: '2h 10 mins' }, { id: 4, title: 'Gesti\u00f3n de Costos y Valor Ganado', completed: false, duration: '1h 45 mins' }] },
-      { id: 'aut', title: 'Automatizaci\u00f3n Industrial', category: 'Ingenier\u00eda', progress: 60, dueDate: '20/08/2026', image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80', description: 'Control de procesos mediante PLCs, SCADA y sistemas embebidos de \u00faltima generaci\u00f3n.', price: 249.99, modules: [{ id: 1, title: 'Principios de Sensores y Actuadores', completed: true, duration: '1h 00 mins' }, { id: 2, title: 'Programaci\u00f3n en Ladder (PLC)', completed: true, duration: '2h 30 mins' }, { id: 3, title: 'Dise\u00f1o de Interfaces HMI', completed: false, duration: '1h 50 mins' }, { id: 4, title: 'Integraci\u00f3n SCADA en Redes Industriales', completed: false, duration: '3h 15 mins' }] },
-      { id: 'elec', title: 'Sistemas El\u00e9ctricos Industriales', category: 'Ingenier\u00eda', progress: 40, dueDate: '25/08/2026', image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80', description: 'Dise\u00f1o, an\u00e1lisis y mantenimiento preventivo de subestaciones y redes el\u00e9ctricas.', price: 199.99, modules: [{ id: 1, title: 'Fundamentos de Redes Trif\u00e1sicas', completed: true, duration: '1h 20 mins' }, { id: 2, title: 'Protecciones El\u00e9ctricas y Coordinaci\u00f3n', completed: false, duration: '2h 00 mins' }, { id: 3, title: 'Mantenimiento de Transformadores', completed: false, duration: '1h 45 mins' }] },
-      { id: 'infra', title: 'Proyectos de Infraestructura Tecnol\u00f3gica', category: 'Tecnolog\u00eda', progress: 0, dueDate: '10/09/2026', image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80', description: 'Gesti\u00f3n y despliegue de Data Centers modernos, nubes h\u00edbridas y cableado estructurado.', price: 279.99, modules: [{ id: 1, title: 'Dise\u00f1o de Arquitecturas de TI', completed: false, duration: '1h 30 mins' }, { id: 2, title: 'Normativas de Seguridad F\u00edsica de Data Centers', completed: false, duration: '2h 15 mins' }, { id: 3, title: 'Plan de Continuidad del Negocio (BCP)', completed: false, duration: '1h 10 mins' }] }
-    ];
+const SLIDES = [
+  { title:'Planificamos hoy, construimos el \u00e9xito del ma\u00f1ana', highlight:'\u00e9xito', desc:'Educaci\u00f3n especializada en administraci\u00f3n de proyectos, ingenier\u00eda, tecnolog\u00eda e innovaci\u00f3n.', image:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80' },
+  { title:'Domina metodolog\u00edas con est\u00e1ndares globales', highlight:'est\u00e1ndares', desc:'Lidera equipos de alto rendimiento con diplomados alineados a las exigencias internacionales de la industria.', image:'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80' }
+];
 
-    const SLIDES = [
-      { title: 'Planificamos hoy, construimos el \u00e9xito del ma\u00f1ana', highlight: '\u00e9xito', desc: 'Educaci\u00f3n especializada en administraci\u00f3n de proyectos, ingenier\u00eda, tecnolog\u00eda e innovaci\u00f3n.', image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80' },
-      { title: 'Domina metodolog\u00edas con est\u00e1ndares globales', highlight: 'est\u00e1ndares', desc: 'Lidera equipos de alto rendimiento con diplomados alineados a las exigencias internacionales de la industria.', image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80' }
-    ];
+const TESTIMONIALS = [
+  { name:'Mar\u00eda Elena L\u00f3pez', role:'Gerente de Proyectos', text:'Los diplomados de CEAP transformaron mi forma de liderar equipos. Obtuve mi certificaci\u00f3n PMP en 3 meses.', avatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80', stars:5 },
+  { name:'Roberto Mart\u00ednez', role:'Ingeniero Industrial', text:'La plataforma virtual es intuitiva y los docentes son expertos reales. 100% recomendado para profesionales activos.', avatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80', stars:5 },
+  { name:'Ana Sof\u00eda Castillo', role:'Analista de Sistemas', text:'El diplomado en Infraestructura Tecnol\u00f3gica me abri\u00f3 puertas en mi carrera. Material actualizado y casos pr\u00e1cticos.', avatar:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=120&h=120&q=80', stars:5 }
+];
 
-    const TESTIMONIALS = [
-      { name: 'Mar\u00eda Elena L\u00f3pez', role: 'Gerente de Proyectos', text: 'Los diplomados de CEAP transformaron mi forma de liderar equipos. Obtuve mi certificaci\u00f3n PMP en 3 meses.', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80', stars: 5 },
-      { name: 'Roberto Mart\u00ednez', role: 'Ingeniero Industrial', text: 'La plataforma virtual es intuitiva y los docentes son expertos reales. 100% recomendado para profesionales activos.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80', stars: 5 },
-      { name: 'Ana Sof\u00eda Castillo', role: 'Analista de Sistemas', text: 'El diplomado en Infraestructura Tecnol\u00f3gica me abri\u00f3 puertas en mi carrera. Material actualizado y casos pr\u00e1cticos.', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=120&h=120&q=80', stars: 5 }
-    ];
+const FAQS = [
+  { q:'¿C\u00f3mo me inscribo a un diplomado?', a:'Solo debes crear una cuenta, seleccionar el diplomado de tu inter\u00e9s y completar el pago en l\u00ednea. Recibir\u00e1s acceso inmediato a la plataforma.' },
+  { q:'¿Cu\u00e1nto dura cada diplomado?', a:'Cada diplomado tiene una duraci\u00f3n promedio de 4 meses, con m\u00f3dulos semanales que puedes cursar a tu propio ritmo.' },
+  { q:'¿Los certificados tienen validez?', a:'S\u00ed, todos nuestros certificados cuentan con aval institucional y reconocimiento en el \u00e1mbito laboral latinoamericano.' },
+  { q:'¿Puedo pagar en cuotas?', a:'S\u00ed, ofrecemos opciones de pago fraccionado en 2 o 3 cuotas sin intereses. Cont\u00e1ctanos para m\u00e1s informaci\u00f3n.' },
+  { q:'¿Hay clases en vivo o son grabadas?', a:'Ambas. Cada m\u00f3dulo incluye sesiones en vivo por Zoom y acceso a grabaciones para que estudies cuando puedas.' }
+];
 
-    const FAQS = [
-      { q: '¿C\u00f3mo me inscribo a un diplomado?', a: 'Solo debes crear una cuenta, seleccionar el diplomado de tu inter\u00e9s y completar el pago en l\u00ednea. Recibir\u00e1s acceso inmediato a la plataforma.' },
-      { q: '¿Cu\u00e1nto dura cada diplomado?', a: 'Cada diplomado tiene una duraci\u00f3n promedio de 4 meses, con m\u00f3dulos semanales que puedes cursar a tu propio ritmo.' },
-      { q: '¿Los certificados tienen validez?', a: 'S\u00ed, todos nuestros certificados cuentan con aval institucional y reconocimiento en el \u00e1mbito laboral latinoamericano.' },
-      { q: '¿Puedo pagar en cuotas?', a: 'S\u00ed, ofrecemos opciones de pago fraccionado en 2 o 3 cuotas sin intereses. Cont\u00e1ctanos para m\u00e1s informaci\u00f3n.' },
-      { q: '¿Hay clases en vivo o son grabadas?', a: 'Ambas. Cada m\u00f3dulo incluye sesiones en vivo por Zoom y acceso a grabaciones para que estudies cuando puedas.' }
-    ];
+// ===== STATE =====
+let state = {
+  view: 'landing', // landing | login | dashboard | payment | viewer
+  user: null,
+  courses: JSON.parse(JSON.stringify(COURSES)),
+  tab: 'dashboard',
+  selectedCourse: null,
+  courseToPurchase: null,
+  registering: false,
+  username: 'Carlos Ram\u00edrez',
+  password: '********',
+  showPassword: false,
+  slideIdx: 0,
+  notification: null,
+  menuOpen: false
+};
 
-    // ===== STATE =====
-    let state = {
-      view: 'landing', // landing | login | dashboard | payment | viewer
-      user: null,
-      courses: JSON.parse(JSON.stringify(COURSES)),
-      tab: 'dashboard',
-      selectedCourse: null,
-      courseToPurchase: null,
-      registering: false,
-      username: 'Carlos Ram\u00edrez',
-      password: '********',
-      showPassword: false,
-      slideIdx: 0,
-      notification: null,
-      menuOpen: false
-    };
+function setState(partial) {
+  Object.assign(state, partial);
+  render();
+}
 
-    function setState(partial) {
-      Object.assign(state, partial);
-      render();
-    }
+// ===== NOTIFICATION =====
+function notify(msg, type) {
+  setState({ notification: { msg, type } });
+  setTimeout(() => { if (state.notification) setState({ notification: null }); }, 4000);
+}
 
-    // ===== NOTIFICATION =====
-    function notify(msg, type) {
-      setState({ notification: { msg, type } });
-      setTimeout(() => { if (state.notification) setState({ notification: null }); }, 4000);
-    }
+// ===== HELPERS =====
+function slideTimer() {
+  setInterval(() => {
+    setState({ slideIdx: (state.slideIdx + 1) % SLIDES.length });
+  }, 8000);
+}
+slideTimer();
 
-    // ===== HELPERS =====
-    function slideTimer() {
-      setInterval(() => {
-        setState({ slideIdx: (state.slideIdx + 1) % SLIDES.length });
-      }, 8000);
-    }
-    slideTimer();
+// ===== RENDER =====
+function render() {
+  const root = document.getElementById('root');
+  const s = state;
+  let html = '';
 
-    // ===== RENDER =====
-    function render() {
-      const root = document.getElementById('root');
-      const s = state;
-      let html = '';
+  // Notification
+  if (s.notification) {
+    const nType = s.notification.type;
+    let nBg = 'bg-green-600 text-white', nIcon = ic('CheckCircle','w-5 h-5');
+    if (nType === 'error') { nBg = 'bg-red-600 text-white'; nIcon = ic('Shield','w-5 h-5'); }
+    else if (nType === 'info') { nBg = 'bg-blue-600 text-white'; nIcon = ic('Bell','w-5 h-5'); }
+    html += '<div class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-2xl flex items-center gap-3 animate-bounce-alt transition-all ' + nBg + '">';
+    html += nIcon;
+    html += '<span class="font-medium text-sm">' + s.notification.msg + '</span></div>';
+  }
 
-      // Notification
-      if (s.notification) {
-        const nType = s.notification.type;
-        let nBg = 'bg-green-600 text-white', nIcon = ic('CheckCircle', 'w-5 h-5');
-        if (nType === 'error') { nBg = 'bg-red-600 text-white'; nIcon = ic('Shield', 'w-5 h-5'); }
-        else if (nType === 'info') { nBg = 'bg-blue-600 text-white'; nIcon = ic('Bell', 'w-5 h-5'); }
-        html += '<div class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-2xl flex items-center gap-3 animate-bounce-alt transition-all ' + nBg + '">';
-        html += nIcon;
-        html += '<span class="font-medium text-sm">' + s.notification.msg + '</span></div>';
-      }
+  if (s.view === 'landing') html += renderLanding();
+  else if (s.view === 'login') html += renderLogin();
+  else if (s.view === 'payment' && s.courseToPurchase) html += renderPayment();
+  else if (s.view === 'dashboard' && s.user) html += renderDashboard();
+  else if (s.view === 'viewer' && s.selectedCourse) html += renderViewer();
+  else if (s.view === 'profile' && s.user) html += renderProfile();
+  else html += renderLanding();
 
-      if (s.view === 'landing') html += renderLanding();
-      else if (s.view === 'login') html += renderLogin();
-      else if (s.view === 'payment' && s.courseToPurchase) html += renderPayment();
-      else if (s.view === 'dashboard' && s.user) html += renderDashboard();
-      else if (s.view === 'viewer' && s.selectedCourse) html += renderViewer();
-      else if (s.view === 'profile' && s.user) html += renderProfile();
-      else html += renderLanding();
+  root.innerHTML = html;
+  attachEvents();
+}
 
-      root.innerHTML = html;
-      attachEvents();
-    }
-
-    // ===== LANDING =====
-    function renderLanding() {
-      const c = state.courses;
-      return `
+// ===== LANDING =====
+function renderLanding() {
+  const c = state.courses;
+  return `
 <div class="flex-1 flex flex-col">
   <header class="bg-[#021b3d] text-white py-4 px-6 md:px-12 sticky top-0 z-40 shadow-md">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <div class="bg-[#4bae4f] p-2 rounded-lg">${ic('BookOpen', 'w-6 h-6 text-[#021b3d]')}</div>
+        <div class="bg-[#4bae4f] p-2 rounded-lg">${ic('BookOpen','w-6 h-6 text-[#021b3d]')}</div>
         <div><h1 class="font-bold text-xl tracking-wider">CEAP</h1><p class="text-[9px] text-gray-300 uppercase leading-none">Centro Especializado en Proyectos</p></div>
       </div>
       <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
@@ -217,21 +174,21 @@
       </nav>
       <div class="flex items-center gap-4">
         <button class="btn-login bg-[#4bae4f] hover:bg-[#3d913f] text-[#021b3d] font-bold px-5 py-2.5 rounded-lg transition-all text-xs flex items-center gap-2 shadow-lg">
-          ${ic('LogIn', 'w-4 h-4')} Aula Virtual (Ingresar)
+          ${ic('LogIn','w-4 h-4')} Aula Virtual (Ingresar)
         </button>
       </div>
     </div>
   </header>
 
   <section class="relative bg-[#021b3d] text-white py-20 px-6 md:px-12 overflow-hidden">
-    <canvas id="hero-canvas"></canvas>
+    <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(#4bae4f 1px,transparent 1px);background-size:16px 16px"></div>
     <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10">
       <div class="space-y-6">
         <span class="bg-emerald-500/10 text-[#4bae4f] text-xs font-bold px-3 py-1.5 rounded-full border border-[#4bae4f]/30">Formando L\u00edderes en Proyectos</span>
         <h2 class="text-4xl md:text-5xl font-black leading-tight">Bienvenidos a <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-500">CEAP Virtual</span></h2>
         <p class="text-lg text-slate-300">Aprende, desarrolla y transforma tu futuro. Porque la vida misma <span class="text-[#4bae4f] font-semibold">es un proyecto</span>.</p>
         <div class="flex flex-wrap gap-4 pt-4">
-          <a href="#diplomados" class="bg-[#4bae4f] text-[#021b3d] font-bold px-6 py-3 rounded-lg hover:bg-emerald-500 transition-all flex items-center gap-2 shadow-lg">Ver Cursos Disponibles ${ic('ChevronRight', 'w-4 h-4')}</a>
+          <a href="#diplomados" class="bg-[#4bae4f] text-[#021b3d] font-bold px-6 py-3 rounded-lg hover:bg-emerald-500 transition-all flex items-center gap-2 shadow-lg">Ver Cursos Disponibles ${ic('ChevronRight','w-4 h-4')}</a>
           <button class="btn-register border border-slate-500 hover:border-white text-white px-6 py-3 rounded-lg font-semibold transition-all">Registrarme Ahora</button>
         </div>
       </div>
@@ -244,10 +201,10 @@
 
   <section class="bg-white py-12 border-b border-slate-100 px-6">
     <div class="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
-      <div class="flex flex-col items-center text-center p-4"><div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4 text-[#021b3d]">${ic('Award', 'w-7 h-7')}</div><h4 class="font-bold text-sm text-slate-900 mb-1">Diplomados especializados</h4><p class="text-xs text-slate-500">Estructura curricular de vanguardia adaptada a la industria.</p></div>
-      <div class="flex flex-col items-center text-center p-4"><div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4 text-[#021b3d]">${ic('Layers', 'w-7 h-7')}</div><h4 class="font-bold text-sm text-slate-900 mb-1">Plataforma moderna</h4><p class="text-xs text-slate-500">F\u00e1cil de usar, interactiva y disponible las 24 horas.</p></div>
-      <div class="flex flex-col items-center text-center p-4"><div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4 text-[#021b3d]">${ic('CheckCircle', 'w-7 h-7')}</div><h4 class="font-bold text-sm text-slate-900 mb-1">Certificaci\u00f3n con respaldo</h4><p class="text-xs text-slate-500">Validez curricular que impulsa fuertemente tu CV laboral.</p></div>
-      <div class="flex flex-col items-center text-center p-4"><div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4 text-[#021b3d]">${ic('Users', 'w-7 h-7')}</div><h4 class="font-bold text-sm text-slate-900 mb-1">Docentes Expertos</h4><p class="text-xs text-slate-500">Profesionales certificados con a\u00f1os de experiencia real.</p></div>
+      <div class="flex flex-col items-center text-center p-4"><div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4 text-[#021b3d]">${ic('Award','w-7 h-7')}</div><h4 class="font-bold text-sm text-slate-900 mb-1">Diplomados especializados</h4><p class="text-xs text-slate-500">Estructura curricular de vanguardia adaptada a la industria.</p></div>
+      <div class="flex flex-col items-center text-center p-4"><div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4 text-[#021b3d]">${ic('Layers','w-7 h-7')}</div><h4 class="font-bold text-sm text-slate-900 mb-1">Plataforma moderna</h4><p class="text-xs text-slate-500">F\u00e1cil de usar, interactiva y disponible las 24 horas.</p></div>
+      <div class="flex flex-col items-center text-center p-4"><div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4 text-[#021b3d]">${ic('CheckCircle','w-7 h-7')}</div><h4 class="font-bold text-sm text-slate-900 mb-1">Certificaci\u00f3n con respaldo</h4><p class="text-xs text-slate-500">Validez curricular que impulsa fuertemente tu CV laboral.</p></div>
+      <div class="flex flex-col items-center text-center p-4"><div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4 text-[#021b3d]">${ic('Users','w-7 h-7')}</div><h4 class="font-bold text-sm text-slate-900 mb-1">Docentes Expertos</h4><p class="text-xs text-slate-500">Profesionales certificados con a\u00f1os de experiencia real.</p></div>
     </div>
   </section>
 
@@ -292,7 +249,7 @@
             </div>
             <div class="p-6 pt-0 border-t border-slate-200 bg-slate-100 flex items-center justify-between">
               <div><span class="text-[10px] uppercase text-slate-400 font-bold block">Inversi\u00f3n \u00fanica</span><span class="text-xl font-black text-[#021b3d]">$${course.price}</span></div>
-              <button class="btn-purchase bg-[#021b3d] hover:bg-emerald-600 text-white hover:text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow" data-id="${course.id}">Inscribirse ${ic('ArrowRight', 'w-3.5 h-3.5')}</button>
+              <button class="btn-purchase bg-[#021b3d] hover:bg-emerald-600 text-white hover:text-white px-4 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow" data-id="${course.id}">Inscribirse ${ic('ArrowRight','w-3.5 h-3.5')}</button>
             </div>
           </div>
         `).join('')}
@@ -363,7 +320,7 @@
   <footer class="bg-[#021b3d] text-white pt-16 pb-8 px-6 md:px-12 border-t border-slate-800">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
       <div class="space-y-4">
-        <div class="flex items-center gap-3"><div class="bg-[#4bae4f] p-2 rounded-lg">${ic('BookOpen', 'w-6 h-6 text-[#021b3d]')}</div><div><h1 class="font-bold text-xl tracking-wider">CEAP</h1><p class="text-[9px] text-gray-300 leading-none">Centro Especializado en Proyectos</p></div></div>
+        <div class="flex items-center gap-3"><div class="bg-[#4bae4f] p-2 rounded-lg">${ic('BookOpen','w-6 h-6 text-[#021b3d]')}</div><div><h1 class="font-bold text-xl tracking-wider">CEAP</h1><p class="text-[9px] text-gray-300 leading-none">Centro Especializado en Proyectos</p></div></div>
         <p class="text-xs text-slate-400 leading-relaxed">Comprometidos con la excelencia acad\u00e9mica y pr\u00e1ctica en la administraci\u00f3n de proyectos.</p>
         <div class="flex gap-3 pt-2">
           <a href="https://github.com/MxnuGvddia" target="_blank" rel="noopener" class="text-slate-400 hover:text-white transition-colors">${I.GitHub}</a>
@@ -373,11 +330,11 @@
       <div class="space-y-3"><h4 class="font-bold text-sm text-[#4bae4f]">Soporte T\u00e9cnico</h4><p class="text-xs text-slate-300">\u00BFNecesitas ayuda con la plataforma?</p><p class="text-xs text-slate-400">Nuestro equipo est\u00e1 listo para apoyarte.</p></div>
       <div class="space-y-3">
         <h4 class="font-bold text-sm text-[#4bae4f]">Contacto</h4>
-        <div class="flex items-center gap-2 text-xs text-slate-300">${ic('Mail', 'w-4 h-4 text-slate-400')}<span>info@ceap.edu.sv</span></div>
-        <div class="flex items-center gap-2 text-xs text-slate-300">${ic('Phone', 'w-4 h-4 text-slate-400')}<span>+503 2200-0000</span></div>
-        <div class="flex items-center gap-2 text-xs text-slate-300">${ic('Globe', 'w-4 h-4 text-slate-400')}<span>www.ceap.edu.sv</span></div>
+        <div class="flex items-center gap-2 text-xs text-slate-300">${ic('Mail','w-4 h-4 text-slate-400')}<span>info@ceap.edu.sv</span></div>
+        <div class="flex items-center gap-2 text-xs text-slate-300">${ic('Phone','w-4 h-4 text-slate-400')}<span>+503 2200-0000</span></div>
+        <div class="flex items-center gap-2 text-xs text-slate-300">${ic('Globe','w-4 h-4 text-slate-400')}<span>www.ceap.edu.sv</span></div>
       </div>
-      <div class="space-y-3"><h4 class="font-bold text-sm text-[#4bae4f]">Atenci\u00f3n al Cliente</h4><div class="flex items-center gap-2 text-xs text-slate-300">${ic('Clock', 'w-4 h-4 text-slate-400')}<div><p>Lunes a Viernes</p><p class="text-slate-400">8:00 a.m. - 5:00 p.m.</p></div></div></div>
+      <div class="space-y-3"><h4 class="font-bold text-sm text-[#4bae4f]">Atenci\u00f3n al Cliente</h4><div class="flex items-center gap-2 text-xs text-slate-300">${ic('Clock','w-4 h-4 text-slate-400')}<div><p>Lunes a Viernes</p><p class="text-slate-400">8:00 a.m. - 5:00 p.m.</p></div></div></div>
     </div>
     <div class="max-w-7xl mx-auto border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
       <p>\u00a9 2026 CEAP - Centro Especializado en Administraci\u00f3n de Proyectos. Todos los derechos reservados.</p>
@@ -385,17 +342,17 @@
     </div>
   </footer>
 </div>`;
-    }
+}
 
-    // ===== LOGIN =====
-    function renderLogin() {
-      const s = state;
-      return `
+// ===== LOGIN =====
+function renderLogin() {
+  const s = state;
+  return `
 <div class="flex-1 flex flex-col bg-[#021b3d] text-white">
   <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-center p-6 md:p-12">
     <div class="flex justify-between items-center mb-12">
-      <button class="btn-back-landing flex items-center gap-2 text-slate-400 hover:text-white text-sm font-semibold transition-colors">${ic('ChevronLeft', 'w-5 h-5')} Volver al inicio</button>
-      <div class="flex items-center gap-2"><div class="bg-[#4bae4f] p-1.5 rounded-lg">${ic('BookOpen', 'w-5 h-5 text-[#021b3d]')}</div><span class="font-bold tracking-wider text-sm">CEAP</span></div>
+      <button class="btn-back-landing flex items-center gap-2 text-slate-400 hover:text-white text-sm font-semibold transition-colors">${ic('ChevronLeft','w-5 h-5')} Volver al inicio</button>
+      <div class="flex items-center gap-2"><div class="bg-[#4bae4f] p-1.5 rounded-lg">${ic('BookOpen','w-5 h-5 text-[#021b3d]')}</div><span class="font-bold tracking-wider text-sm">CEAP</span></div>
     </div>
     <div class="grid md:grid-cols-12 gap-12 items-center">
       <div class="md:col-span-6 space-y-8 pr-4">
@@ -409,10 +366,10 @@
           <p class="text-sm text-slate-300 max-w-md">Aprende, desarrolla y transforma tu futuro. Porque la vida misma <span class="text-[#4bae4f] font-semibold">es un proyecto</span>.</p>
         </div>
         <div class="grid grid-cols-2 gap-6 pt-6 border-t border-slate-800">
-          <div class="flex items-start gap-3"><div class="mt-1 bg-slate-800/80 p-2 rounded-lg text-emerald-400">${ic('Award', 'w-4 h-4')}</div><div><h5 class="font-bold text-xs text-white">Diplomados especializados</h5><p class="text-[10px] text-slate-400 mt-0.5">Adaptados a la demanda del mercado.</p></div></div>
-          <div class="flex items-start gap-3"><div class="mt-1 bg-slate-800/80 p-2 rounded-lg text-emerald-400">${ic('Layers', 'w-4 h-4')}</div><div><h5 class="font-bold text-xs text-white">Plataforma moderna</h5><p class="text-[10px] text-slate-400 mt-0.5">Y de interfaz f\u00e1cil de usar.</p></div></div>
-          <div class="flex items-start gap-3"><div class="mt-1 bg-slate-800/80 p-2 rounded-lg text-emerald-400">${ic('CheckCircle', 'w-4 h-4')}</div><div><h5 class="font-bold text-xs text-white">Certificaciones</h5><p class="text-[10px] text-slate-400 mt-0.5">Con amplio respaldo institucional.</p></div></div>
-          <div class="flex items-start gap-3"><div class="mt-1 bg-slate-800/80 p-2 rounded-lg text-emerald-400">${ic('Users', 'w-4 h-4')}</div><div><h5 class="font-bold text-xs text-white">Docentes expertos</h5><p class="text-[10px] text-slate-400 mt-0.5">L\u00edderes activos en la industria.</p></div></div>
+          <div class="flex items-start gap-3"><div class="mt-1 bg-slate-800/80 p-2 rounded-lg text-emerald-400">${ic('Award','w-4 h-4')}</div><div><h5 class="font-bold text-xs text-white">Diplomados especializados</h5><p class="text-[10px] text-slate-400 mt-0.5">Adaptados a la demanda del mercado.</p></div></div>
+          <div class="flex items-start gap-3"><div class="mt-1 bg-slate-800/80 p-2 rounded-lg text-emerald-400">${ic('Layers','w-4 h-4')}</div><div><h5 class="font-bold text-xs text-white">Plataforma moderna</h5><p class="text-[10px] text-slate-400 mt-0.5">Y de interfaz f\u00e1cil de usar.</p></div></div>
+          <div class="flex items-start gap-3"><div class="mt-1 bg-slate-800/80 p-2 rounded-lg text-emerald-400">${ic('CheckCircle','w-4 h-4')}</div><div><h5 class="font-bold text-xs text-white">Certificaciones</h5><p class="text-[10px] text-slate-400 mt-0.5">Con amplio respaldo institucional.</p></div></div>
+          <div class="flex items-start gap-3"><div class="mt-1 bg-slate-800/80 p-2 rounded-lg text-emerald-400">${ic('Users','w-4 h-4')}</div><div><h5 class="font-bold text-xs text-white">Docentes expertos</h5><p class="text-[10px] text-slate-400 mt-0.5">L\u00edderes activos en la industria.</p></div></div>
         </div>
         <p class="text-[10px] text-slate-500 pt-8">\u00a9 2026 CEAP - Centro Especializado en Administraci\u00f3n de Proyectos. Todos los derechos reservados.</p>
       </div>
@@ -420,8 +377,8 @@
         <div class="bg-white text-slate-800 rounded-3xl p-8 md:p-10 shadow-2xl max-w-md w-full border border-slate-100">
           <div class="space-y-2 mb-8"><h4 class="text-2xl font-extrabold text-[#021b3d]">${s.registering ? 'Crear Cuenta' : 'Iniciar Sesi\u00f3n'}</h4><p class="text-xs text-slate-500">${s.registering ? 'Completa tus datos para matricularte en los diplomados.' : 'Ingresa tus credenciales para acceder a tu cuenta'}</p></div>
           <form class="login-form space-y-6">
-            <div><label class="text-xs font-bold text-slate-700 block mb-2">Usuario o Nombre Completo</label><div class="relative"><span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">${ic('User', 'w-4 h-4')}</span><input type="text" required value="${s.username}" class="input-username w-full bg-slate-50 border border-slate-200 hover:border-slate-300 focus:border-emerald-500 rounded-xl py-3 pl-10 pr-4 text-xs font-medium outline-none transition-all" placeholder="Ingresa tu usuario"></div></div>
-            <div><label class="text-xs font-bold text-slate-700 block mb-2">Contrase\u00f1a</label><div class="relative"><span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">${ic('Lock', 'w-4 h-4')}</span><input type="${s.showPassword ? 'text' : 'password'}" required value="${s.password}" class="input-password w-full bg-slate-50 border border-slate-200 hover:border-slate-300 focus:border-emerald-500 rounded-xl py-3 pl-10 pr-10 text-xs font-medium outline-none transition-all" placeholder="Ingresa tu contrase\u00f1a"><button type="button" class="btn-toggle-pw absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600">${s.showPassword ? I.EyeOff : I.Eye}</button></div></div>
+            <div><label class="text-xs font-bold text-slate-700 block mb-2">Usuario o Nombre Completo</label><div class="relative"><span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">${ic('User','w-4 h-4')}</span><input type="text" required value="${s.username}" class="input-username w-full bg-slate-50 border border-slate-200 hover:border-slate-300 focus:border-emerald-500 rounded-xl py-3 pl-10 pr-4 text-xs font-medium outline-none transition-all" placeholder="Ingresa tu usuario"></div></div>
+            <div><label class="text-xs font-bold text-slate-700 block mb-2">Contrase\u00f1a</label><div class="relative"><span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">${ic('Lock','w-4 h-4')}</span><input type="${s.showPassword ? 'text' : 'password'}" required value="${s.password}" class="input-password w-full bg-slate-50 border border-slate-200 hover:border-slate-300 focus:border-emerald-500 rounded-xl py-3 pl-10 pr-10 text-xs font-medium outline-none transition-all" placeholder="Ingresa tu contrase\u00f1a"><button type="button" class="btn-toggle-pw absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600">${s.showPassword ? I.EyeOff : I.Eye}</button></div></div>
             ${!s.registering ? '<div class="flex justify-between items-center text-[11px]"><label class="flex items-center gap-2 cursor-pointer font-semibold text-slate-600"><input type="checkbox" class="rounded text-emerald-500 focus:ring-emerald-400 w-3.5 h-3.5"> Recordarme</label><a href="#" class="text-blue-600 hover:underline font-semibold">\u00BFOlvidaste tu contrase\u00f1a?</a></div>' : ''}
             <button type="submit" class="w-full bg-[#021b3d] hover:bg-[#4bae4f] hover:text-[#021b3d] text-white font-bold py-3.5 rounded-xl transition-all text-xs tracking-wider uppercase shadow-lg">${s.registering ? 'Registrarse e Inscribirse' : 'Ingresar'}</button>
           </form>
@@ -437,24 +394,24 @@
       </div>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-12 border-t border-slate-800 text-xs mt-12 text-slate-400">
-      <div class="flex gap-2 items-center">${ic('HelpCircle', 'w-5 h-5 text-[#4bae4f]')}<div><p class="font-bold text-white">Soporte T\u00e9cnico</p><p class="text-[10px]">\u00BFNecesitas ayuda? Estamos para apoyarte.</p></div></div>
-      <div class="flex gap-2 items-center">${ic('Mail', 'w-5 h-5 text-[#4bae4f]')}<div><p class="font-bold text-white">Correo electr\u00f3nico</p><p class="text-[10px]">info@ceap.edu.sv</p></div></div>
-      <div class="flex gap-2 items-center">${ic('Globe', 'w-5 h-5 text-[#4bae4f]')}<div><p class="font-bold text-white">Sitio Web Oficial</p><p class="text-[10px]">www.ceap.edu.sv</p></div></div>
-      <div class="flex gap-2 items-center">${ic('Clock', 'w-5 h-5 text-[#4bae4f]')}<div><p class="font-bold text-white">Horario de atenci\u00f3n</p><p class="text-[10px]">Lunes a Viernes (8am - 5pm)</p></div></div>
+      <div class="flex gap-2 items-center">${ic('HelpCircle','w-5 h-5 text-[#4bae4f]')}<div><p class="font-bold text-white">Soporte T\u00e9cnico</p><p class="text-[10px]">\u00BFNecesitas ayuda? Estamos para apoyarte.</p></div></div>
+      <div class="flex gap-2 items-center">${ic('Mail','w-5 h-5 text-[#4bae4f]')}<div><p class="font-bold text-white">Correo electr\u00f3nico</p><p class="text-[10px]">info@ceap.edu.sv</p></div></div>
+      <div class="flex gap-2 items-center">${ic('Globe','w-5 h-5 text-[#4bae4f]')}<div><p class="font-bold text-white">Sitio Web Oficial</p><p class="text-[10px]">www.ceap.edu.sv</p></div></div>
+      <div class="flex gap-2 items-center">${ic('Clock','w-5 h-5 text-[#4bae4f]')}<div><p class="font-bold text-white">Horario de atenci\u00f3n</p><p class="text-[10px]">Lunes a Viernes (8am - 5pm)</p></div></div>
     </div>
   </div>
 </div>`;
-    }
+}
 
-    // ===== PAYMENT =====
-    function renderPayment() {
-      const c = state.courseToPurchase;
-      return `
+// ===== PAYMENT =====
+function renderPayment() {
+  const c = state.courseToPurchase;
+  return `
 <div class="flex-1 flex bg-slate-50 items-center justify-center p-6 md:p-12">
   <div class="max-w-4xl w-full bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-2xl grid md:grid-cols-12">
     <div class="md:col-span-5 bg-[#021b3d] text-white p-8 flex flex-col justify-between">
       <div class="space-y-6">
-        <button class="btn-cancel-payment text-xs text-slate-300 hover:text-white flex items-center gap-1">${ic('ChevronLeft', 'w-4 h-4')} Cancelar Compra</button>
+        <button class="btn-cancel-payment text-xs text-slate-300 hover:text-white flex items-center gap-1">${ic('ChevronLeft','w-4 h-4')} Cancelar Compra</button>
         <span class="text-[10px] uppercase font-bold text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-full">Inscripci\u00f3n en L\u00ednea</span>
         <div class="space-y-3"><h4 class="text-xl font-black">${c.title}</h4><p class="text-xs text-slate-300">${c.description}</p></div>
         <div class="space-y-2 border-t border-slate-800 pt-4">
@@ -470,48 +427,48 @@
     </div>
     <div class="md:col-span-7 p-8 md:p-10 space-y-6">
       <div class="space-y-1"><h4 class="text-xl font-bold text-slate-900">M\u00e9todo de Pago Seguro</h4><p class="text-xs text-slate-500">Completa tus datos de facturaci\u00f3n para habilitar tu cuenta virtual.</p></div>
-      <div class="bg-blue-50/50 border border-blue-100 p-3 rounded-xl flex items-center gap-3 text-xs text-blue-800">${ic('Shield', 'w-4 h-4')}<p>Pasarela de pago encriptada bajo est\u00e1ndares bancarios SSL.</p></div>
+      <div class="bg-blue-50/50 border border-blue-100 p-3 rounded-xl flex items-center gap-3 text-xs text-blue-800">${ic('Shield','w-4 h-4')}<p>Pasarela de pago encriptada bajo est\u00e1ndares bancarios SSL.</p></div>
       <form class="payment-form space-y-4">
         <div><label class="text-xs font-bold text-slate-700 block mb-1">Nombre en la Tarjeta</label><input type="text" required placeholder="Carlos Ramirez" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs outline-none focus:border-[#4bae4f] transition-all"></div>
-        <div><label class="text-xs font-bold text-slate-700 block mb-1">N\u00famero de Tarjeta</label><div class="relative"><span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">${ic('CreditCard', 'w-4 h-4')}</span><input type="text" required maxlength="19" placeholder="4000 1234 5678 9010" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-3.5 text-xs outline-none focus:border-[#4bae4f] transition-all"></div></div>
+        <div><label class="text-xs font-bold text-slate-700 block mb-1">N\u00famero de Tarjeta</label><div class="relative"><span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">${ic('CreditCard','w-4 h-4')}</span><input type="text" required maxlength="19" placeholder="4000 1234 5678 9010" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-3.5 text-xs outline-none focus:border-[#4bae4f] transition-all"></div></div>
         <div class="grid grid-cols-2 gap-4">
           <div><label class="text-xs font-bold text-slate-700 block mb-1">Vencimiento</label><input type="text" required placeholder="MM/AA" maxlength="5" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs outline-none focus:border-[#4bae4f] transition-all text-center"></div>
           <div><label class="text-xs font-bold text-slate-700 block mb-1">CVC / CVV</label><input type="password" required placeholder="123" maxlength="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-xs outline-none focus:border-[#4bae4f] transition-all text-center"></div>
         </div>
-        <button type="submit" class="w-full bg-[#4bae4f] hover:bg-[#3d913f] text-[#021b3d] font-bold py-3.5 rounded-xl text-xs transition-all tracking-wider uppercase mt-4 flex items-center justify-center gap-2">${ic('CreditCard', 'w-4 h-4')} Pagar e Inscribirme Ahora</button>
+        <button type="submit" class="w-full bg-[#4bae4f] hover:bg-[#3d913f] text-[#021b3d] font-bold py-3.5 rounded-xl text-xs transition-all tracking-wider uppercase mt-4 flex items-center justify-center gap-2">${ic('CreditCard','w-4 h-4')} Pagar e Inscribirme Ahora</button>
       </form>
     </div>
   </div>
 </div>`;
-    }
+}
 
-    // ===== DASHBOARD =====
-    function renderDashboard() {
-      const s = state;
-      const u = s.user;
-      const activeCount = s.courses.filter(c => c.progress > 0 && c.progress < 100).length;
-      const activeCourses = s.courses.filter(c => c.progress > 0);
-      return `
+// ===== DASHBOARD =====
+function renderDashboard() {
+  const s = state;
+  const u = s.user;
+  const activeCount = s.courses.filter(c => c.progress > 0 && c.progress < 100).length;
+  const activeCourses = s.courses.filter(c => c.progress > 0);
+  return `
 <div class="flex-1 flex flex-col md:flex-row min-h-screen bg-[#f3f6f9]">
   <aside class="w-full md:w-64 bg-[#021b3d] text-white flex flex-col justify-between shrink-0">
     <div>
       <div class="p-6 border-b border-slate-800 flex items-center gap-3">
-        <div class="bg-[#4bae4f] p-1.5 rounded-lg">${ic('BookOpen', 'w-5 h-5 text-[#021b3d]')}</div>
+        <div class="bg-[#4bae4f] p-1.5 rounded-lg">${ic('BookOpen','w-5 h-5 text-[#021b3d]')}</div>
         <div><h2 class="font-extrabold text-sm tracking-wider">CEAP VIRTUAL</h2><p class="text-[8px] text-[#4bae4f] uppercase leading-none font-bold">La vida es un proyecto</p></div>
       </div>
       <nav class="p-4 space-y-1">
-        ${sidebarBtn('dashboard', 'Layers', 'Panel Principal', true, activeCount)}
-        ${sidebarBtn('cursos', 'BookMarked', 'Mis Cursos Activos', false, activeCount)}
-        ${sidebarBtnDisabled('Calendar', 'Calendario Escolar')}
-        ${sidebarBtn('mensajes', 'MessageSquare', 'Mensajes Privados', false, null, '2 nuevos')}
-        <button class="btn-profile w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all">${ic('User', 'w-4 h-4')}<span>Mi Perfil</span></button>
-        ${sidebarBtnDisabled('Users', 'Foros del Aula')}
-        ${sidebarBtnDisabled('FileText', 'Evaluaciones y Quizzes')}
-        ${sidebarBtnDisabled('Award', 'Certificados Oficiales')}
-        ${sidebarBtnDisabled('BarChart2', 'Progreso Acad\u00e9mico')}
-        ${sidebarBtnDisabled('BookOpen', 'Biblioteca Virtual')}
-        ${sidebarBtnDisabled('Video', 'Clases en vivo (Zoom)')}
-        ${sidebarBtn('soporte', 'HelpCircle', 'Soporte T\u00e9cnico', false)}
+        ${sidebarBtn('dashboard','Layers','Panel Principal', true, activeCount)}
+        ${sidebarBtn('cursos','BookMarked','Mis Cursos Activos', false, activeCount)}
+        ${sidebarBtnDisabled('Calendar','Calendario Escolar')}
+        ${sidebarBtn('mensajes','MessageSquare','Mensajes Privados', false, null, '2 nuevos')}
+        <button class="btn-profile w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all">${ic('User','w-4 h-4')}<span>Mi Perfil</span></button>
+        ${sidebarBtnDisabled('Users','Foros del Aula')}
+        ${sidebarBtnDisabled('FileText','Evaluaciones y Quizzes')}
+        ${sidebarBtnDisabled('Award','Certificados Oficiales')}
+        ${sidebarBtnDisabled('BarChart2','Progreso Acad\u00e9mico')}
+        ${sidebarBtnDisabled('BookOpen','Biblioteca Virtual')}
+        ${sidebarBtnDisabled('Video','Clases en vivo (Zoom)')}
+        ${sidebarBtn('soporte','HelpCircle','Soporte T\u00e9cnico', false)}
       </nav>
     </div>
     <div class="p-6 border-t border-slate-800 bg-[#01142e] text-center space-y-3">
@@ -524,7 +481,7 @@
         <a href="#" class="hover:text-white transition-colors text-xs">Yt</a>
       </div>
       <p class="text-[10px] font-bold text-emerald-400">www.ceap.edu.sv</p>
-      <button class="btn-logout w-full bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white font-bold py-2 rounded-lg text-[10px] transition-all flex items-center justify-center gap-2">${ic('LogOut', 'w-3 h-3')} Cerrar Sesi\u00f3n</button>
+      <button class="btn-logout w-full bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white font-bold py-2 rounded-lg text-[10px] transition-all flex items-center justify-center gap-2">${ic('LogOut','w-3 h-3')} Cerrar Sesi\u00f3n</button>
     </div>
   </aside>
   <main class="flex-1 flex flex-col min-h-screen overflow-x-hidden">
@@ -533,13 +490,13 @@
         <h3 class="font-bold text-[#021b3d] text-base hidden md:block">CEAP VIRTUAL</h3>
         <span class="text-[10px] bg-[#4bae4f]/10 text-emerald-700 border border-[#4bae4f]/20 font-bold px-2.5 py-1 rounded-full hidden lg:block">Porque la vida misma <span class="font-extrabold">es un proyecto</span></span>
         <div class="relative ml-4 hidden sm:block">
-          <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-400">${ic('Search', 'w-3.5 h-3.5')}</span>
+          <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-400">${ic('Search','w-3.5 h-3.5')}</span>
           <input type="text" placeholder="Buscar cursos, docentes..." class="w-40 lg:w-56 bg-slate-50 border border-slate-200 rounded-lg py-1.5 pl-8 pr-3 text-[11px] outline-none focus:border-emerald-400 transition-all placeholder:text-slate-400">
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <button class="btn-notif p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors relative" title="Notificaciones">${ic('Bell', 'w-4 h-4')}<span class="absolute top-1.5 right-1.5 bg-red-500 w-2 h-2 rounded-full"></span></button>
-        <button class="btn-messages-tab p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors hidden sm:block" title="Mensajes">${ic('MessageSquare', 'w-4 h-4')}</button>
+        <button class="btn-notif p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors relative" title="Notificaciones">${ic('Bell','w-4 h-4')}<span class="absolute top-1.5 right-1.5 bg-red-500 w-2 h-2 rounded-full"></span></button>
+        <button class="btn-messages-tab p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors hidden sm:block" title="Mensajes">${ic('MessageSquare','w-4 h-4')}</button>
         <button class="btn-profile p-1 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors" title="Mi Perfil">
           <img src="${u.avatar}" alt="${u.name}" class="w-8 h-8 rounded-full object-cover border-2 border-emerald-500/30 cursor-pointer">
         </button>
@@ -557,49 +514,49 @@
     </div>
   </main>
 </div>`;
-    }
+}
 
-    function sidebarBtn(tab, icon, label, isActive, badge, badgeText) {
-      const active = state.tab === tab;
-      let b = `<button class="sidebar-btn flex items-center justify-between w-full px-4 py-3 rounded-lg text-xs font-bold transition-all ${active ? 'bg-[#4bae4f] text-[#021b3d]' : 'hover:bg-slate-800 text-slate-300'}" data-tab="${tab}">`;
-      b += `<div class="flex items-center gap-3">${ic(icon, 'w-4 h-4')}<span>${label}</span></div>`;
-      if (badge != null && icon === 'Layers') b += `<span class="bg-red-500 text-white font-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center">${badge}</span>`;
-      else if (badgeText) b += `<span class="bg-emerald-500 text-[#021b3d] font-bold text-[10px] px-1.5 py-0.5 rounded-full">${badgeText}</span>`;
-      else if (active) b += `<span>${ic('ChevronRight', 'w-3.5 h-3.5')}</span>`;
-      b += '</button>';
-      return b;
-    }
+function sidebarBtn(tab, icon, label, isActive, badge, badgeText) {
+  const active = state.tab === tab;
+  let b = `<button class="sidebar-btn flex items-center justify-between w-full px-4 py-3 rounded-lg text-xs font-bold transition-all ${active ? 'bg-[#4bae4f] text-[#021b3d]' : 'hover:bg-slate-800 text-slate-300'}" data-tab="${tab}">`;
+  b += `<div class="flex items-center gap-3">${ic(icon,'w-4 h-4')}<span>${label}</span></div>`;
+  if (badge != null && icon === 'Layers') b += `<span class="bg-red-500 text-white font-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center">${badge}</span>`;
+  else if (badgeText) b += `<span class="bg-emerald-500 text-[#021b3d] font-bold text-[10px] px-1.5 py-0.5 rounded-full">${badgeText}</span>`;
+  else if (active) b += `<span>${ic('ChevronRight','w-3.5 h-3.5')}</span>`;
+  b += '</button>';
+  return b;
+}
 
-    function sidebarBtnDisabled(icon, label) {
-      return `<button class="sidebar-disabled w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all">${ic(icon, 'w-4 h-4')}<span>${label}</span></button>`;
-    }
+function sidebarBtnDisabled(icon, label) {
+  return `<button class="sidebar-disabled w-full flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-all">${ic(icon,'w-4 h-4')}<span>${label}</span></button>`;
+}
 
-    function renderDashTab() {
-      const s = state;
-      const activeCourses = s.courses.filter(c => c.progress > 0);
-      const completedCourses = s.courses.filter(c => c.progress === 100).length;
-      const totalModules = s.courses.reduce((sum, c) => sum + c.modules.length, 0);
-      const completedModules = s.courses.reduce((sum, c) => sum + c.modules.filter(m => m.completed).length, 0);
-      const slide = SLIDES[s.slideIdx];
-      const slideParts = slide.title.split(slide.highlight);
-      return `
+function renderDashTab() {
+  const s = state;
+  const activeCourses = s.courses.filter(c => c.progress > 0);
+  const completedCourses = s.courses.filter(c => c.progress === 100).length;
+  const totalModules = s.courses.reduce((sum, c) => sum + c.modules.length, 0);
+  const completedModules = s.courses.reduce((sum, c) => sum + c.modules.filter(m => m.completed).length, 0);
+  const slide = SLIDES[s.slideIdx];
+  const slideParts = slide.title.split(slide.highlight);
+  return `
 <div class="space-y-8">
   <!-- Stats Cards -->
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
     <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex items-center gap-4">
-      <div class="w-11 h-11 rounded-xl bg-emerald-50 text-[#4bae4f] flex items-center justify-center shrink-0">${ic('BookMarked', 'w-5 h-5')}</div>
+      <div class="w-11 h-11 rounded-xl bg-emerald-50 text-[#4bae4f] flex items-center justify-center shrink-0">${ic('BookMarked','w-5 h-5')}</div>
       <div><p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Cursos Activos</p><p class="text-xl font-black text-[#021b3d]">${activeCourses.length}</p></div>
     </div>
     <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex items-center gap-4">
-      <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">${ic('CheckCircle', 'w-5 h-5')}</div>
+      <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">${ic('CheckCircle','w-5 h-5')}</div>
       <div><p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Completados</p><p class="text-xl font-black text-[#021b3d]">${completedCourses}</p></div>
     </div>
     <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex items-center gap-4">
-      <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">${ic('BarChart2', 'w-5 h-5')}</div>
+      <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">${ic('BarChart2','w-5 h-5')}</div>
       <div><p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">M\u00f3dulos</p><p class="text-xl font-black text-[#021b3d]">${completedModules}/${totalModules}</p></div>
     </div>
     <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex items-center gap-4">
-      <div class="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">${ic('Award', 'w-5 h-5')}</div>
+      <div class="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">${ic('Award','w-5 h-5')}</div>
       <div><p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Certificados</p><p class="text-xl font-black text-[#021b3d]">${completedCourses}</p></div>
     </div>
   </div>
@@ -614,7 +571,7 @@
           <h4 class="text-2xl md:text-3xl font-black leading-tight">${slideParts[0]}<span class="text-[#4bae4f]">${slide.highlight}</span>${slideParts[1] || ''}</h4>
           <p class="text-xs text-slate-300 leading-relaxed">${slide.desc}</p>
         </div>
-        <button class="bg-[#4bae4f] hover:bg-emerald-500 text-[#021b3d] text-xs font-bold px-5 py-2.5 rounded-lg w-fit transition-all flex items-center gap-2">Ver Diplomados ${ic('ChevronRight', 'w-4 h-4')}</button>
+        <button class="bg-[#4bae4f] hover:bg-emerald-500 text-[#021b3d] text-xs font-bold px-5 py-2.5 rounded-lg w-fit transition-all flex items-center gap-2">Ver Diplomados ${ic('ChevronRight','w-4 h-4')}</button>
       </div>
       <div class="absolute bottom-6 right-6 flex gap-2 z-10">${SLIDES.map((_, i) => `<button class="slide-dot w-2 h-2 rounded-full transition-all ${s.slideIdx === i ? 'bg-[#4bae4f] w-5' : 'bg-white/40'}" data-slide="${i}"></button>`).join('')}</div>
     </div>
@@ -630,7 +587,7 @@
               <div class="space-y-1"><div class="flex justify-between text-[10px] text-slate-500 font-bold"><span>Progreso</span><span>${c.progress}%</span></div><div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden"><div class="bg-[#4bae4f] h-full" style="width:${c.progress}%"></div></div></div>
               <p class="text-[10px] text-slate-400">Fecha l\u00edmite: ${c.dueDate}</p>
             </div>
-            <div class="p-4 pt-0"><button class="btn-open-viewer w-full bg-[#021b3d] hover:bg-[#4bae4f] hover:text-[#021b3d] text-white text-xs font-bold py-2 rounded-lg transition-all flex items-center justify-center gap-1 shadow-md" data-id="${c.id}">Continuar ${ic('ChevronRight', 'w-4 h-4')}</button></div>
+            <div class="p-4 pt-0"><button class="btn-open-viewer w-full bg-[#021b3d] hover:bg-[#4bae4f] hover:text-[#021b3d] text-white text-xs font-bold py-2 rounded-lg transition-all flex items-center justify-center gap-1 shadow-md" data-id="${c.id}">Continuar ${ic('ChevronRight','w-4 h-4')}</button></div>
           </div>
         `).join('')}
       </div>
@@ -638,10 +595,10 @@
     <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
       <div class="flex justify-between items-center border-b border-slate-100 pb-4"><h4 class="font-black text-sm text-[#021b3d]">Nuestros Diplomados Destacados</h4><a href="#" class="text-xs font-bold text-[#4bae4f] hover:underline">Ver todos</a></div>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="flex flex-col items-center text-center">${ic('Users', 'w-8 h-8 text-slate-400 mb-2')}<h5 class="font-extrabold text-xs text-slate-950">Docentes Especializados</h5><p class="text-[9px] text-slate-400 mt-1">Profesionales activos con experiencia en la industria.</p></div>
-        <div class="flex flex-col items-center text-center">${ic('Layers', 'w-8 h-8 text-slate-400 mb-2')}<h5 class="font-extrabold text-xs text-slate-950">Modalidad 100% Virtual</h5><p class="text-[9px] text-slate-400 mt-1">Estudia desde cualquier lugar y a tu propio ritmo.</p></div>
-        <div class="flex flex-col items-center text-center">${ic('CheckCircle', 'w-8 h-8 text-slate-400 mb-2')}<h5 class="font-extrabold text-xs text-slate-950">Certificaci\u00f3n Avalada</h5><p class="text-[9px] text-slate-400 mt-1">Certificados oficiales de alto impacto profesional.</p></div>
-        <div class="flex flex-col items-center text-center">${ic('Award', 'w-8 h-8 text-slate-400 mb-2')}<h5 class="font-extrabold text-xs text-slate-950">Enfoque Pr\u00e1ctico</h5><p class="text-[9px] text-slate-400 mt-1">Aprende aplicando casos y metodolog\u00edas reales.</p></div>
+        <div class="flex flex-col items-center text-center">${ic('Users','w-8 h-8 text-slate-400 mb-2')}<h5 class="font-extrabold text-xs text-slate-950">Docentes Especializados</h5><p class="text-[9px] text-slate-400 mt-1">Profesionales activos con experiencia en la industria.</p></div>
+        <div class="flex flex-col items-center text-center">${ic('Layers','w-8 h-8 text-slate-400 mb-2')}<h5 class="font-extrabold text-xs text-slate-950">Modalidad 100% Virtual</h5><p class="text-[9px] text-slate-400 mt-1">Estudia desde cualquier lugar y a tu propio ritmo.</p></div>
+        <div class="flex flex-col items-center text-center">${ic('CheckCircle','w-8 h-8 text-slate-400 mb-2')}<h5 class="font-extrabold text-xs text-slate-950">Certificaci\u00f3n Avalada</h5><p class="text-[9px] text-slate-400 mt-1">Certificados oficiales de alto impacto profesional.</p></div>
+        <div class="flex flex-col items-center text-center">${ic('Award','w-8 h-8 text-slate-400 mb-2')}<h5 class="font-extrabold text-xs text-slate-950">Enfoque Pr\u00e1ctico</h5><p class="text-[9px] text-slate-400 mt-1">Aprende aplicando casos y metodolog\u00edas reales.</p></div>
       </div>
     </div>
   </div>
@@ -678,27 +635,27 @@
       <button class="w-full bg-slate-50 hover:bg-slate-100 text-[#021b3d] border border-slate-200 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm">Ver Calendario Completo</button>
     </div>
     <div class="bg-[#021b3d] text-white p-5 rounded-2xl space-y-4 shadow-lg">
-      <div class="flex gap-3 items-start"><div class="bg-slate-800 p-2 rounded-xl text-[#4bae4f]">${ic('HelpCircle', 'w-5 h-5')}</div><div class="space-y-1"><h5 class="font-extrabold text-xs">\u00BFNecesitas ayuda?</h5><p class="text-[10px] text-slate-300 leading-snug">Nuestro equipo t\u00e9cnico est\u00e1 listo para apoyarte en cualquier momento.</p></div></div>
+      <div class="flex gap-3 items-start"><div class="bg-slate-800 p-2 rounded-xl text-[#4bae4f]">${ic('HelpCircle','w-5 h-5')}</div><div class="space-y-1"><h5 class="font-extrabold text-xs">\u00BFNecesitas ayuda?</h5><p class="text-[10px] text-slate-300 leading-snug">Nuestro equipo t\u00e9cnico est\u00e1 listo para apoyarte en cualquier momento.</p></div></div>
       <button class="sidebar-btn w-full bg-[#4bae4f] hover:bg-emerald-500 text-[#021b3d] font-bold py-2.5 rounded-xl text-xs transition-all shadow-md" data-tab="soporte">Contactar Soporte</button>
     </div>
   </div>
 </div>
 </div>`;
-    }
+}
 
-    function renderCursosTab() {
-      return `
+function renderCursosTab() {
+  return `
 <div class="space-y-6">
   <div class="space-y-2"><h3 class="text-2xl font-black text-[#021b3d]">Mis Cursos Acad\u00e9micos</h3><p class="text-xs text-slate-500">Administra tus diplomados vigentes, su avance, y explora nuevos diplomados para inscribirte.</p></div>
   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
     ${state.courses.map(c => {
-        const unlocked = c.progress > 0;
-        return `
+      const unlocked = c.progress > 0;
+      return `
         <div class="bg-white rounded-2xl border ${unlocked ? 'border-slate-200' : 'border-slate-300 border-dashed opacity-80'} overflow-hidden shadow-sm flex flex-col justify-between">
           <div class="relative h-44">
             <img src="${c.image}" alt="${c.title}" class="w-full h-full object-cover">
             <span class="absolute top-4 left-4 bg-emerald-500 text-[#021b3d] text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">${c.category}</span>
-            ${!unlocked ? '<div class="absolute inset-0 bg-[#021b3d]/60 backdrop-blur-sm flex flex-col items-center justify-center text-white">' + ic('Lock', 'w-8 h-8 mb-2 text-[#4bae4f]') + '<span class="text-xs font-bold">Por Adquirir / Inscribir</span></div>' : ''}
+            ${!unlocked ? '<div class="absolute inset-0 bg-[#021b3d]/60 backdrop-blur-sm flex flex-col items-center justify-center text-white">' + ic('Lock','w-8 h-8 mb-2 text-[#4bae4f]') + '<span class="text-xs font-bold">Por Adquirir / Inscribir</span></div>' : ''}
           </div>
           <div class="p-6 space-y-4">
             <h4 class="font-extrabold text-base text-slate-900 leading-snug">${c.title}</h4>
@@ -706,16 +663,16 @@
             ${unlocked ? '<div class="space-y-2"><div class="flex justify-between text-[11px] font-bold text-slate-700"><span>Progreso Acad\u00e9mico</span><span>' + c.progress + '%</span></div><div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden"><div class="bg-[#4bae4f] h-full" style="width:' + c.progress + '%"></div></div></div>' : '<div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex justify-between items-center"><span class="text-xs font-black text-[#021b3d]">$' + c.price + '</span><span class="text-[10px] text-[#4bae4f] font-bold">Inversi\u00f3n \u00danica</span></div>'}
           </div>
           <div class="p-6 pt-0 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
-            ${unlocked ? '<button class="btn-open-viewer w-full bg-[#021b3d] hover:bg-[#4bae4f] hover:text-[#021b3d] text-white font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1" data-id="' + c.id + '">Ingresar al Aula ' + ic('ChevronRight', 'w-4 h-4') + '</button>' : '<button class="btn-purchase w-full bg-[#4bae4f] hover:bg-[#3d913f] text-[#021b3d] font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1" data-id="' + c.id + '">Pagar e Inscribirme ' + ic('CreditCard', 'w-4 h-4') + '</button>'}
+            ${unlocked ? '<button class="btn-open-viewer w-full bg-[#021b3d] hover:bg-[#4bae4f] hover:text-[#021b3d] text-white font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1" data-id="' + c.id + '">Ingresar al Aula ' + ic('ChevronRight','w-4 h-4') + '</button>' : '<button class="btn-purchase w-full bg-[#4bae4f] hover:bg-[#3d913f] text-[#021b3d] font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1" data-id="' + c.id + '">Pagar e Inscribirme ' + ic('CreditCard','w-4 h-4') + '</button>'}
           </div>
         </div>`;
-      }).join('')}
+    }).join('')}
   </div>
 </div>`;
-    }
+}
 
-    function renderMensajesTab() {
-      return `
+function renderMensajesTab() {
+  return `
 <div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden grid md:grid-cols-12 min-h-[500px]">
   <div class="md:col-span-4 border-r border-slate-200 p-6 space-y-6">
     <h4 class="font-black text-lg text-[#021b3d]">Bandeja de Entrada</h4>
@@ -745,10 +702,10 @@
     </div>
   </div>
 </div>`;
-    }
+}
 
-    function renderSoporteTab() {
-      return `
+function renderSoporteTab() {
+  return `
 <div class="max-w-3xl mx-auto bg-white border border-slate-200 rounded-3xl p-8 shadow-sm space-y-6">
   <div class="text-center space-y-2"><h3 class="text-2xl font-black text-[#021b3d]">Centro de Soporte T\u00e9cnico</h3><p class="text-xs text-slate-500">\u00BFTienes problemas t\u00e9cnicos con el reproductor de clases, pagos o acceso? Escr\u00edbenos.</p></div>
   <form class="support-form space-y-4">
@@ -758,16 +715,16 @@
     <button type="submit" class="w-full bg-[#021b3d] hover:bg-[#4bae4f] hover:text-[#021b3d] text-white font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase transition-all shadow-md">Enviar Ticket de Soporte</button>
   </form>
 </div>`;
-    }
+}
 
-    // ===== PROFILE =====
-    function renderProfile() {
-      const u = state.user;
-      return `
+// ===== PROFILE =====
+function renderProfile() {
+  const u = state.user;
+  return `
 <div class="flex-1 flex flex-col bg-[#f3f6f9] min-h-screen">
   <header class="bg-white border-b border-slate-200 py-3 px-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-    <button class="btn-back-dashboard flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-[#021b3d] transition-colors">${ic('ChevronLeft', 'w-4 h-4')} Volver al Panel</button>
-    <div class="flex items-center gap-2"><div class="bg-[#4bae4f] p-1.5 rounded-lg">${ic('BookOpen', 'w-5 h-5 text-[#021b3d]')}</div><span class="font-bold tracking-wider text-sm">CEAP</span></div>
+    <button class="btn-back-dashboard flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-[#021b3d] transition-colors">${ic('ChevronLeft','w-4 h-4')} Volver al Panel</button>
+    <div class="flex items-center gap-2"><div class="bg-[#4bae4f] p-1.5 rounded-lg">${ic('BookOpen','w-5 h-5 text-[#021b3d]')}</div><span class="font-bold tracking-wider text-sm">CEAP</span></div>
   </header>
   <div class="flex-1 p-6 md:p-10 max-w-5xl mx-auto w-full">
     <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
@@ -801,16 +758,16 @@
     </div>
   </div>
 </div>`;
-    }
+}
 
-    // ===== VIEWER =====
-    function renderViewer() {
-      const c = state.selectedCourse;
-      return `
+// ===== VIEWER =====
+function renderViewer() {
+  const c = state.selectedCourse;
+  return `
 <div class="flex-1 flex flex-col bg-slate-900 text-white min-h-screen">
   <header class="bg-[#021b3d] py-4 px-6 border-b border-slate-800 flex justify-between items-center">
     <div class="flex items-center gap-3">
-      <button class="btn-back-dashboard bg-slate-800 hover:bg-slate-700 p-2 rounded-lg text-slate-300 transition-colors">${ic('ChevronLeft', 'w-5 h-5')}</button>
+      <button class="btn-back-dashboard bg-slate-800 hover:bg-slate-700 p-2 rounded-lg text-slate-300 transition-colors">${ic('ChevronLeft','w-5 h-5')}</button>
       <div><h4 class="font-extrabold text-sm md:text-base leading-tight">${c.title}</h4><p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mt-0.5">M\u00f3dulo de Aprendizaje Activo</p></div>
     </div>
     <span class="text-xs bg-[#4bae4f]/10 text-emerald-400 border border-emerald-400/20 px-3 py-1 rounded-full font-bold">Progreso: ${c.progress}%</span>
@@ -856,188 +813,164 @@
     </div>
   </div>
 </div>`;
-    }
+}
 
-    // ===== EVENTS =====
-    function attachEvents() {
-      // Landing: login/register buttons
-      document.querySelectorAll('.btn-login').forEach(el => el.addEventListener('click', () => { setState({ view: 'login', registering: false }); }));
-      document.querySelectorAll('.btn-register').forEach(el => el.addEventListener('click', () => { setState({ view: 'login', registering: true }); }));
-      document.querySelectorAll('.btn-back-landing').forEach(el => el.addEventListener('click', () => { setState({ view: 'landing' }); }));
+// ===== EVENTS =====
+function attachEvents() {
+  // Landing: login/register buttons
+  document.querySelectorAll('.btn-login').forEach(el => el.addEventListener('click', () => { setState({ view: 'login', registering: false }); }));
+  document.querySelectorAll('.btn-register').forEach(el => el.addEventListener('click', () => { setState({ view: 'login', registering: true }); }));
+  document.querySelectorAll('.btn-back-landing').forEach(el => el.addEventListener('click', () => { setState({ view: 'landing' }); }));
 
-      // Login form
-      const loginForm = document.querySelector('.login-form');
-      if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const isReg = state.registering;
-          const name = state.username || 'Carlos Ram\u00edrez';
-          const fakeUser = {
-            name: name,
-            email: name.toLowerCase().replace(/\\s/g, '') + '@ceap.edu.sv',
-            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
-            currentProgram: isReg ? 'Matriculado CEAP Virtual' : 'Diplomado en Gesti\u00f3n de Proyectos'
-          };
-          if (isReg) {
-            setState({ user: fakeUser });
-            notify('Cuenta creada con \u00e9xito. \u00a1Bienvenido a CEAP!', 'success');
-            if (state.courseToPurchase) { setState({ view: 'payment' }); } else { setState({ view: 'dashboard', tab: 'dashboard' }); }
-          } else {
-            setState({ user: fakeUser, view: 'dashboard', tab: 'dashboard' });
-            notify('\u00a1Bienvenido de nuevo, ' + fakeUser.name + '!', 'success');
-          }
-        });
-        const unameInput = document.querySelector('.input-username');
-        if (unameInput) unameInput.addEventListener('input', (e) => { setState({ username: e.target.value }); });
-        const pwInput = document.querySelector('.input-password');
-        if (pwInput) pwInput.addEventListener('input', (e) => { setState({ password: e.target.value }); });
-        document.querySelectorAll('.btn-toggle-pw').forEach(el => el.addEventListener('click', () => { setState({ showPassword: !state.showPassword }); }));
-        document.querySelectorAll('.btn-toggle-register').forEach(el => el.addEventListener('click', () => { setState({ registering: !state.registering }); }));
-      }
-
-      // Google button
-      document.querySelectorAll('.btn-google').forEach(el => el.addEventListener('click', () => {
-        const fakeUser = {
-          name: 'Carlos Ram\u00edrez',
-          email: 'carlos.ramirez@ceap.edu.sv',
-          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
-          currentProgram: 'Diplomado en Gesti\u00f3n de Proyectos'
-        };
+  // Login form
+  const loginForm = document.querySelector('.login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const isReg = state.registering;
+      const name = state.username || 'Carlos Ram\u00edrez';
+      const fakeUser = {
+        name: name,
+        email: name.toLowerCase().replace(/\\s/g, '') + '@ceap.edu.sv',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
+        currentProgram: isReg ? 'Matriculado CEAP Virtual' : 'Diplomado en Gesti\u00f3n de Proyectos'
+      };
+      if (isReg) {
         setState({ user: fakeUser });
+        notify('Cuenta creada con \u00e9xito. \u00a1Bienvenido a CEAP!', 'success');
         if (state.courseToPurchase) { setState({ view: 'payment' }); } else { setState({ view: 'dashboard', tab: 'dashboard' }); }
-        notify('Sesi\u00f3n iniciada correctamente con Google.', 'success');
-      }));
-
-      // Purchase buttons
-      document.querySelectorAll('.btn-purchase').forEach(el => el.addEventListener('click', () => {
-        const id = el.dataset.id;
-        const course = state.courses.find(c => c.id === id);
-        if (course) {
-          setState({ courseToPurchase: course });
-          if (!state.user) { setState({ view: 'login', registering: true }); notify('Por favor, crea una cuenta para completar tu inscripci\u00f3n.', 'info'); }
-          else { setState({ view: 'payment' }); }
-        }
-      }));
-
-      // Payment form
-      const payForm = document.querySelector('.payment-form');
-      if (payForm) {
-        payForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          if (!state.courseToPurchase) return;
-          const updated = state.courses.map(c => c.id === state.courseToPurchase.id ? { ...c, progress: 10 } : c);
-          setState({ courses: updated });
-          notify('\u00a1Inscripci\u00f3n exitosa al curso: ' + state.courseToPurchase.title + '!', 'success');
-          setState({ courseToPurchase: null, view: 'dashboard', tab: 'cursos' });
-        });
+      } else {
+        setState({ user: fakeUser, view: 'dashboard', tab: 'dashboard' });
+        notify('\u00a1Bienvenido de nuevo, ' + fakeUser.name + '!', 'success');
       }
-      document.querySelectorAll('.btn-cancel-payment').forEach(el => el.addEventListener('click', () => { setState({ courseToPurchase: null, view: 'landing' }); }));
+    });
+    const unameInput = document.querySelector('.input-username');
+    if (unameInput) unameInput.addEventListener('input', (e) => { setState({ username: e.target.value }); });
+    const pwInput = document.querySelector('.input-password');
+    if (pwInput) pwInput.addEventListener('input', (e) => { setState({ password: e.target.value }); });
+    document.querySelectorAll('.btn-toggle-pw').forEach(el => el.addEventListener('click', () => { setState({ showPassword: !state.showPassword }); }));
+    document.querySelectorAll('.btn-toggle-register').forEach(el => el.addEventListener('click', () => { setState({ registering: !state.registering }); }));
+  }
 
-      // Sidebar tabs
-      document.querySelectorAll('.sidebar-btn').forEach(el => el.addEventListener('click', () => {
-        const tab = el.dataset.tab;
-        if (tab) setState({ tab });
-      }));
-      document.querySelectorAll('.sidebar-disabled').forEach(el => el.addEventListener('click', () => {
-        notify('Funcionalidad disponible pr\u00f3ximamente.', 'info');
-      }));
+  // Google button
+  document.querySelectorAll('.btn-google').forEach(el => el.addEventListener('click', () => {
+    const fakeUser = {
+      name: 'Carlos Ram\u00edrez',
+      email: 'carlos.ramirez@ceap.edu.sv',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',
+      currentProgram: 'Diplomado en Gesti\u00f3n de Proyectos'
+    };
+    setState({ user: fakeUser });
+    if (state.courseToPurchase) { setState({ view: 'payment' }); } else { setState({ view: 'dashboard', tab: 'dashboard' }); }
+    notify('Sesi\u00f3n iniciada correctamente con Google.', 'success');
+  }));
 
-      // Tab buttons (inline)
-      document.querySelectorAll('.tab-btn').forEach(el => el.addEventListener('click', () => {
-        const tab = el.dataset.tab;
-        if (tab) setState({ tab });
-      }));
-
-      // Slide dots
-      document.querySelectorAll('.slide-dot').forEach(el => el.addEventListener('click', () => {
-        setState({ slideIdx: parseInt(el.dataset.slide) });
-      }));
-
-      // Open viewer
-      document.querySelectorAll('.btn-open-viewer').forEach(el => el.addEventListener('click', () => {
-        const id = el.dataset.id;
-        const course = state.courses.find(c => c.id === id);
-        if (course) setState({ selectedCourse: course, view: 'viewer' });
-      }));
-
-      // Back from viewer
-      document.querySelectorAll('.btn-back-dashboard').forEach(el => el.addEventListener('click', () => {
-        setState({ view: 'dashboard' });
-      }));
-
-      // Logout
-      document.querySelectorAll('.btn-logout').forEach(el => el.addEventListener('click', () => {
-        setState({ user: null, view: 'landing', tab: 'dashboard' });
-        notify('Sesi\u00f3n cerrada con \u00e9xito.', 'success');
-      }));
-
-      // Support form
-      const supportForm = document.querySelector('.support-form');
-      if (supportForm) {
-        supportForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          notify('Su ticket de soporte t\u00e9cnico fue creado. Responderemos a su correo registrado en menos de 2 horas.', 'success');
-          supportForm.querySelector('textarea').value = '';
-        });
-      }
-
-      // FAQ accordion
-      document.querySelectorAll('.faq-btn').forEach(el => el.addEventListener('click', () => {
-        const item = el.closest('.faq-item');
-        const answer = item.querySelector('.faq-answer');
-        const arrow = item.querySelector('.faq-arrow');
-        const isOpen = answer.classList.contains('open');
-        answer.classList.toggle('open');
-        arrow.classList.toggle('open');
-      }));
-
-      // Profile button
-      document.querySelectorAll('.btn-profile').forEach(el => el.addEventListener('click', () => {
-        setState({ view: 'profile' });
-      }));
-
-      // Notification bell
-      document.querySelectorAll('.btn-notif').forEach(el => el.addEventListener('click', () => {
-        notify('Tienes 3 notificaciones sin leer. Revisa tus mensajes para m\u00e1s detalles.', 'info');
-      }));
-
-      // Messages tab button (header)
-      document.querySelectorAll('.btn-messages-tab').forEach(el => el.addEventListener('click', () => {
-        setState({ tab: 'mensajes' });
-      }));
-
-      // Back to dashboard (also handles profile back)
-      document.querySelectorAll('.btn-back-dashboard').forEach(el => el.addEventListener('click', () => {
-        setState({ view: 'dashboard' });
-      }));
+  // Purchase buttons
+  document.querySelectorAll('.btn-purchase').forEach(el => el.addEventListener('click', () => {
+    const id = el.dataset.id;
+    const course = state.courses.find(c => c.id === id);
+    if (course) {
+      setState({ courseToPurchase: course });
+      if (!state.user) { setState({ view: 'login', registering: true }); notify('Por favor, crea una cuenta para completar tu inscripci\u00f3n.', 'info'); }
+      else { setState({ view: 'payment' }); }
     }
+  }));
 
-    // ===== HYPERION 3D GEOMETRY =====
-    (function(){
-      var C=['#4bae4f','#34d399','#6ee7b7','#10b981','#00f3ff'],T=['cube','octa','icosa','tetra','hexring'],
-      V={cube:[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]],
-      octa:[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]],
-      icosa:function(){var g=(1+Math.sqrt(5))/2;return[[-1,g,0],[1,g,0],[-1,-g,0],[1,-g,0],[0,-1,g],[0,1,g],[0,-1,-g],[0,1,-g],[g,0,-1],[g,0,1],[-g,0,-1],[-g,0,1]]}(),
-      tetra:[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]],
-      hexring:function(){var v=[];for(var i=0;i<6;i++){var a=i*Math.PI/3;v.push([Math.cos(a),Math.sin(a),.3],[Math.cos(a),Math.sin(a),-.3])}return v}()},
-      E={cube:[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]],
-      octa:[[0,2],[0,3],[0,4],[0,5],[1,2],[1,3],[1,4],[1,5],[2,4],[3,5],[2,5],[3,4]],
-      icosa:[[0,1],[0,5],[0,7],[0,10],[0,11],[1,7],[1,8],[1,9],[1,5],[2,3],[2,4],[2,6],[2,10],[2,11],[3,4],[3,6],[3,8],[3,9],[4,5],[4,9],[5,11],[6,7],[6,10],[7,8],[8,9],[9,11],[10,11]],
-      tetra:[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]],
-      hexring:function(){var e=[];for(var i=0;i<6;i++){var n=(i+1)%6;e.push([i*2,n*2],[i*2+1,n*2+1],[i*2,i*2+1])}return e}()};
-      function rot3(v,rx,ry,rz){var x=v[0],y=v[1],z=v[2],c,s,t;c=Math.cos(rx);s=Math.sin(rx);t=y;y=y*c-z*s;z=t*s+z*c;c=Math.cos(ry);s=Math.sin(ry);t=x;x=x*c+z*s;z=-t*s+z*c;c=Math.cos(rz);s=Math.sin(rz);t=x;x=x*c-y*s;y=t*s+y*c;return[x,y,z]}
-      var c=document.getElementById('hero-canvas'),ctx=c.getContext('2d'),W,H;
-      function resize(){var r=c.parentElement.getBoundingClientRect();W=c.width=r.width;H=c.height=r.height}
-      window.addEventListener('resize',resize);resize();
-      var shapes=[];for(var i=0;i<22;i++){var t=T[Math.floor(Math.random()*T.length)];shapes.push({type:t,color:C[Math.floor(Math.random()*C.length)],verts:V[t].map(function(v){return[v[0],v[1],v[2]]}),edges:E[t],x:(Math.random()-.5)*W*.6,y:(Math.random()-.5)*H,z:Math.random()*400+100,rx:Math.random()*6.28,ry:Math.random()*6.28,rz:Math.random()*6.28,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,vz:(Math.random()-.5)*.2,vrx:(Math.random()-.5)*.012,vry:(Math.random()-.5)*.012,vrz:(Math.random()-.5)*.012,size:Math.random()*25+15,opacity:Math.random()*.25+.1})}
-      var time=0,mx=0,my=0;c.addEventListener('mousemove',function(e){var r=c.getBoundingClientRect();mx=(e.clientX-r.left)/W*2-1;my=(e.clientY-r.top)/H*2-1});
-      function draw(){ctx.clearRect(0,0,W,H);time+=.016;var sy=window.scrollY||window.pageYOffset,st=c.parentElement.offsetTop,off=(sy-st)*.3;shapes.forEach(function(s,i){s.x+=s.vx;s.y+=s.vy;s.z+=s.vz;s.rx+=s.vrx+my*.0005;s.ry+=s.vry+mx*.0005;s.rz+=s.vrz;if(s.x>W*.8)s.x=-W*.8;if(s.x<-W*.8)s.x=W*.8;if(s.y>H){s.y=0;s.z=Math.random()*400+100}if(s.y<-H*.5)s.y=H;var py=s.y+off*(.2+i%3*.1);var proj=s.verts.map(function(v){var r=rot3(v,s.rx,s.ry,s.rz),d=300/(300+r[2]*s.size);return{sx:r[0]*d*s.size+W/2,sy:r[1]*d*s.size-py*.15+H/2,d:d}});ctx.beginPath();s.edges.forEach(function(e){if(proj[e[0]].d>.1&&proj[e[1]].d>.1){ctx.moveTo(proj[e[0]].sx,proj[e[0]].sy);ctx.lineTo(proj[e[1]].sx,proj[e[1]].sy)}});var avgD=proj.reduce(function(a,p){return a+p.d},0)/proj.length,glow=Math.max(0,Math.min(1,avgD));ctx.strokeStyle=s.color;ctx.globalAlpha=s.opacity*glow;ctx.lineWidth=Math.max(.5,1.5*avgD);ctx.shadowColor=s.color;ctx.shadowBlur=15*glow;ctx.stroke();ctx.shadowBlur=0;proj.forEach(function(p){if(p.d>.1){ctx.beginPath();ctx.arc(p.sx,p.sy,Math.max(1,2.5*p.d),0,6.28);ctx.fillStyle=s.color;ctx.globalAlpha=s.opacity*glow*.7;ctx.shadowColor=s.color;ctx.shadowBlur=10*p.d;ctx.fill();ctx.shadowBlur=0}});ctx.globalAlpha=1});requestAnimationFrame(draw)}
-      draw();
-    })();
+  // Payment form
+  const payForm = document.querySelector('.payment-form');
+  if (payForm) {
+    payForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!state.courseToPurchase) return;
+      const updated = state.courses.map(c => c.id === state.courseToPurchase.id ? { ...c, progress: 10 } : c);
+      setState({ courses: updated });
+      notify('\u00a1Inscripci\u00f3n exitosa al curso: ' + state.courseToPurchase.title + '!', 'success');
+      setState({ courseToPurchase: null, view: 'dashboard', tab: 'cursos' });
+    });
+  }
+  document.querySelectorAll('.btn-cancel-payment').forEach(el => el.addEventListener('click', () => { setState({ courseToPurchase: null, view: 'landing' }); }));
 
-    // ===== INIT =====
-    render();
-  </script>
+  // Sidebar tabs
+  document.querySelectorAll('.sidebar-btn').forEach(el => el.addEventListener('click', () => {
+    const tab = el.dataset.tab;
+    if (tab) setState({ tab });
+  }));
+  document.querySelectorAll('.sidebar-disabled').forEach(el => el.addEventListener('click', () => {
+    notify('Funcionalidad disponible pr\u00f3ximamente.', 'info');
+  }));
+
+  // Tab buttons (inline)
+  document.querySelectorAll('.tab-btn').forEach(el => el.addEventListener('click', () => {
+    const tab = el.dataset.tab;
+    if (tab) setState({ tab });
+  }));
+
+  // Slide dots
+  document.querySelectorAll('.slide-dot').forEach(el => el.addEventListener('click', () => {
+    setState({ slideIdx: parseInt(el.dataset.slide) });
+  }));
+
+  // Open viewer
+  document.querySelectorAll('.btn-open-viewer').forEach(el => el.addEventListener('click', () => {
+    const id = el.dataset.id;
+    const course = state.courses.find(c => c.id === id);
+    if (course) setState({ selectedCourse: course, view: 'viewer' });
+  }));
+
+  // Back from viewer
+  document.querySelectorAll('.btn-back-dashboard').forEach(el => el.addEventListener('click', () => {
+    setState({ view: 'dashboard' });
+  }));
+
+  // Logout
+  document.querySelectorAll('.btn-logout').forEach(el => el.addEventListener('click', () => {
+    setState({ user: null, view: 'landing', tab: 'dashboard' });
+    notify('Sesi\u00f3n cerrada con \u00e9xito.', 'success');
+  }));
+
+  // Support form
+  const supportForm = document.querySelector('.support-form');
+  if (supportForm) {
+    supportForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      notify('Su ticket de soporte t\u00e9cnico fue creado. Responderemos a su correo registrado en menos de 2 horas.', 'success');
+      supportForm.querySelector('textarea').value = '';
+    });
+  }
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-btn').forEach(el => el.addEventListener('click', () => {
+    const item = el.closest('.faq-item');
+    const answer = item.querySelector('.faq-answer');
+    const arrow = item.querySelector('.faq-arrow');
+    const isOpen = answer.classList.contains('open');
+    answer.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }));
+
+  // Profile button
+  document.querySelectorAll('.btn-profile').forEach(el => el.addEventListener('click', () => {
+    setState({ view: 'profile' });
+  }));
+
+  // Notification bell
+  document.querySelectorAll('.btn-notif').forEach(el => el.addEventListener('click', () => {
+    notify('Tienes 3 notificaciones sin leer. Revisa tus mensajes para m\u00e1s detalles.', 'info');
+  }));
+
+  // Messages tab button (header)
+  document.querySelectorAll('.btn-messages-tab').forEach(el => el.addEventListener('click', () => {
+    setState({ tab: 'mensajes' });
+  }));
+
+  // Back to dashboard (also handles profile back)
+  document.querySelectorAll('.btn-back-dashboard').forEach(el => el.addEventListener('click', () => {
+    setState({ view: 'dashboard' });
+  }));
+}
+
+// ===== INIT =====
+render();
+</script>
 </body>
-
 </html>
