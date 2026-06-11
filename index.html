@@ -193,7 +193,7 @@ function handleGoogleCredentialResponse(r){
 
 function initGoogleGIS(){
   if(typeof google!=='undefined'&&google.accounts){
-    google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleCredentialResponse,auto_select:true});
+    google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleCredentialResponse,auto_select:false});
   }
 }
 
@@ -1236,7 +1236,7 @@ function attachEvents(){
       text:'continue_with',size:'large',width:gContainer.offsetWidth||320,
       logo_alignment:'left',
     });
-    google.accounts.id.prompt();
+
   }
 
   // Preferences form
