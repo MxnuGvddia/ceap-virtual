@@ -315,12 +315,12 @@ function starRating(n){let r='';for(let i=0;i<5;i++)r+=i<n?'<svg class="w-4 h-4 
 function landingHeader(active){
   return `
   <header class="bg-[#021b3d] text-white py-5 pl-4 pr-6 md:pl-6 md:pr-16 sticky top-0 z-40 shadow-md">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <div class="max-w-7xl mx-auto flex items-center gap-12">
       <div class="flex items-center gap-5">
 <img src="img/ceap-logo.png" alt="Logo CEAP" class="logo-hover w-48 h-24 rounded-lg object-contain bg-white p-1 shadow-sm">
         <div><h1 class="font-bold text-2xl tracking-wider">CEAP</h1><p class="text-[10px] text-gray-300 uppercase leading-none">Centro Especializado en Administración de Proyectos</p></div>
       </div>
-      <nav class="hidden md:flex items-center gap-8 text-[13px] font-medium">
+      <nav class="hidden md:flex items-center gap-8 text-[13px] font-medium ml-12">
         <a href="#somos" data-view="landing" class="nav-link transition-colors ${active==='somos'?'text-[#4bae4f]':'hover:text-[#4bae4f]'}">Quiénes Somos</a>
         <a data-view="servicios" class="nav-link cursor-pointer transition-colors ${active==='servicios'?'text-[#4bae4f]':'hover:text-[#4bae4f]'}">Servicios</a>
         <a data-view="capacitacion" class="nav-link cursor-pointer transition-colors ${active==='capacitacion'?'text-[#4bae4f]':'hover:text-[#4bae4f]'}">Capacitación</a>
@@ -1459,7 +1459,7 @@ function renderProfile(){
       </div>
       <div class="border-t border-slate-100 pt-6">
         <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-3">Foto de Perfil</label>
-        <div class="flex items-center gap-4">
+      <div class="flex items-center gap-4 ml-auto">
           <div class="avatar-preview">${avatarImg(u.avatar,u.name,'w-16 h-16 rounded-full border-2 border-slate-300 shadow-sm')}</div>
           <label class="cursor-pointer bg-white border border-slate-200 hover:border-[#4bae4f] hover:bg-[#4bae4f]/5 text-slate-600 hover:text-[#4bae4f] font-semibold text-xs px-4 py-2.5 rounded-xl transition-all">${ic('Upload','w-3.5 h-3.5 inline mr-1')} Subir foto<input type="file" accept="image/*" class="input-avatar hidden"></label>
           <span class="text-[10px] text-slate-400">PNG, JPG. Máx 2MB.</span>
