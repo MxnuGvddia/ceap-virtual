@@ -465,8 +465,10 @@ function renderLanding(){
             </div>
           </div>
         `).join('')}
+        </div>
+        </div>
       </div>
-      ${flt.length===0?'<p class="text-center text-slate-400 py-12 text-sm">No encontramos diplomados con ese criterio de búsqueda.</p>':''}
+      </div>
     </div>
   </section>
   <section id="modalidades" class="py-16 px-6 bg-slate-50">
@@ -542,7 +544,9 @@ function renderLanding(){
           <div class="bg-slate-50 rounded-xl p-4 border border-slate-200"><span class="block text-2xl font-extrabold text-[#021b3d]">30+</span><span class="text-[10px] text-slate-500">Años como Docente y Facilitador</span></div>
         </div>
       </div>
-      <div class="bg-gradient-to-br from-[#021b3d] to-emerald-800 rounded-xl shadow-lg border border-slate-200 p-8 text-white">
+      <div class="space-y-6">
+        <img src="img/ernesto-linares.png" alt="Ernesto Linares - Formación y Liderazgo" class="w-full h-64 object-cover rounded-xl shadow-lg border-2 border-[#4bae4f]" />
+        <div class="bg-gradient-to-br from-[#021b3d] to-emerald-800 rounded-xl shadow-lg border border-slate-200 p-8 text-white">
         <div class="space-y-4">
           <h4 class="font-bold text-lg text-[#4bae4f]">Formación Académica</h4>
           <ul class="space-y-3 text-sm text-slate-300">
@@ -558,6 +562,8 @@ function renderLanding(){
             <li class="flex items-start gap-2"><span class="text-[#4bae4f] mt-1">${ic('CheckCircle','w-4 h-4')}</span><span>Facilitador acreditado por el ex INSAFORP</span></li>
           </ul>
         </div>
+        </div>
+      </div>
       </div>
     </div>
   </section>
