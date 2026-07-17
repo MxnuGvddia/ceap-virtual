@@ -177,7 +177,7 @@ function handleGoogleCredentialResponse(r){
   checkStreak();addXP(10);
   const isNew=!existing;
   const isRegister=state.registering;
-  const nextView=state.courseToPurchase?'payment':isNew?'preferences':'dashboard';
+  const nextView=state.courseToPurchase?'payment':'dashboard';
 
   if(isRegister){
     // Registration: show Drive auth popup immediately
@@ -187,7 +187,7 @@ function handleGoogleCredentialResponse(r){
         if(d&&d.user&&d.user.googleId===fu.googleId){
           fu.createdAt=d.user.createdAt||fu.createdAt;
           const merged={...d.user,...fu,xp:d.xp||state.xp,level:d.level||state.level,streak:d.streak||state.streak,lastLoginDate:d.lastLoginDate||state.lastLoginDate,notifList:d.notifList||state.notifList,unreadNotifs:d.unreadNotifs||state.unreadNotifs,settings:d.settings||state.settings,preferences:d.preferences||state.preferences};
-          setState({user:merged,view:merged.preferences?'dashboard':'preferences',tab:'dashboard'});
+          setState({user:merged,view:'dashboard',tab:'dashboard'});
         }else{
           setState({user:fu,preferences:null,view:nextView,tab:nextView==='dashboard'?'dashboard':state.tab});
         }
@@ -1574,8 +1574,8 @@ function attachEvents(){
       const nameInput=document.querySelector('.input-username');
       const name=nameInput?nameInput.value.trim():'Carlos Ramírez';
       const fu={name,email:name.toLowerCase().replace(/\s/g,'')+'@ceap.edu.sv',phone:'',avatar:'',currentProgram:'',createdAt:Date.now(),lastLogin:Date.now(),registered:true};
-      if(isReg){addXP(50);notify('Cuenta creada con éxito. +50 XP','success');setState({user:fu,view:state.courseToPurchase?'payment':'preferences'});}
-      else{checkStreak();addXP(10);setState({user:fu,view:!state.preferences?'preferences':'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'! +10 XP','success');}
+      if(isReg){addXP(50);notify('Cuenta creada con éxito. +50 XP','success');setState({user:fu,view:state.courseToPurchase?'payment':'dashboard',tab:'dashboard'});}
+      else{checkStreak();addXP(10);setState({user:fu,view:'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'! +10 XP','success');}
     });
     document.querySelectorAll('.btn-toggle-pw').forEach(el=>el.addEventListener('click',function(){
       const pw=document.querySelector('.input-password');
