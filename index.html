@@ -1218,7 +1218,7 @@ function renderDashTab(){
       <div class="flex justify-between items-center border-b border-slate-100 pb-3"><h4 class="font-black text-sm text-[#021b3d]">Próximos Eventos</h4><button class="sidebar-btn text-[10px] font-bold text-[#4bae4f] hover:underline" data-tab="calendario">Ver calendario</button></div>
       <div class="space-y-4">
         ${EVENTS.map(e=>`
-          <div class="flex items-center gap-4">
+      <div class="flex items-center gap-4 ml-8">
             <div class="${e.color} p-2.5 rounded-xl text-center w-14 shrink-0 shadow-sm border">
               <span class="block text-sm font-black leading-none">${e.date}</span><span class="text-[9px] uppercase font-bold mt-0.5 block">JUN</span>
             </div>
