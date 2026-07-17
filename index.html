@@ -79,6 +79,7 @@ const I = {
   Lightbulb:'<svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>',
   Monitor:'<svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
   MapPin:'<svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  GraduationCap:'<svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>',
 };
 function ic(n,c){return I[n].replace('<svg ','<svg class="'+c+'" ');}
 const COURSES = [
@@ -436,6 +437,159 @@ function renderLanding(){
           <div class="w-14 h-14 rounded-full bg-[#4bae4f]/10 flex items-center justify-center mx-auto mb-4 text-[#4bae4f]">${ic('Lightbulb','w-7 h-7')}</div>
           <h4 class="font-bold text-slate-900 mb-2">Innovación y Resultados</h4>
           <p class="text-xs text-slate-500 leading-relaxed">Transformar ideas en resultados exitosos mediante metodologías probadas y herramientas prácticas del ciclo de vida completo de los proyectos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="servicios" class="py-20 px-6 bg-white">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center space-y-4 mb-12">
+        <span class="text-sm font-bold text-[#4bae4f] uppercase tracking-wider">Nuestros Servicios</span>
+        <h3 class="text-3xl md:text-4xl font-black text-[#021b3d]">Servicios CEAP</h3>
+        <p class="text-slate-500 max-w-2xl mx-auto">Ofrecemos soluciones integrales en formación profesional, capacitación especializada y consultoría en administración y dirección de proyectos.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-gradient-to-br from-[#021b3d] to-emerald-800 rounded-2xl p-8 text-white hover:shadow-xl transition-all">
+          <div class="w-14 h-14 rounded-full bg-[#4bae4f]/20 flex items-center justify-center mb-4 text-[#4bae4f]">${ic('GraduationCap','w-7 h-7')}</div>
+          <h4 class="font-bold text-xl mb-3">Diplomados</h4>
+          <p class="text-sm text-slate-300 leading-relaxed">Programas especializados en administración de proyectos, gerencia, dirección, formulación y evaluación, con metodología práctica y docentes expertos.</p>
+          <ul class="mt-4 space-y-2 text-xs text-slate-300">
+            <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> 7 diplomados disponibles</li>
+            <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Certificación avalada</li>
+            <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Modalidad 100% virtual</li>
+          </ul>
+        </div>
+        <div class="bg-gradient-to-br from-[#021b3d] to-emerald-800 rounded-2xl p-8 text-white hover:shadow-xl transition-all">
+          <div class="w-14 h-14 rounded-full bg-[#4bae4f]/20 flex items-center justify-center mb-4 text-[#4bae4f]">${ic('Monitor','w-7 h-7')}</div>
+          <h4 class="font-bold text-xl mb-3">Cursos</h4>
+          <p class="text-sm text-slate-300 leading-relaxed">Cursos cortos y talleres prácticos en herramientas y metodologías para la gestión efectiva de proyectos.</p>
+          <ul class="mt-4 space-y-2 text-xs text-slate-300">
+            <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> MS Project</li>
+            <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Metodologías Ágiles</li>
+            <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Herramientas de Planificación</li>
+          </ul>
+        </div>
+        <div class="bg-gradient-to-br from-[#021b3d] to-emerald-800 rounded-2xl p-8 text-white hover:shadow-xl transition-all">
+          <div class="w-14 h-14 rounded-full bg-[#4bae4f]/20 flex items-center justify-center mb-4 text-[#4bae4f]">${ic('Users','w-7 h-7')}</div>
+          <h4 class="font-bold text-xl mb-3">Programas Corporativos</h4>
+          <p class="text-sm text-slate-300 leading-relaxed">Soluciones de formación a medida para organizaciones que buscan capacitar a su equipo directivo y operativo.</p>
+          <ul class="mt-4 space-y-2 text-xs text-slate-300">
+            <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Contenido personalizado</li>
+            <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Grupos exclusivos</li>
+            <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Informes de progreso</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="capacitacion" class="py-20 px-6 bg-slate-50">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center space-y-4 mb-12">
+        <span class="text-sm font-bold text-[#4bae4f] uppercase tracking-wider">Capacitación</span>
+        <h3 class="text-3xl md:text-4xl font-black text-[#021b3d]">Capacitación Especializada</h3>
+        <p class="text-slate-500 max-w-2xl mx-auto">Programas de formación diseñados para desarrollar competencias prácticas en administración y dirección de proyectos.</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="space-y-6">
+          <h4 class="text-xl font-bold text-[#021b3d]">Áreas de Capacitación</h4>
+          <div class="space-y-4">
+            <div class="flex items-start gap-4 bg-white p-4 rounded-xl border border-slate-200 hover:shadow-md transition-all">
+              <div class="w-10 h-10 rounded-lg bg-[#4bae4f]/10 flex items-center justify-center text-[#4bae4f] shrink-0">${ic('Target','w-5 h-5')}</div>
+              <div>
+                <h5 class="font-bold text-slate-900">Administración de Proyectos</h5>
+                <p class="text-xs text-slate-500 mt-1">Planificación, ejecución, control y cierre de proyectos con estándares internacionales.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 bg-white p-4 rounded-xl border border-slate-200 hover:shadow-md transition-all">
+              <div class="w-10 h-10 rounded-lg bg-[#4bae4f]/10 flex items-center justify-center text-[#4bae4f] shrink-0">${ic('TrendingUp','w-5 h-5')}</div>
+              <div>
+                <h5 class="font-bold text-slate-900">Gerencia de Proyectos</h5>
+                <p class="text-xs text-slate-500 mt-1">Habilidades gerenciales para liderar proyectos con enfoque en resultados y eficiencia.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 bg-white p-4 rounded-xl border border-slate-200 hover:shadow-md transition-all">
+              <div class="w-10 h-10 rounded-lg bg-[#4bae4f]/10 flex items-center justify-center text-[#4bae4f] shrink-0">${ic('Lightbulb','w-5 h-5')}</div>
+              <div>
+                <h5 class="font-bold text-slate-900">Formulación y Evaluación</h5>
+                <p class="text-xs text-slate-500 mt-1">Análisis financiero, estudios de factibilidad y elaboración de planes de negocio.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gradient-to-br from-[#021b3d] to-emerald-800 rounded-2xl p-8 text-white">
+          <h4 class="font-bold text-xl mb-4">¿Por qué capacitarte con CEAP?</h4>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3"><span class="text-[#4bae4f] mt-1">✓</span><span class="text-sm text-slate-300"><strong class="text-white">Metodología práctica:</strong> Casos reales y ejercicios aplicados al entorno laboral.</span></li>
+            <li class="flex items-start gap-3"><span class="text-[#4bae4f] mt-1">✓</span><span class="text-sm text-slate-300"><strong class="text-white">Docentes expertos:</strong> Profesionales certificados con experiencia real en la industria.</span></li>
+            <li class="flex items-start gap-3"><span class="text-[#4bae4f] mt-1">✓</span><span class="text-sm text-slate-300"><strong class="text-white">Flexibilidad:</strong> Estudia a tu ritmo con acceso 24/7 a la plataforma.</span></li>
+            <li class="flex items-start gap-3"><span class="text-[#4bae4f] mt-1">✓</span><span class="text-sm text-slate-300"><strong class="text-white">Certificación:</strong> Documento avalado con reconocimiento profesional.</span></li>
+            <li class="flex items-start gap-3"><span class="text-[#4bae4f] mt-1">✓</span><span class="text-sm text-slate-300"><strong class="text-white">Networking:</strong> Conecta con profesionales de toda Latinoamérica.</span></li>
+          </ul>
+          <button class="btn-login mt-8 bg-[#4bae4f] hover:bg-[#3d913f] text-[#021b3d] font-bold px-6 py-3 rounded-lg transition-all text-sm flex items-center gap-2">Inscribirme Ahora ${ic('ArrowRight','w-4 h-4')}</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="asesoria" class="py-20 px-6 bg-white">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center space-y-4 mb-12">
+        <span class="text-sm font-bold text-[#4bae4f] uppercase tracking-wider">Asesoría y Consultoría</span>
+        <h3 class="text-3xl md:text-4xl font-black text-[#021b3d]">Asesoría Profesional</h3>
+        <p class="text-slate-500 max-w-2xl mx-auto">Brindamos acompañamiento experto para organizaciones y profesionales en la gestión efectiva de sus proyectos.</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6">
+          <div class="bg-slate-50 rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all">
+            <h4 class="font-bold text-lg text-[#021b3d] mb-3">Consultoría en Proyectos</h4>
+            <p class="text-sm text-slate-600 leading-relaxed">Asesoría personalizada en diseño, planificación, ejecución y control de proyectos alineados a estándares internacionales como PMI y ISO 21500.</p>
+            <ul class="mt-4 space-y-2 text-xs text-slate-500">
+              <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Diagnóstico de madurez en gestión de proyectos</li>
+              <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Implementación de metodologías</li>
+              <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Optimización de procesos</li>
+            </ul>
+          </div>
+          <div class="bg-slate-50 rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all">
+            <h4 class="font-bold text-lg text-[#021b3d] mb-3">Asesoría en Formulación</h4>
+            <p class="text-sm text-slate-600 leading-relaxed">Apoyo técnico en la formulación y evaluación de proyectos de inversión, estudios de factibilidad y análisis financiero.</p>
+            <ul class="mt-4 space-y-2 text-xs text-slate-500">
+              <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Estudios de mercado y técnicos</li>
+              <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Análisis costo-beneficio</li>
+              <li class="flex items-center gap-2"><span class="text-[#4bae4f]">✓</span> Elaboración de planes de negocio</li>
+            </ul>
+          </div>
+        </div>
+        <div class="space-y-6">
+          <div class="bg-gradient-to-br from-[#021b3d] to-emerald-800 rounded-2xl p-8 text-white">
+            <h4 class="font-bold text-xl mb-4">Nuestros Servicios de Consultoría</h4>
+            <div class="space-y-4">
+              <div class="flex items-center gap-3 bg-white/10 rounded-lg p-3">
+                <div class="w-10 h-10 rounded-lg bg-[#4bae4f]/20 flex items-center justify-center text-[#4bae4f]">${ic('Building','w-5 h-5')}</div>
+                <div>
+                  <p class="font-semibold text-sm">Gestión de Portafolios</p>
+                  <p class="text-xs text-slate-300">Alineación estratégica de proyectos con objetivos organizacionales.</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 bg-white/10 rounded-lg p-3">
+                <div class="w-10 h-10 rounded-lg bg-[#4bae4f]/20 flex items-center justify-center text-[#4bae4f]">${ic('MapPin','w-5 h-5')}</div>
+                <div>
+                  <p class="font-semibold text-sm">Control de Proyectos</p>
+                  <p class="text-xs text-slate-300">Seguimiento y control con valor ganado, indicadores KPI y reportes ejecutivos.</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 bg-white/10 rounded-lg p-3">
+                <div class="w-10 h-10 rounded-lg bg-[#4bae4f]/20 flex items-center justify-center text-[#4bae4f]">${ic('Shield','w-5 h-5')}</div>
+                <div>
+                  <p class="font-semibold text-sm">Gestión de Riesgos</p>
+                  <p class="text-xs text-slate-300">Identificación, análisis y mitigación de riesgos en proyectos.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-[#4bae4f] rounded-2xl p-6 text-[#021b3d]">
+            <h5 class="font-bold text-lg mb-2">¿Necesitas asesoría?</h5>
+            <p class="text-sm mb-4">Contáctanos para una consulta gratuita y descubre cómo podemos ayudarte.</p>
+            <button class="btn-login bg-[#021b3d] hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-lg transition-all text-sm flex items-center gap-2">Solicitar Asesoría ${ic('ArrowRight','w-4 h-4')}</button>
+          </div>
         </div>
       </div>
     </div>
