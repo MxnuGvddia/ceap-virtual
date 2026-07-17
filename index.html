@@ -68,6 +68,7 @@ const I = {
   Search:'<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
   Star:'<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
   GitHub:'<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>',
+  YouTube:'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>',
   Download:'<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
   Zap:'<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
   Upload:'<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
@@ -76,14 +77,13 @@ const I = {
 };
 function ic(n,c){return I[n].replace('<svg ','<svg class="'+c+'" ');}
 const COURSES = [
-  {id:'pmi',title:'Gestión de Proyectos (PMI)',category:'Gestión',progress:75,dueDate:'15/08/2026',image:'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80',description:'Aprende las metodologías del PMBOK y prepárate para la certificación PMP.',price:189.99,modules:[{id:1,title:'Introducción a la Guía del PMBOK',completed:true,duration:'45 mins'},{id:2,title:'Gestión del Alcance del Proyecto',completed:true,duration:'1h 15 mins'},{id:3,title:'Planificación de Cronograma y Ruta Crítica',completed:false,duration:'2h 10 mins'},{id:4,title:'Gestión de Costos y Valor Ganado',completed:false,duration:'1h 45 mins'}]},
-  {id:'aut',title:'Automatización Industrial',category:'Ingeniería',progress:60,dueDate:'20/08/2026',image:'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80',description:'Control de procesos mediante PLCs, SCADA y sistemas embebidos de última generación.',price:249.99,modules:[{id:1,title:'Principios de Sensores y Actuadores',completed:true,duration:'1h 00 mins'},{id:2,title:'Programación en Ladder (PLC)',completed:true,duration:'2h 30 mins'},{id:3,title:'Diseño de Interfaces HMI',completed:false,duration:'1h 50 mins'},{id:4,title:'Integración SCADA en Redes Industriales',completed:false,duration:'3h 15 mins'}]},
-  {id:'elec',title:'Sistemas Eléctricos Industriales',category:'Ingeniería',progress:40,dueDate:'25/08/2026',image:'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80',description:'Diseño, análisis y mantenimiento preventivo de subestaciones y redes eléctricas.',price:199.99,modules:[{id:1,title:'Fundamentos de Redes Trifásicas',completed:true,duration:'1h 20 mins'},{id:2,title:'Protecciones Eléctricas y Coordinación',completed:false,duration:'2h 00 mins'},{id:3,title:'Mantenimiento de Transformadores',completed:false,duration:'1h 45 mins'}]},
-  {id:'infra',title:'Proyectos de Infraestructura Tecnológica',category:'Tecnología',progress:0,dueDate:'10/09/2026',image:'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80',description:'Gestión y despliegue de Data Centers modernos, nubes híbridas y cableado estructurado.',price:279.99,modules:[{id:1,title:'Diseño de Arquitecturas de TI',completed:false,duration:'1h 30 mins'},{id:2,title:'Normativas de Seguridad Física de Data Centers',completed:false,duration:'2h 15 mins'},{id:3,title:'Plan de Continuidad del Negocio (BCP)',completed:false,duration:'1h 10 mins'}]},
-  {id:'agil',title:'Metodologías Ágiles (Scrum + Kanban)',category:'Gestión',progress:0,dueDate:'12/09/2026',image:'https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=600&q=80',description:'Domina Scrum, Kanban y SAFe para liderar equipos ágiles con certificación internacional.',price:159.99,modules:[{id:1,title:'Manifiesto Ágil y Principios',completed:false,duration:'1h 10 mins'},{id:2,title:'Scrum: Roles, Eventos y Artefactos',completed:false,duration:'2h 00 mins'},{id:3,title:'Kanban: Flujo Continuo y WIP',completed:false,duration:'1h 30 mins'}]},
-  {id:'ciberseg',title:'Ciberseguridad Industrial',category:'Tecnología',progress:0,dueDate:'20/09/2026',image:'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80',description:'Protege infraestructuras críticas y sistemas OT con estándares IEC 62443 y NIST.',price:299.99,modules:[{id:1,title:'Fundamentos de Seguridad en OT',completed:false,duration:'1h 30 mins'},{id:2,title:'IEC 62443: Estándares y Zonas',completed:false,duration:'2h 15 mins'},{id:3,title:'Detección de Amenazas y Respuesta',completed:false,duration:'2h 00 mins'}]},
-  {id:'datos',title:'Analítica de Datos para Proyectos',category:'Tecnología',progress:0,dueDate:'05/10/2026',image:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80',description:'Transforma datos en decisiones estratégicas usando Power BI, Python y SQL aplicados.',price:219.99,modules:[{id:1,title:'Fundamentos de Analítica Descriptiva',completed:false,duration:'1h 20 mins'},{id:2,title:'Power BI: Modelado y Visualización',completed:false,duration:'2h 30 mins'},{id:3,title:'SQL para Gestión de Proyectos',completed:false,duration:'1h 45 mins'}]},
-  {id:'liderazgo',title:'Liderazgo y Habilidades Directivas',category:'Gestión',progress:0,dueDate:'15/10/2026',image:'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80',description:'Desarrolla habilidades de liderazgo, negociación y gestión de equipos de alto rendimiento.',price:179.99,modules:[{id:1,title:'Liderazgo Situacional y Emocional',completed:false,duration:'1h 15 mins'},{id:2,title:'Negociación y Resolución de Conflictos',completed:false,duration:'1h 45 mins'},{id:3,title:'Gestión del Cambio Organizacional',completed:false,duration:'2h 00 mins'}]}
+  {id:'ms-project',title:'MS Project para Directores de Proyecto',category:'Dirección',progress:0,dueDate:'15/08/2026',image:'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80',description:'Domina Microsoft Project para planificar, ejecutar y controlar proyectos de manera profesional.',price:189.99,modules:[{id:1,title:'Introducción a MS Project',completed:false,duration:'1h 00 mins'},{id:2,title:'Configuración del Proyecto',completed:false,duration:'1h 30 mins'},{id:3,title:'Gestión de Tareas y Recursos',completed:false,duration:'2h 00 mins'},{id:4,title:'Seguimiento y Control de Avance',completed:false,duration:'1h 45 mins'}]},
+  {id:'direccion',title:'Dirección de Proyectos',category:'Dirección',progress:0,dueDate:'20/08/2026',image:'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80',description:'Desarrolla competencias de liderazgo y dirección para conducir proyectos exitosos con visión estratégica.',price:249.99,modules:[{id:1,title:'Fundamentos de Dirección de Proyectos',completed:false,duration:'1h 00 mins'},{id:2,title:'Liderazgo y Gestión de Equipos',completed:false,duration:'1h 30 mins'},{id:3,title:'Toma de Decisiones Estratégicas',completed:false,duration:'2h 00 mins'},{id:4,title:'Gestión del Cambio Organizacional',completed:false,duration:'1h 45 mins'}]},
+  {id:'formulacion',title:'Formulación y Evaluación de Proyectos',category:'Formulación y Evaluación',progress:0,dueDate:'25/08/2026',image:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80',description:'Aprende a formular, evaluar y presentar proyectos con análisis financiero y estudios de factibilidad.',price:199.99,modules:[{id:1,title:'Conceptos Básicos de Formulación',completed:false,duration:'1h 00 mins'},{id:2,title:'Estudio de Mercado y Técnico',completed:false,duration:'1h 30 mins'},{id:3,title:'Análisis Financiero y Evaluación',completed:false,duration:'2h 00 mins'},{id:4,title:'Elaboración del Plan de Negocios',completed:false,duration:'1h 45 mins'}]},
+  {id:'gerencia',title:'Gerencia de Proyectos',category:'Gerencia',progress:0,dueDate:'10/09/2026',image:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',description:'Desarrolla habilidades gerenciales para gestionar proyectos con enfoque en resultados y eficiencia.',price:279.99,modules:[{id:1,title:'Gerencia Estratégica de Proyectos',completed:false,duration:'1h 00 mins'},{id:2,title:'Gestión de Portafolios de Proyectos',completed:false,duration:'1h 30 mins'},{id:3,title:'Control de Costos y Presupuestos',completed:false,duration:'2h 00 mins'},{id:4,title:'Gestión de Riesgos e Incertidumbre',completed:false,duration:'1h 45 mins'}]},
+  {id:'supervision',title:'Supervisión de Proyectos',category:'Supervisión',progress:0,dueDate:'12/09/2026',image:'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80',description:'Aprende a supervisar la ejecución de proyectos asegurando calidad, cumplimiento y eficiencia operativa.',price:159.99,modules:[{id:1,title:'Fundamentos de Supervisión de Proyectos',completed:false,duration:'1h 00 mins'},{id:2,title:'Control de Calidad y Cumplimiento',completed:false,duration:'1h 30 mins'},{id:3,title:'Seguimiento de Avance Físico y Financiero',completed:false,duration:'2h 00 mins'},{id:4,title:'Informe de Supervisión y Lecciones Aprendidas',completed:false,duration:'1h 45 mins'}]},
+  {id:'diseno',title:'Diseño de Proyectos',category:'Dirección',progress:0,dueDate:'20/09/2026',image:'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80',description:'Domina las técnicas de diseño y planificación de proyectos con herramientas modernas y metodologías probadas.',price:219.99,modules:[{id:1,title:'Conceptualización y Diseño de Proyectos',completed:false,duration:'1h 00 mins'},{id:2,title:'Herramientas de Diseño y Prototipado',completed:false,duration:'1h 30 mins'},{id:3,title:'Planificación Detallada y Cronogramas',completed:false,duration:'2h 00 mins'},{id:4,title:'Optimización y Mejora Continua',completed:false,duration:'1h 45 mins'}]},
+  {id:'ejecucion',title:'Ejecución, Control y Seguimiento de Proyectos',category:'Gerencia',progress:0,dueDate:'15/10/2026',image:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80',description:'Aprende técnicas avanzadas de ejecución, control y seguimiento para garantizar el éxito de tus proyectos.',price:299.99,modules:[{id:1,title:'Plan de Ejecución del Proyecto',completed:false,duration:'1h 00 mins'},{id:2,title:'Técnicas de Control de Avance',completed:false,duration:'1h 30 mins'},{id:3,title:'Seguimiento con Valor Ganado',completed:false,duration:'2h 00 mins'},{id:4,title:'Cierre y Evaluación del Proyecto',completed:false,duration:'1h 45 mins'}]}
 ];
 const SLIDES = [
   {title:'Planificamos hoy, construimos el éxito del mañana',highlight:'éxito',desc:'Educación especializada en administración de proyectos, ingeniería, tecnología e innovación.',image:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80'},
@@ -92,9 +92,9 @@ const SLIDES = [
 const TESTIMONIALS = [
   {name:'María Elena López',role:'Gerente de Proyectos',text:'Los diplomados de CEAP transformaron mi forma de liderar equipos. Obtuve mi certificación PMP en 3 meses.',avatar:'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80',stars:5},
   {name:'Roberto Martínez',role:'Ingeniero Industrial',text:'La plataforma virtual es intuitiva y los docentes son expertos reales. 100% recomendado para profesionales activos.',avatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80',stars:5},
-  {name:'Ana Sofía Castillo',role:'Analista de Sistemas',text:'El diplomado en Infraestructura Tecnológica me abrió puertas en mi carrera. Material actualizado y casos prácticos.',avatar:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=120&h=120&q=80',stars:5},
-  {name:'Carlos Enrique Mejía',role:'Coordinador de Proyectos TI',text:'Tomé 3 diplomados con CEAP y todos superaron mis expectativas. La atención personalizada marca la diferencia.',avatar:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&h=120&q=80',stars:4},
-  {name:'Diana Gabriela Herrera',role:'Ingeniera Eléctrica',text:'Los laboratorios virtuales de Automatización Industrial son impresionantes. Aprendí más en 4 meses que en 2 años de universidad.',avatar:'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?auto=format&fit=crop&w=120&h=120&q=80',stars:5}
+  {name:'Ana Sofía Castillo',role:'Analista de Proyectos',text:'El diplomado en Formulación y Evaluación de Proyectos me abrió puertas en mi carrera. Material actualizado y casos prácticos.',avatar:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=120&h=120&q=80',stars:5},
+  {name:'Carlos Enrique Mejía',role:'Coordinador de Proyectos',text:'Tomé 3 diplomados con CEAP y todos superaron mis expectativas. La atención personalizada marca la diferencia.',avatar:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120&h=120&q=80',stars:4},
+  {name:'Diana Gabriela Herrera',role:'Supervisora de Proyectos',text:'El diplomado en Supervisión de Proyectos me permitió crecer profesionalmente. Aprendí más en 4 meses que en 2 años de universidad.',avatar:'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?auto=format&fit=crop&w=120&h=120&q=80',stars:5}
 ];
 const FAQS = [
   {q:'¿Cómo me inscribo a un diplomado?',a:'Solo debes crear una cuenta, seleccionar el diplomado de tu interés y completar el pago en línea. Recibirás acceso inmediato a la plataforma.'},
@@ -106,8 +106,8 @@ const FAQS = [
   {q:'¿Puedo cancelar mi inscripción?',a:'Sí, contamos con una política de reembolso durante los primeros 7 días hábiles posterior a tu inscripción.'}
 ];
 const EVENTS = [
-  {date:10,name:'Clase en Vivo: PMBOK 7ª Edición',type:'class',color:'bg-blue-100 text-blue-700 border-blue-200'},
-  {date:18,name:'Webinar Industria 4.0 - Automatización Inteligente',type:'webinar',color:'bg-emerald-100 text-emerald-700 border-emerald-200'},
+  {date:10,name:'Clase en Vivo: Formulación de Proyectos',type:'class',color:'bg-blue-100 text-blue-700 border-blue-200'},
+  {date:18,name:'Webinar: Dirección Estratégica de Proyectos',type:'webinar',color:'bg-emerald-100 text-emerald-700 border-emerald-200'},
   {date:22,name:'Entrega de Caso Práctico #2',type:'assignment',color:'bg-amber-100 text-amber-700 border-amber-200'},
   {date:30,name:'Examen Parcial Módulo 2',type:'exam',color:'bg-red-100 text-red-700 border-red-200'}
 ];
@@ -120,11 +120,11 @@ const BADGES = [
   {id:6,name:'Certificado Obtenido',desc:'Obtuviste tu primer certificado',earned:false}
 ];
 const CERTIFICATES = [
-  {id:1,name:'Diplomado en Gestión de Proyectos',date:'15 Mar 2026',type:'PMP',color:'from-emerald-600 to-green-700'},
-  {id:2,name:'Diplomado en Automatización Industrial',date:'20 Ene 2026',type:'Ingeniería',color:'from-blue-600 to-indigo-700'},
-  {id:3,name:'Diplomado en Sistemas Eléctricos',date:'05 Dic 2025',type:'Ingeniería',color:'from-amber-600 to-orange-700'}
+  {id:1,name:'Diplomado en Formulación y Evaluación de Proyectos',date:'15 Mar 2026',type:'Formulación',color:'from-emerald-600 to-green-700'},
+  {id:2,name:'Diplomado en Dirección de Proyectos',date:'20 Ene 2026',type:'Dirección',color:'from-blue-600 to-indigo-700'},
+  {id:3,name:'Diplomado en Gerencia de Proyectos',date:'05 Dic 2025',type:'Gerencia',color:'from-amber-600 to-orange-700'}
 ];
-const CATEGORIES = ['Todas','Gestión','Ingeniería','Tecnología'];
+const CATEGORIES = ['Todas','Formulación y Evaluación','Dirección','Gerencia','Supervisión'];
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const DAYS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 let state = {
@@ -348,9 +348,9 @@ function renderLanding(){
     <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(#4bae4f 1px,transparent 1px);background-size:16px 16px"></div>
     <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10">
       <div class="space-y-6">
-        <span class="bg-emerald-500/10 text-[#4bae4f] text-xs font-bold px-3 py-1.5 rounded-full border border-[#4bae4f]/30 animate-pulse-glow">Formando Líderes en Proyectos</span>
+        <span class="bg-emerald-500/10 text-[#4bae4f] text-xs font-bold px-3 py-1.5 rounded-full border border-[#4bae4f]/30 animate-pulse-glow">"Porque la vida misma es un proyecto"</span>
         <h2 class="text-4xl md:text-5xl font-black leading-tight">Bienvenidos a <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-500">CEAP Virtual</span></h2>
-        <p class="text-lg text-slate-300">Aprende, desarrolla y transforma tu futuro. Porque la vida misma <span class="text-[#4bae4f] font-semibold">es un proyecto</span>.</p>
+        <p class="text-lg text-slate-300">Centro Especializado en Administración de Proyectos. Formamos profesionales capaces de diseñar, gestionar, dirigir y gerenciar proyectos con altos estándares de calidad.</p>
         <div class="flex flex-wrap gap-4 pt-4">
           <a href="#diplomados" class="bg-[#4bae4f] text-[#021b3d] font-bold px-6 py-3 rounded-lg hover:bg-emerald-500 transition-all flex items-center gap-2 shadow-lg">Ver Cursos Disponibles ${ic('ChevronRight','w-4 h-4')}</a>
           <button class="btn-register border border-slate-500 hover:border-white text-white px-6 py-3 rounded-lg font-semibold transition-all">Registrarme Ahora</button>
@@ -394,13 +394,39 @@ function renderLanding(){
         </div>
       </div>
       <div class="space-y-6">
-        <h3 class="text-3xl font-black text-[#021b3d]">Nuestra Empresa & Experiencia</h3>
+        <h3 class="text-3xl font-black text-[#021b3d]">Quiénes Somos</h3>
         <div class="w-16 h-1.5 bg-[#4bae4f] rounded-full"></div>
-        <p class="text-slate-600 leading-relaxed">En <strong>CEAP</strong> (Centro Especializado en Administración de Proyectos), somos líderes en la capacitación y consultoría para profesionales y organizaciones que buscan dominar la formulación, dirección y ejecución de proyectos.</p>
-        <p class="text-slate-600 leading-relaxed">Con más de 12 años de trayectoria en el mercado latinoamericano, nuestro equipo ha impulsado la carrera de miles de estudiantes, certificándolos en las metodologías y tecnologías más solicitadas como PMI, metodologías ágiles e ingenierías aplicadas.</p>
+        <p class="text-slate-600 leading-relaxed">El <strong>Centro Especializado en Administración de Proyectos (CEAP El Salvador)</strong> nace con la visión de convertirse en un referente de excelencia académica en la formación de profesionales capaces de diseñar, gestionar, dirigir y gerenciar proyectos con altos estándares de calidad.</p>
+        <p class="text-slate-600 leading-relaxed">Ofrece una alternativa de aprendizaje innovadora, práctica y orientada a resultados, basada en una filosofía creativa de "cómo hacer proyectos", respaldada por fundamentos técnicos y científicos que integran el Diseño, la Gestión y la Dirección de Proyectos como pilares esenciales para transformar ideas en resultados exitosos.</p>
+        <p class="text-slate-600 leading-relaxed">Nuestra propuesta educativa va más allá de la enseñanza tradicional, al combinar conocimientos conceptuales, metodologías probadas, herramientas prácticas y experiencias aplicadas que permiten a los participantes comprender el ciclo de vida completo de los proyectos y desarrollar las competencias necesarias para liderarlos eficazmente en entornos reales.</p>
         <div class="grid grid-cols-2 gap-6 pt-4">
           <div class="border-l-4 border-[#4bae4f] pl-4"><span class="block text-3xl font-extrabold text-[#021b3d]">+15,000</span><span class="text-xs text-slate-500">Estudiantes Graduados</span></div>
           <div class="border-l-4 border-[#4bae4f] pl-4"><span class="block text-3xl font-extrabold text-[#021b3d]">98%</span><span class="text-xs text-slate-500">De Satisfacción Global</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="objetivos" class="py-16 px-6 bg-white">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center space-y-4 mb-12">
+        <span class="text-sm font-bold text-[#4bae4f] uppercase tracking-wider">Nuestros Objetivos</span>
+        <h3 class="text-3xl md:text-4xl font-black text-[#021b3d]">¿Qué buscamos lograr?</h3>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 p-8 text-center hover:shadow-lg transition-all">
+          <div class="w-14 h-14 rounded-full bg-[#4bae4f]/10 flex items-center justify-center mx-auto mb-4 text-[#4bae4f]">${ic('Target','w-7 h-7')}</div>
+          <h4 class="font-bold text-slate-900 mb-2">Formación Integral</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">Proporcionar una formación sólida, práctica y aplicable que permita afrontar con éxito los desafíos de la planificación, ejecución, control y cierre de proyectos.</p>
+        </div>
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 p-8 text-center hover:shadow-lg transition-all">
+          <div class="w-14 h-14 rounded-full bg-[#4bae4f]/10 flex items-center justify-center mx-auto mb-4 text-[#4bae4f]">${ic('TrendingUp','w-7 h-7')}</div>
+          <h4 class="font-bold text-slate-900 mb-2">Liderazgo Profesional</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">Desarrollar las competencias necesarias para liderar proyectos eficazmente en entornos reales de organizaciones públicas, privadas y de cooperación.</p>
+        </div>
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 p-8 text-center hover:shadow-lg transition-all">
+          <div class="w-14 h-14 rounded-full bg-[#4bae4f]/10 flex items-center justify-center mx-auto mb-4 text-[#4bae4f]">${ic('Lightbulb','w-7 h-7')}</div>
+          <h4 class="font-bold text-slate-900 mb-2">Innovación y Resultados</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">Transformar ideas en resultados exitosos mediante metodologías probadas y herramientas prácticas del ciclo de vida completo de los proyectos.</p>
         </div>
       </div>
     </div>
@@ -438,6 +464,42 @@ function renderLanding(){
       ${flt.length===0?'<p class="text-center text-slate-400 py-12 text-sm">No encontramos diplomados con ese criterio de búsqueda.</p>':''}
     </div>
   </section>
+  <section id="modalidades" class="py-16 px-6 bg-slate-50">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center space-y-4 mb-12">
+        <span class="text-sm font-bold text-[#4bae4f] uppercase tracking-wider">Modalidades</span>
+        <h3 class="text-3xl md:text-4xl font-black text-[#021b3d]">Aprende como quieras</h3>
+        <p class="text-slate-500 max-w-2xl mx-auto">Ofrecemos diferentes modalidades para adaptarnos a tu estilo de vida y horarios.</p>
+      </div>
+      <div class="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 text-center hover:shadow-lg hover:border-emerald-500/40 transition-all">
+          <div class="w-12 h-12 rounded-full bg-[#4bae4f]/10 flex items-center justify-center mx-auto mb-4 text-[#4bae4f]">${ic('Users','w-6 h-6')}</div>
+          <h4 class="font-bold text-sm text-slate-900 mb-1">Presencial</h4>
+          <p class="text-[10px] text-slate-500">Clases en aula con interacción directa</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 text-center hover:shadow-lg hover:border-emerald-500/40 transition-all">
+          <div class="w-12 h-12 rounded-full bg-[#4bae4f]/10 flex items-center justify-center mx-auto mb-4 text-[#4bae4f]">${ic('Video','w-6 h-6')}</div>
+          <h4 class="font-bold text-sm text-slate-900 mb-1">Virtual Sincrónico</h4>
+          <p class="text-[10px] text-slate-500">Clases en vivo por Zoom en tiempo real</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 text-center hover:shadow-lg hover:border-emerald-500/40 transition-all">
+          <div class="w-12 h-12 rounded-full bg-[#4bae4f]/10 flex items-center justify-center mx-auto mb-4 text-[#4bae4f]">${ic('Monitor','w-6 h-6')}</div>
+          <h4 class="font-bold text-sm text-slate-900 mb-1">Virtual Asincrónico</h4>
+          <p class="text-[10px] text-slate-500">Estudia a tu ritmo con materiales grabados</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 text-center hover:shadow-lg hover:border-emerald-500/40 transition-all">
+          <div class="w-12 h-12 rounded-full bg-[#4bae4f]/10 flex items-center justify-center mx-auto mb-4 text-[#4bae4f]">${ic('MapPin','w-6 h-6')}</div>
+          <h4 class="font-bold text-sm text-slate-900 mb-1">Semipresencial</h4>
+          <p class="text-[10px] text-slate-500">Combinación de clases presenciales y virtuales</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 text-center hover:shadow-lg hover:border-emerald-500/40 transition-all">
+          <div class="w-12 h-12 rounded-full bg-[#4bae4f]/10 flex items-center justify-center mx-auto mb-4 text-[#4bae4f]">${ic('Layers','w-6 h-6')}</div>
+          <h4 class="font-bold text-sm text-slate-900 mb-1">Mixta</h4>
+          <p class="text-[10px] text-slate-500">Formato híbrido personalizado</p>
+        </div>
+      </div>
+    </div>
+  </section>
   <section id="testimonios" class="py-20 px-6 bg-slate-50">
     <div class="max-w-7xl mx-auto">
       <div class="text-center space-y-4 mb-16">
@@ -456,6 +518,40 @@ function renderLanding(){
             <p class="text-xs text-slate-600 leading-relaxed italic">"${t.text}"</p>
           </div>
         `).join('')}
+      </div>
+    </div>
+  </section>
+
+  <section id="fundador" class="py-20 px-6 bg-white">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+      <div class="space-y-6">
+        <span class="text-sm font-bold text-[#4bae4f] uppercase tracking-wider">Nuestro Fundador</span>
+        <h3 class="text-3xl font-black text-[#021b3d]">Ernesto Linares</h3>
+        <div class="w-16 h-1.5 bg-[#4bae4f] rounded-full"></div>
+        <p class="text-slate-600 leading-relaxed">Ingeniero Electricista con Maestría en Diseño, Gestión y Dirección de Proyectos por la Universidad Internacional Iberoamericana (UNINI) y Posgrado en Gerencia Integral de Proyectos por la Universidad Sergio Arboleda de Colombia.</p>
+        <p class="text-slate-600 leading-relaxed">Cuenta con más de 27 años de experiencia profesional en la planificación, diseño, gestión, supervisión y dirección de proyectos de infraestructura y construcción. A lo largo de su trayectoria se ha desempeñado como dibujante técnico, diseñador, supervisor, administrador de contratos, director de proyectos y gerente de proyectos.</p>
+        <p class="text-slate-600 leading-relaxed">Con más de 30 años de experiencia como docente y facilitador acreditado, ha contribuido a la formación de estudiantes, técnicos, profesionales y ejecutivos en las áreas de administración de proyectos, gestión empresarial y dirección de proyectos.</p>
+        <div class="grid grid-cols-2 gap-4 pt-4">
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200"><span class="block text-2xl font-extrabold text-[#021b3d]">27+</span><span class="text-[10px] text-slate-500">Años de Experiencia Profesional</span></div>
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200"><span class="block text-2xl font-extrabold text-[#021b3d]">30+</span><span class="text-[10px] text-slate-500">Años como Docente y Facilitador</span></div>
+        </div>
+      </div>
+      <div class="bg-gradient-to-br from-[#021b3d] to-emerald-800 rounded-xl shadow-lg border border-slate-200 p-8 text-white">
+        <div class="space-y-4">
+          <h4 class="font-bold text-lg text-[#4bae4f]">Formación Académica</h4>
+          <ul class="space-y-3 text-sm text-slate-300">
+            <li class="flex items-start gap-2"><span class="text-[#4bae4f] mt-1">${ic('CheckCircle','w-4 h-4')}</span><span>Ingeniero Electricista</span></li>
+            <li class="flex items-start gap-2"><span class="text-[#4bae4f] mt-1">${ic('CheckCircle','w-4 h-4')}</span><span>Maestría en Diseño, Gestión y Dirección de Proyectos (UNINI, México)</span></li>
+            <li class="flex items-start gap-2"><span class="text-[#4bae4f] mt-1">${ic('CheckCircle','w-4 h-4')}</span><span>Posgrado en Gerencia Integral de Proyectos (Univ. Sergio Arboleda, Colombia)</span></li>
+            <li class="flex items-start gap-2"><span class="text-[#4bae4f] mt-1">${ic('CheckCircle','w-4 h-4')}</span><span>Estudios de Maestría en Administración de Negocios (MBA)</span></li>
+          </ul>
+          <h4 class="font-bold text-lg text-[#4bae4f] pt-4">Cargos y Liderazgo</h4>
+          <ul class="space-y-3 text-sm text-slate-300">
+            <li class="flex items-start gap-2"><span class="text-[#4bae4f] mt-1">${ic('CheckCircle','w-4 h-4')}</span><span>Director Fundador de CEAP El Salvador</span></li>
+            <li class="flex items-start gap-2"><span class="text-[#4bae4f] mt-1">${ic('CheckCircle','w-4 h-4')}</span><span>Director de Linares Ingenieros</span></li>
+            <li class="flex items-start gap-2"><span class="text-[#4bae4f] mt-1">${ic('CheckCircle','w-4 h-4')}</span><span>Facilitador acreditado por el ex INSAFORP</span></li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -511,13 +607,14 @@ function renderLanding(){
   <footer class="bg-[#021b3d] text-white pt-16 pb-8 px-6 md:px-12 border-t border-slate-800">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
       <div class="space-y-4">
-        <div class="flex items-center gap-3"><div class="bg-[#4bae4f] p-2 rounded-lg">${ic('BookOpen','w-6 h-6 text-[#021b3d]')}</div><div><h1 class="font-bold text-xl tracking-wider">CEAP</h1><p class="text-[9px] text-gray-300 leading-none">Centro Especializado en Proyectos</p></div></div>
-        <p class="text-xs text-slate-400 leading-relaxed">Comprometidos con la excelencia académica y práctica en la administración de proyectos.</p>
+        <div class="flex items-center gap-3"><div class="bg-[#4bae4f] p-2 rounded-lg">${ic('BookOpen','w-6 h-6 text-[#021b3d]')}</div><div><h1 class="font-bold text-xl tracking-wider">CEAP</h1><p class="text-[9px] text-gray-300 leading-none">Centro Especializado en Administración de Proyectos</p></div></div>
+        <p class="text-xs text-slate-400 leading-relaxed">Formando profesionales capaces de diseñar, gestionar, dirigir y gerenciar proyectos con altos estándares de calidad.</p>
         <div class="flex gap-3 pt-2">
+          <a href="https://www.youtube.com/@centroespecializadoenadmin2299" target="_blank" rel="noopener" class="text-slate-400 hover:text-white transition-colors">${I.YouTube||'YouTube'}</a>
           <a href="https://github.com/MxnuGvddia" target="_blank" rel="noopener" class="text-slate-400 hover:text-white transition-colors">${I.GitHub}</a>
         </div>
       </div>
-      <div class="space-y-3"><h4 class="font-bold text-sm text-[#4bae4f]">Soporte Técnico</h4><p class="text-xs text-slate-300">¿Necesitas ayuda con la plataforma?</p><p class="text-xs text-slate-400">Nuestro equipo está listo para apoyarte.</p></div>
+      <div class="space-y-3"><h4 class="font-bold text-sm text-[#4bae4f]">Servicios</h4><p class="text-xs text-slate-300">Capacitación, asesoría y consultoría en administración y dirección de proyectos.</p><p class="text-xs text-slate-400">Diplomados, cursos y programas especializados.</p></div>
       <div class="space-y-3">
         <h4 class="font-bold text-sm text-[#4bae4f]">Contacto</h4>
         <div class="flex items-center gap-2 text-xs text-slate-300">${ic('Mail','w-4 h-4 text-slate-400')}<span>info@ceap.edu.sv</span></div>
@@ -588,7 +685,7 @@ function renderLogin(){
 </div>`;}
 function renderPreferences(){
   const s=state,p=s.preferences||{};
-  const areas=['Gestión de Proyectos','Ingeniería','Tecnología','Data & IA','Ciberseguridad'];
+  const areas=['Formulación y Evaluación de Proyectos','Dirección de Proyectos','Gerencia de Proyectos','Supervisión de Proyectos','Diseño de Proyectos'];
   const modos=['Virtual','Presencial','Híbrido'];
   const horarios=['Mañana (8am-12pm)','Tarde (1pm-5pm)','Noche (6pm-10pm)','Flexible'];
   const niveles=['Principiante','Intermedio','Avanzado'];
