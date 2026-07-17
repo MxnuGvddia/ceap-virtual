@@ -314,13 +314,13 @@ function starRating(n){let r='';for(let i=0;i<5;i++)r+=i<n?'<svg class="w-4 h-4 
 
 function landingHeader(active){
   return `
-  <header class="bg-[#021b3d] text-white py-4 px-6 md:px-12 sticky top-0 z-40 shadow-md">
+  <header class="bg-[#021b3d] text-white py-5 px-6 md:px-16 sticky top-0 z-40 shadow-md">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-5">
 <img src="img/ceap-logo.png" alt="Logo CEAP" class="logo-hover w-48 h-24 rounded-lg object-contain bg-white p-1 shadow-sm">
-        <div><h1 class="font-bold text-xl tracking-wider">CEAP</h1><p class="text-[9px] text-gray-300 uppercase leading-none">Centro Especializado en Administración de Proyectos</p></div>
+        <div><h1 class="font-bold text-2xl tracking-wider">CEAP</h1><p class="text-[10px] text-gray-300 uppercase leading-none">Centro Especializado en Administración de Proyectos</p></div>
       </div>
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+      <nav class="hidden md:flex items-center gap-8 text-[13px] font-medium">
         <a href="#somos" data-view="landing" class="nav-link transition-colors ${active==='somos'?'text-[#4bae4f]':'hover:text-[#4bae4f]'}">Quiénes Somos</a>
         <a data-view="servicios" class="nav-link cursor-pointer transition-colors ${active==='servicios'?'text-[#4bae4f]':'hover:text-[#4bae4f]'}">Servicios</a>
         <a data-view="capacitacion" class="nav-link cursor-pointer transition-colors ${active==='capacitacion'?'text-[#4bae4f]':'hover:text-[#4bae4f]'}">Capacitación</a>
@@ -330,7 +330,7 @@ function landingHeader(active){
         <a data-view="faq" class="nav-link cursor-pointer transition-colors ${active==='faq'?'text-[#4bae4f]':'hover:text-[#4bae4f]'}">FAQ</a>
       </nav>
       <div class="flex items-center gap-4">
-        <button class="btn-login bg-[#4bae4f] hover:bg-[#3d913f] text-[#021b3d] font-bold px-4 py-2 rounded-lg transition-all text-[11px] flex items-center gap-2 shadow-lg">${ic('LogIn','w-3.5 h-3.5')} Aula Virtual (Ingresar)</button>
+        <button class="btn-login bg-[#4bae4f] hover:bg-[#3d913f] text-[#021b3d] font-bold px-5 py-2.5 rounded-lg transition-all text-xs flex items-center gap-2 shadow-lg">${ic('LogIn','w-4 h-4')} Aula Virtual (Ingresar)</button>
       </div>
     </div>
   </header>`;
