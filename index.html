@@ -27,6 +27,8 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
 .animate-scale-in{animation:scaleIn .4s ease-out forwards}
 @keyframes notifOut{0%,70%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-20px)}}
 .animate-notif-out{animation:notifOut 4s ease-in-out forwards}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.animate-slide-up{animation:slideUp .5s ease-out forwards}
 </style>
 </head>
 <body class="min-h-screen bg-[#f3f6f9] text-slate-800 font-sans flex flex-col selection:bg-[#4bae4f] selection:text-white">
@@ -145,10 +147,11 @@ let state = {
   xp:0, level:1, streak:0, lastLoginDate:'',
   notifList:[], unreadNotifs:0,
   settings:{theme:'light',emailNotifs:true,desktopNotifs:true},
-  preferences:null
+  preferences:null,
+  cookiesAccepted:false
 };
 let slideInterval;
-function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user,preferences:state.preferences}))}catch(e){}render();}
+function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user,preferences:state.preferences,cookiesAccepted:state.cookiesAccepted}))}catch(e){}render();}
 function avatarImg(src,name,cls){
   if(src&&(src.startsWith('data:')||src.startsWith('http')))return `<img src="${src}" alt="${name||''}" class="${cls} object-cover">`;
   return `<div class="${cls} bg-slate-200 flex items-center justify-center text-slate-500">${ic('User','w-6 h-6')}</div>`;
@@ -664,6 +667,23 @@ function renderFAQPage(){
   ${landingFooter()}
 </div>`;
 }
+function cookieConsentBanner(){
+  if(state.cookiesAccepted)return '';
+  return `<div id="cookie-consent" class="fixed bottom-0 left-0 right-0 z-50 bg-[#021b3d]/95 backdrop-blur-md border-t border-white/10 px-6 py-4 animate-slide-up">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3 text-white">
+        <span class="text-2xl">🍪</span>
+        <p class="text-sm leading-relaxed">Utilizamos cookies para mejorar tu experiencia en nuestro sitio. Al continuar navegando, aceptas nuestro uso de cookies.
+          <a href="#" class="underline text-[#4bae4f] hover:text-emerald-400 transition-colors ml-1">Política de Privacidad</a>
+        </p>
+      </div>
+      <div class="flex gap-3 shrink-0">
+        <button class="btn-cookie-reject px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white border border-slate-500 hover:border-white rounded-lg transition-all">Rechazar</button>
+        <button class="btn-cookie-accept px-5 py-2 text-sm font-bold bg-[#4bae4f] text-[#021b3d] rounded-lg hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/20">Aceptar</button>
+      </div>
+    </div>
+  </div>`;
+}
 function render(){
   const s=state,root=document.getElementById('root');
   let h='';
@@ -688,6 +708,7 @@ function render(){
   else if(s.view==='viewer'&&s.selectedCourse)h+=renderViewer();
   else if(s.view==='profile'&&s.user)h+=renderProfile();
   else h+=renderLanding();
+  h+=cookieConsentBanner();
   root.innerHTML=h;attachEvents();
 }
 function renderLanding(){
@@ -1790,6 +1811,10 @@ function attachEvents(){
 
   // Download certificates
   document.querySelectorAll('.btn-download-cert').forEach(el=>el.addEventListener('click',()=>notify('El certificado se ha descargado correctamente.','success')));
+
+  // Cookie consent
+  document.querySelector('.btn-cookie-accept')?.addEventListener('click',()=>{setState({cookiesAccepted:true})});
+  document.querySelector('.btn-cookie-reject')?.addEventListener('click',()=>{setState({cookiesAccepted:true})});
 }
 
 // ===== INIT =====
