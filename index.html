@@ -324,10 +324,12 @@ function landingHeader(active){
         <a href="#somos" data-view="landing" class="nav-link transition-colors ${active==='somos'?'text-[#4bae4f]':'hover:text-[#4bae4f]'}">Quiénes Somos</a>
         <div class="relative group">
           <a data-view="servicios" class="nav-link cursor-pointer transition-colors ${active==='servicios'?'text-[#4bae4f]':'hover:text-[#4bae4f]'} flex items-center gap-1">Servicios <svg class="w-3 h-3 servicios-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></a>
-          <div class="servicios-dropdown absolute top-full left-0 mt-2 bg-[#021b3d] border border-gray-600 rounded-lg shadow-lg py-2 min-w-[220px] z-50">
-            <a data-view="capacitacion" class="nav-link cursor-pointer block px-4 py-2 text-[13px] font-medium transition-colors hover:bg-[#4bae4f] hover:text-[#021b3d]">Capacitación</a>
-            <a data-view="asesoria" class="nav-link cursor-pointer block px-4 py-2 text-[13px] font-medium transition-colors hover:bg-[#4bae4f] hover:text-[#021b3d]">Asesoría y Consultoría</a>
-            <a data-view="diplomados" class="nav-link cursor-pointer block px-4 py-2 text-[13px] font-medium transition-colors hover:bg-[#4bae4f] hover:text-[#021b3d]">Diplomados</a>
+          <div class="servicios-dropdown absolute top-full left-0 pt-3 z-50">
+            <div class="bg-[#021b3d] border border-gray-600 rounded-lg shadow-lg py-2 min-w-[220px]">
+              <a data-view="capacitacion" class="nav-link cursor-pointer block px-4 py-2 text-[13px] font-medium transition-colors hover:bg-[#4bae4f] hover:text-[#021b3d]">Capacitación</a>
+              <a data-view="asesoria" class="nav-link cursor-pointer block px-4 py-2 text-[13px] font-medium transition-colors hover:bg-[#4bae4f] hover:text-[#021b3d]">Asesoría y Consultoría</a>
+              <a data-view="diplomados" class="nav-link cursor-pointer block px-4 py-2 text-[13px] font-medium transition-colors hover:bg-[#4bae4f] hover:text-[#021b3d]">Diplomados</a>
+            </div>
           </div>
         </div>
         <a data-view="testimonios" class="nav-link cursor-pointer transition-colors ${active==='testimonios'?'text-[#4bae4f]':'hover:text-[#4bae4f]'}">Testimonios</a>
