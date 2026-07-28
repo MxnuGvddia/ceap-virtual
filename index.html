@@ -645,9 +645,9 @@ function renderDiplomadosPage(){
               <span class="absolute top-4 left-4 bg-[#4bae4f] text-[#021b3d] text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow">${course.category}</span>
               <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
                 <div class="flex items-center gap-3 text-white/90 text-[10px] font-semibold">
-                  <span class="flex items-center gap-1">${ic('Clock','w-3 h-3')} ${course.modules.length*4} Semanas</span>
-                  <span class="flex items-center gap-1">${ic('Layers','w-3 h-3')} ${course.modules.length} Módulos</span>
-                </div>
+                   <span class="flex items-center gap-1">${ic('Clock','w-3 h-3')} ${course.modules.length*4} Semanas</span>
+                   <span class="btn-course-detail flex items-center gap-1 cursor-pointer hover:text-white transition-colors" data-id="${course.id}">${ic('Layers','w-3 h-3')} ${course.modules.length} Módulos</span>
+                 </div>
               </div>
             </div>
             <div class="p-6 flex-1 flex flex-col space-y-4">
@@ -746,6 +746,15 @@ function renderDiplomadosPage(){
       </button>
     </div>
   </section>
+
+  <!-- Course Detail Modal -->
+  <div id="course-detail-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="modal-overlay"></div>
+    <div class="absolute inset-4 md:inset-8 lg:inset-12 bg-white rounded-3xl overflow-hidden flex flex-col animate-scale-in shadow-2xl">
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
   ${landingFooter()}
 </div>`;
 }
@@ -1806,11 +1815,96 @@ function attachEvents(){
     }));
   }
 
-  // Purchase
-  document.querySelectorAll('.btn-purchase').forEach(el=>el.addEventListener('click',()=>{
-    const id=el.dataset.id,course=state.courses.find(c=>c.id===id);
-    if(course){setState({courseToPurchase:course});if(!state.user){setState({view:'login',registering:true});notify('Por favor, crea una cuenta para completar tu inscripción.','info');}else setState({view:'payment'});}
-  }));
+  // Course detail modal
+  const modal=document.getElementById('course-detail-modal');
+  const modalContent=document.getElementById('modal-content');
+  const moduleColors=['bg-[#021b3d] text-white','bg-[#4bae4f] text-[#021b3d]','bg-[#021b3d]/15 text-[#021b3d] border border-[#021b3d]/30','bg-[#4bae4f]/15 text-[#021b3d] border border-[#4bae4f]/30'];
+  const moduleNumColors=['text-[#4bae4f]','text-[#021b3d]','text-[#021b3d]','text-[#4bae4f]'];
+  const roman=['I','II','III','IV'];
+
+  function openCourseModal(courseId){
+    const course=COURSES.find(c=>c.id===courseId);if(!course)return;
+    const enrolled=state.user&&ENROLLED[course.id];
+    modalContent.innerHTML=`
+      <div class="relative h-48 md:h-56 overflow-hidden shrink-0">
+        <img src="${course.image}" alt="${course.title}" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#021b3d]/90 via-[#021b3d]/40 to-transparent"></div>
+        <button class="btn-close-modal absolute top-4 right-4 w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/40 transition-all">${ic('X','w-4 h-4')}</button>
+        <div class="absolute bottom-4 left-6 right-6">
+          <span class="inline-flex items-center gap-1 bg-[#4bae4f] text-[#021b3d] text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-2">${ic('CheckCircle','w-3 h-3')} ${course.category}</span>
+          <h2 class="text-xl md:text-2xl font-black text-white leading-tight">${course.title}</h2>
+        </div>
+      </div>
+      <div class="flex-1 overflow-y-auto">
+        <div class="p-6 md:p-8 space-y-6">
+          <p class="text-sm text-slate-600 leading-relaxed">${course.description}</p>
+          <div class="flex flex-wrap gap-4">
+            <div class="flex items-center gap-2 bg-slate-100 rounded-xl px-4 py-2.5">
+              ${ic('Clock','w-4 h-4 text-[#4bae4f]')}
+              <span class="text-xs font-bold text-slate-700">${course.modules.length*4} Semanas</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-100 rounded-xl px-4 py-2.5">
+              ${ic('Layers','w-4 h-4 text-[#4bae4f]')}
+              <span class="text-xs font-bold text-slate-700">${course.modules.length} Módulos</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-100 rounded-xl px-4 py-2.5">
+              ${ic('Monitor','w-4 h-4 text-[#4bae4f]')}
+              <span class="text-xs font-bold text-slate-700">100% Virtual</span>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-black text-[#021b3d] uppercase tracking-wider mb-4">Programa Académico</h3>
+            <div class="space-y-3">
+              ${course.modules.map((m,i)=>`
+                <div class="flex items-start gap-4 ${moduleColors[i]} rounded-xl p-4 transition-all hover:scale-[1.01]">
+                  <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center shrink-0 font-black text-sm ${moduleNumColors[i]}">${roman[i]}</div>
+                  <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-sm leading-snug">${m.title}</h4>
+                    <p class="text-[10px] opacity-70 mt-1 flex items-center gap-1">${ic('Clock','w-3 h-3')} ${m.duration} • ${ic('Video','w-3 h-3')} Clases en vivo + grabaciones</p>
+                  </div>
+                  <div class="shrink-0">${ic('ChevronRight','w-4 h-4 opacity-50')}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-r from-[#021b3d]/5 to-[#4bae4f]/5 rounded-xl p-5 border border-slate-200">
+            <h4 class="font-bold text-sm text-[#021b3d] mb-3">¿Qué incluye?</h4>
+            <div class="grid grid-cols-2 gap-2">
+              ${['Clases en vivo por Zoom','Grabaciones bajo demanda','Material descargable','Foro de discusión','Tutoría personalizada','Certificado MINEDUCIT'].map(f=>`
+                <div class="flex items-center gap-2 text-xs text-slate-600">
+                  <span class="text-[#4bae4f] shrink-0">${ic('Check','w-3.5 h-3.5')}</span>${f}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-slate-200 p-4 md:p-6 bg-slate-50 flex items-center justify-between gap-4 shrink-0">
+        <div>
+          <span class="text-[10px] uppercase text-slate-400 font-bold block">Inversión única</span>
+          <span class="text-2xl font-black text-[#021b3d]">$${course.price}</span>
+        </div>
+        <button class="btn-modal-purchase bg-[#4bae4f] hover:bg-[#3d9e41] text-[#021b3d] px-6 py-3 rounded-xl text-sm font-black transition-all flex items-center gap-2 shadow-lg shadow-[#4bae4f]/20 hover:scale-105" data-id="${course.id}">Inscribirse Ahora ${ic('ArrowRight','w-4 h-4')}</button>
+      </div>
+    `;
+    modal.classList.remove('hidden');
+    document.body.style.overflow='hidden';
+    document.querySelector('.btn-close-modal').addEventListener('click',closeCourseModal);
+    document.getElementById('modal-overlay').addEventListener('click',closeCourseModal);
+    document.querySelector('.btn-modal-purchase').addEventListener('click',()=>{
+      closeCourseModal();
+      const c=state.courses.find(x=>x.id===course.id);
+      if(c){setState({courseToPurchase:c});if(!state.user){setState({view:'login',registering:true});notify('Por favor, crea una cuenta para completar tu inscripción.','info');}else setState({view:'payment'});}
+    });
+  }
+  function closeCourseModal(){modal.classList.add('hidden');document.body.style.overflow='';}
+
+  document.querySelectorAll('.btn-course-detail').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openCourseModal(el.dataset.id);}));
+
+  // Purchase — now opens modal instead of direct login
+  document.querySelectorAll('.btn-purchase').forEach(el=>el.addEventListener('click',()=>openCourseModal(el.dataset.id)));
 
   // Payment form & methods
   const pf=document.querySelector('.payment-form');
