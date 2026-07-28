@@ -1725,7 +1725,7 @@ function renderViewer(){
 function attachEvents(){
   // Landing login/register
   document.querySelectorAll('.btn-login').forEach(el=>el.addEventListener('click',()=>{setState({view:'login',registering:false})}));
-  document.querySelectorAll('.btn-register').forEach(el=>el.addEventListener('click',()=>{setState({view:'login',registering:true})}));
+  document.querySelectorAll('.btn-register').forEach(el=>el.addEventListener('click',()=>{setState({view:'diplomados'})}));
   document.querySelectorAll('.btn-back-landing').forEach(el=>el.addEventListener('click',()=>{setState({view:'landing'})}));
 
   // Nav data-view routing
