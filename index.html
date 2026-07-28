@@ -1904,10 +1904,16 @@ function attachEvents(){
   }
   function closeCourseModal(){modal.classList.add('hidden');document.body.style.overflow='';}
 
-  document.querySelectorAll('.btn-course-detail').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();openCourseModal(el.dataset.id);}));
+  document.addEventListener('click',e=>{
+    const el=e.target.closest('.btn-course-detail');
+    if(el){e.preventDefault();e.stopPropagation();openCourseModal(el.dataset.id);}
+  });
 
-  // Purchase — now opens modal instead of direct login
-  document.querySelectorAll('.btn-purchase').forEach(el=>el.addEventListener('click',()=>openCourseModal(el.dataset.id)));
+  // Purchase — event delegation for dynamically rendered cards
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('.btn-purchase');
+    if(btn){e.preventDefault();openCourseModal(btn.dataset.id);}
+  });
 
   // Payment form & methods
   const pf=document.querySelector('.payment-form');
