@@ -753,8 +753,8 @@ function renderDiplomadosPage(){
   <!-- Course Detail Modal -->
   <div id="course-detail-modal" class="fixed inset-0 z-50 hidden">
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="modal-overlay"></div>
-    <div class="absolute inset-4 md:inset-8 lg:inset-12 bg-white rounded-3xl overflow-hidden flex flex-col animate-scale-in shadow-2xl">
-      <div id="modal-content"></div>
+      <div class="absolute inset-4 md:inset-8 lg:inset-12 bg-white rounded-3xl overflow-hidden flex flex-col max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-4rem)] lg:max-h-[calc(100vh-6rem)] animate-scale-in shadow-2xl">
+        <div id="modal-content" class="flex flex-col h-full overflow-hidden"></div>
     </div>
   </div>
 
@@ -1821,24 +1821,24 @@ function attachEvents(){
   // Course detail modal
   const modal=document.getElementById('course-detail-modal');
   const modalContent=document.getElementById('modal-content');
-  const moduleColors=['bg-[#021b3d] text-white','bg-[#4bae4f] text-[#021b3d]','bg-[#021b3d]/15 text-[#021b3d] border border-[#021b3d]/30','bg-[#4bae4f]/15 text-[#021b3d] border border-[#4bae4f]/30'];
-  const moduleNumColors=['text-[#4bae4f]','text-[#021b3d]','text-[#021b3d]','text-[#4bae4f]'];
+  const moduleColors=['bg-[#dc2626] text-white','bg-[#86efac] text-[#021b3d]','bg-[#c4b5fd] text-[#021b3d]','bg-[#93c5fd] text-[#021b3d]'];
+  const moduleNumColors=['text-white','text-[#021b3d]','text-[#021b3d]','text-[#021b3d]'];
   const roman=['I','II','III','IV'];
 
   function openCourseModal(courseId){
     const course=COURSES.find(c=>c.id===courseId);if(!course)return;
     const enrolled=state.user&&ENROLLED[course.id];
     modalContent.innerHTML=`
+      <button class="btn-close-modal absolute top-4 left-4 z-10 w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition-all">${ic('X','w-4 h-4')}</button>
       <div class="relative h-48 md:h-56 overflow-hidden shrink-0">
         <img src="${course.image}" alt="${course.title}" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-t from-[#021b3d]/90 via-[#021b3d]/40 to-transparent"></div>
-        <button class="btn-close-modal absolute top-4 right-4 w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/40 transition-all">${ic('X','w-4 h-4')}</button>
         <div class="absolute bottom-4 left-6 right-6">
           <span class="inline-flex items-center gap-1 bg-[#4bae4f] text-[#021b3d] text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-2">${ic('CheckCircle','w-3 h-3')} ${course.category}</span>
           <h2 class="text-xl md:text-2xl font-black text-white leading-tight">${course.title}</h2>
         </div>
       </div>
-      <div class="flex-1 overflow-y-auto">
+      <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain">
         <div class="p-6 md:p-8 space-y-6">
           <p class="text-sm text-slate-600 leading-relaxed">${course.description}</p>
           <div class="flex flex-wrap gap-4">
