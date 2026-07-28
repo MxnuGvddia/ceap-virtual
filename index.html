@@ -92,11 +92,7 @@ function ic(n,c){return I[n].replace('<svg ','<svg class="'+c+'" ');}
 const COURSES = [
   {id:'ms-project',title:'MS Project para Directores de Proyecto',category:'Dirección',progress:0,dueDate:'15/08/2026',image:'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80',description:'Domina Microsoft Project para planificar, ejecutar y controlar proyectos de manera profesional.',price:189.99,modules:[{id:1,title:'Introducción a MS Project',completed:false,duration:'1h 00 mins'},{id:2,title:'Configuración del Proyecto',completed:false,duration:'1h 30 mins'},{id:3,title:'Gestión de Tareas y Recursos',completed:false,duration:'2h 00 mins'},{id:4,title:'Seguimiento y Control de Avance',completed:false,duration:'1h 45 mins'}]},
   {id:'direccion',title:'Dirección de Proyectos',category:'Dirección',progress:0,dueDate:'20/08/2026',image:'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80',description:'Desarrolla competencias de liderazgo y dirección para conducir proyectos exitosos con visión estratégica.',price:249.99,modules:[{id:1,title:'Fundamentos de Dirección de Proyectos',completed:false,duration:'1h 00 mins'},{id:2,title:'Liderazgo y Gestión de Equipos',completed:false,duration:'1h 30 mins'},{id:3,title:'Toma de Decisiones Estratégicas',completed:false,duration:'2h 00 mins'},{id:4,title:'Gestión del Cambio Organizacional',completed:false,duration:'1h 45 mins'}]},
-  {id:'formulacion',title:'Formulación y Evaluación de Proyectos',category:'Formulación y Evaluación',progress:0,dueDate:'25/08/2026',image:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80',description:'Aprende a formular, evaluar y presentar proyectos con análisis financiero y estudios de factibilidad.',price:199.99,modules:[{id:1,title:'Conceptos Básicos de Formulación',completed:false,duration:'1h 00 mins'},{id:2,title:'Estudio de Mercado y Técnico',completed:false,duration:'1h 30 mins'},{id:3,title:'Análisis Financiero y Evaluación',completed:false,duration:'2h 00 mins'},{id:4,title:'Elaboración del Plan de Negocios',completed:false,duration:'1h 45 mins'}]},
-  {id:'gerencia',title:'Gerencia de Proyectos',category:'Gerencia',progress:0,dueDate:'10/09/2026',image:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',description:'Desarrolla habilidades gerenciales para gestionar proyectos con enfoque en resultados y eficiencia.',price:279.99,modules:[{id:1,title:'Gerencia Estratégica de Proyectos',completed:false,duration:'1h 00 mins'},{id:2,title:'Gestión de Portafolios de Proyectos',completed:false,duration:'1h 30 mins'},{id:3,title:'Control de Costos y Presupuestos',completed:false,duration:'2h 00 mins'},{id:4,title:'Gestión de Riesgos e Incertidumbre',completed:false,duration:'1h 45 mins'}]},
-  {id:'supervision',title:'Supervisión de Proyectos',category:'Supervisión',progress:0,dueDate:'12/09/2026',image:'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80',description:'Aprende a supervisar la ejecución de proyectos asegurando calidad, cumplimiento y eficiencia operativa.',price:159.99,modules:[{id:1,title:'Fundamentos de Supervisión de Proyectos',completed:false,duration:'1h 00 mins'},{id:2,title:'Control de Calidad y Cumplimiento',completed:false,duration:'1h 30 mins'},{id:3,title:'Seguimiento de Avance Físico y Financiero',completed:false,duration:'2h 00 mins'},{id:4,title:'Informe de Supervisión y Lecciones Aprendidas',completed:false,duration:'1h 45 mins'}]},
-  {id:'diseno',title:'Diseño de Proyectos',category:'Dirección',progress:0,dueDate:'20/09/2026',image:'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80',description:'Domina las técnicas de diseño y planificación de proyectos con herramientas modernas y metodologías probadas.',price:219.99,modules:[{id:1,title:'Conceptualización y Diseño de Proyectos',completed:false,duration:'1h 00 mins'},{id:2,title:'Herramientas de Diseño y Prototipado',completed:false,duration:'1h 30 mins'},{id:3,title:'Planificación Detallada y Cronogramas',completed:false,duration:'2h 00 mins'},{id:4,title:'Optimización y Mejora Continua',completed:false,duration:'1h 45 mins'}]},
-  {id:'ejecucion',title:'Ejecución, Control y Seguimiento de Proyectos',category:'Gerencia',progress:0,dueDate:'15/10/2026',image:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80',description:'Aprende técnicas avanzadas de ejecución, control y seguimiento para garantizar el éxito de tus proyectos.',price:299.99,modules:[{id:1,title:'Plan de Ejecución del Proyecto',completed:false,duration:'1h 00 mins'},{id:2,title:'Técnicas de Control de Avance',completed:false,duration:'1h 30 mins'},{id:3,title:'Seguimiento con Valor Ganado',completed:false,duration:'2h 00 mins'},{id:4,title:'Cierre y Evaluación del Proyecto',completed:false,duration:'1h 45 mins'}]}
+  {id:'formulacion',title:'Formulación y Evaluación de Proyectos',category:'Formulación y Evaluación',progress:0,dueDate:'25/08/2026',image:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80',description:'Aprende a formular, evaluar y presentar proyectos con análisis financiero y estudios de factibilidad.',price:199.99,modules:[{id:1,title:'Conceptos Básicos de Formulación',completed:false,duration:'1h 00 mins'},{id:2,title:'Estudio de Mercado y Técnico',completed:false,duration:'1h 30 mins'},{id:3,title:'Análisis Financiero y Evaluación',completed:false,duration:'2h 00 mins'},{id:4,title:'Elaboración del Plan de Negocios',completed:false,duration:'1h 45 mins'}]}
 ];
 const SLIDES = [
   {title:'Planificamos hoy, construimos el éxito del mañana',highlight:'éxito',desc:'Educación especializada en administración de proyectos, ingeniería, tecnología e innovación.',image:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80'},
@@ -135,10 +131,9 @@ const BADGES = [
 ];
 const CERTIFICATES = [
   {id:1,name:'Diplomado en Formulación y Evaluación de Proyectos',date:'15 Mar 2026',type:'Formulación',color:'from-emerald-600 to-green-700'},
-  {id:2,name:'Diplomado en Dirección de Proyectos',date:'20 Ene 2026',type:'Dirección',color:'from-blue-600 to-indigo-700'},
-  {id:3,name:'Diplomado en Gerencia de Proyectos',date:'05 Dic 2025',type:'Gerencia',color:'from-amber-600 to-orange-700'}
+  {id:2,name:'Diplomado en Dirección de Proyectos',date:'20 Ene 2026',type:'Dirección',color:'from-blue-600 to-indigo-700'}
 ];
-const CATEGORIES = ['Todas','Formulación y Evaluación','Dirección','Gerencia','Supervisión'];
+const CATEGORIES = ['Todas','Formulación y Evaluación','Dirección'];
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const DAYS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 let state = {
@@ -509,7 +504,7 @@ function renderCapacitacionPage(){
             <div class="flex items-start gap-4 bg-white p-4 rounded-xl border border-slate-200 hover:shadow-md transition-all">
               <div class="w-10 h-10 rounded-lg bg-[#4bae4f]/10 flex items-center justify-center text-[#4bae4f] shrink-0">${ic('TrendingUp','w-5 h-5')}</div>
               <div>
-                <h5 class="font-bold text-slate-900">Gerencia de Proyectos</h5>
+                <h5 class="font-bold text-slate-900">Gestión de Proyectos</h5>
                 <p class="text-xs text-slate-500 mt-1">Habilidades gerenciales para liderar proyectos con enfoque en resultados y eficiencia.</p>
               </div>
             </div>
@@ -1070,7 +1065,7 @@ function renderLogin(){
 </div>`;}
 function renderPreferences(){
   const s=state,p=s.preferences||{};
-  const areas=['Formulación y Evaluación de Proyectos','Dirección de Proyectos','Gerencia de Proyectos','Supervisión de Proyectos','Diseño de Proyectos'];
+  const areas=['MS Project para Directores de Proyecto','Formulación y Evaluación de Proyectos','Dirección de Proyectos'];
   const modos=['Virtual Sincrónico','Virtual Asincrónico','Aula Virtual Interactiva','Bootcamp Virtual','Mentoría Virtual 1-a-1','Proyecto Práctico Virtual'];
   const horarios=['Mañana (8am-12pm)','Tarde (1pm-5pm)','Noche (6pm-10pm)','Flexible'];
   const niveles=['Principiante','Intermedio','Avanzado'];
