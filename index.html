@@ -2072,7 +2072,8 @@ function attachEvents(){
 
   // Newsletter
   document.querySelector('.newsletter-form')?.addEventListener('submit',e=>{e.preventDefault();notify('¡Gracias por suscribirte! Revisa tu correo para confirmar.','success');document.querySelector('.input-news-email').value='';state.newsEmail='';});
-  // Note: no input listener — avoids focus loss; value read from DOM on submit only
+  // Newsletter input - sync state so the periodic landing re-render doesn't wipe the field
+  document.querySelector('.input-news-email')?.addEventListener('input',function(){state.newsEmail=this.value;});
 
   // Calendar nav
   document.querySelectorAll('.btn-cal-prev').forEach(el=>el.addEventListener('click',()=>{
