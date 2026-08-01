@@ -650,7 +650,7 @@ function renderDiplomadosPage(){
     <div class="max-w-7xl mx-auto space-y-16">
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         ${flt.map(course=>`
-          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:border-emerald-500/30 transition-all duration-300 flex flex-col animate-scale-in group">
+          <div class="course-card bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:border-emerald-500/30 transition-all duration-300 flex flex-col animate-scale-in group">
             <div class="relative h-52 overflow-hidden">
               <img src="${course.image}" alt="${course.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
               <div class="absolute inset-0 bg-gradient-to-t from-[#021b3d]/80 via-transparent to-transparent"></div>
@@ -679,6 +679,7 @@ function renderDiplomadosPage(){
           </div>
         `).join('')}
       </div>
+      <p class="search-empty-msg text-center text-slate-400 py-12 text-sm" style="display:${flt.length===0?'':'none'}">No encontramos diplomados con ese criterio de búsqueda.</p>
 
       <div class="h-24"></div>
 
@@ -2055,12 +2056,23 @@ function attachEvents(){
   // Category filter
   document.querySelectorAll('.btn-cat-filter').forEach(el=>el.addEventListener('click',()=>setState({landingCategory:el.dataset.cat})));
 
-  // Landing search
-  document.querySelector('.input-landing-search')?.addEventListener('input',e=>setState({landingSearch:e.target.value}));
+  // Landing search — DOM filtering to avoid focus loss
+  document.querySelector('.input-landing-search')?.addEventListener('input',function(){
+    state.landingSearch=this.value;
+    const q=this.value.toLowerCase();
+    let visible=0;
+    document.querySelectorAll('.course-card').forEach(card=>{
+      const match=card.textContent.toLowerCase().includes(q);
+      card.style.display=match?'':'none';
+      if(match)visible++;
+    });
+    const em=document.querySelector('.search-empty-msg');
+    if(em)em.style.display=visible===0?'':'none';
+  });
 
   // Newsletter
-  document.querySelector('.newsletter-form')?.addEventListener('submit',e=>{e.preventDefault();notify('¡Gracias por suscribirte! Revisa tu correo para confirmar.','success');document.querySelector('.input-news-email').value='';setState({newsEmail:''});});
-  document.querySelector('.input-news-email')?.addEventListener('input',e=>setState({newsEmail:e.target.value}));
+  document.querySelector('.newsletter-form')?.addEventListener('submit',e=>{e.preventDefault();notify('¡Gracias por suscribirte! Revisa tu correo para confirmar.','success');document.querySelector('.input-news-email').value='';state.newsEmail='';});
+  // Note: no input listener — avoids focus loss; value read from DOM on submit only
 
   // Calendar nav
   document.querySelectorAll('.btn-cal-prev').forEach(el=>el.addEventListener('click',()=>{
