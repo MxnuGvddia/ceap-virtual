@@ -29,6 +29,8 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
 .animate-notif-out{animation:notifOut 4s ease-in-out forwards}
 @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
 .animate-slide-up{animation:slideUp .5s ease-out forwards}
+@keyframes slideLeft{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.animate-slide-left{animation:slideLeft .3s ease-out forwards}
 .logo-hover{transition:transform .3s ease}.logo-hover:hover{transform:scale(1.15)}.servicios-arrow{transition:transform .25s ease}.servicios-dropdown{opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .25s ease,transform .25s ease,visibility .25s}.servicios-open .servicios-dropdown{opacity:1;visibility:visible;transform:translateY(0)}.servicios-open .servicios-arrow{transform:rotate(180deg)}
 .custom-scrollbar::-webkit-scrollbar{width:6px}
 .custom-scrollbar::-webkit-scrollbar-track{background:transparent}
@@ -756,6 +758,13 @@ function renderDiplomadosPage(){
   </section>
 
   <!-- Course Detail Modal -->
+  <div id="course-detail-modal" class="fixed inset-0 z-50 hidden flex items-center">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="modal-overlay"></div>
+    <div class="relative left-0 h-[88vh] max-h-[680px] w-full max-w-md ml-3 sm:ml-6 bg-white rounded-2xl overflow-hidden flex flex-col animate-slide-left shadow-2xl">
+      <div id="modal-content" class="flex flex-col h-full overflow-hidden"></div>
+    </div>
+  </div>
+
   ${landingFooter()}
 </div>`;
 }
@@ -1817,16 +1826,100 @@ function attachEvents(){
   }
 
   // Course detail modal
-  // Purchase — opens login/register
-  document.addEventListener('click',e=>{
-    const btn=e.target.closest('.btn-purchase');
-    if(btn){e.preventDefault();setState({view:'login',registering:true});}
-  });
+  const modal=document.getElementById('course-detail-modal');
+  const modalContent=document.getElementById('modal-content');
+  const moduleColors=['bg-[#dc2626] text-white','bg-[#86efac] text-[#021b3d]','bg-[#c4b5fd] text-[#021b3d]','bg-[#93c5fd] text-[#021b3d]'];
+  const moduleNumColors=['text-white','text-[#021b3d]','text-[#021b3d]','text-[#021b3d]'];
+  const roman=['I','II','III','IV'];
 
-  // Course detail — opens login/register
+  function openCourseModal(courseId){
+    const course=COURSES.find(c=>c.id===courseId);if(!course)return;
+    const enrolled=state.user&&ENROLLED[course.id];
+    modalContent.innerHTML=`
+      <button class="btn-close-modal absolute top-4 left-4 z-10 w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition-all">${ic('X','w-4 h-4')}</button>
+      <div class="relative h-40 md:h-48 overflow-hidden shrink-0">
+        <img src="${course.image}" alt="${course.title}" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#021b3d]/90 via-[#021b3d]/40 to-transparent"></div>
+        <div class="absolute bottom-4 left-6 right-6">
+          <span class="inline-flex items-center gap-1 bg-[#4bae4f] text-[#021b3d] text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-2">${ic('CheckCircle','w-3 h-3')} ${course.category}</span>
+          <h2 class="text-xl md:text-2xl font-black text-white leading-tight">${course.title}</h2>
+        </div>
+      </div>
+      <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain custom-scrollbar">
+        <div class="p-5 md:p-6 space-y-5">
+          <p class="text-sm text-slate-600 leading-relaxed">${course.description}</p>
+          <div class="flex flex-wrap gap-3">
+            <div class="flex items-center gap-2 bg-slate-100 rounded-xl px-4 py-2.5">
+              ${ic('Clock','w-4 h-4 text-[#4bae4f]')}
+              <span class="text-xs font-bold text-slate-700">${course.modules.length*4} Semanas</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-100 rounded-xl px-4 py-2.5">
+              ${ic('Layers','w-4 h-4 text-[#4bae4f]')}
+              <span class="text-xs font-bold text-slate-700">${course.modules.length} Módulos</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-100 rounded-xl px-4 py-2.5">
+              ${ic('Monitor','w-4 h-4 text-[#4bae4f]')}
+              <span class="text-xs font-bold text-slate-700">100% Virtual</span>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-black text-[#021b3d] uppercase tracking-wider mb-4">Programa Académico</h3>
+            <div class="space-y-3">
+              ${course.modules.map((m,i)=>`
+                <div class="flex items-start gap-4 ${moduleColors[i]} rounded-xl p-4 transition-all hover:scale-[1.01]">
+                  <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center shrink-0 font-black text-sm ${moduleNumColors[i]}">${roman[i]}</div>
+                  <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-sm leading-snug">${m.title}</h4>
+                    <p class="text-[10px] opacity-70 mt-1 flex items-center gap-1">${ic('Clock','w-3 h-3')} ${m.duration} • ${ic('Video','w-3 h-3')} Clases en vivo + grabaciones</p>
+                  </div>
+                  <div class="shrink-0">${ic('ChevronRight','w-4 h-4 opacity-50')}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-r from-[#021b3d]/5 to-[#4bae4f]/5 rounded-xl p-5 border border-slate-200">
+            <h4 class="font-bold text-sm text-[#021b3d] mb-3">¿Qué incluye?</h4>
+            <div class="grid grid-cols-2 gap-2">
+              ${['Clases en vivo por Zoom','Grabaciones bajo demanda','Material descargable','Foro de discusión','Tutoría personalizada','Certificado MINEDUCIT'].map(f=>`
+                <div class="flex items-center gap-2 text-xs text-slate-600">
+                  <span class="text-[#4bae4f] shrink-0">${ic('Check','w-3.5 h-3.5')}</span>${f}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-slate-200 p-4 md:p-6 bg-slate-50 flex items-center justify-between gap-4 shrink-0">
+        <div>
+          <span class="text-[10px] uppercase text-slate-400 font-bold block">Inversión única</span>
+          <span class="text-2xl font-black text-[#021b3d]">$${course.price}</span>
+        </div>
+        <button class="btn-modal-purchase bg-[#4bae4f] hover:bg-[#3d9e41] text-[#021b3d] px-6 py-3 rounded-xl text-sm font-black transition-all flex items-center gap-2 shadow-lg shadow-[#4bae4f]/20 hover:scale-105" data-id="${course.id}">Inscribirse Ahora ${ic('ArrowRight','w-4 h-4')}</button>
+      </div>
+    `;
+    modal.classList.remove('hidden');
+    document.body.style.overflow='hidden';
+    document.querySelector('.btn-close-modal').addEventListener('click',closeCourseModal);
+    document.getElementById('modal-overlay').addEventListener('click',closeCourseModal);
+    document.querySelector('.btn-modal-purchase').addEventListener('click',()=>{
+      closeCourseModal();
+      const c=state.courses.find(x=>x.id===course.id);
+      if(c){setState({courseToPurchase:c});if(!state.user){setState({view:'login',registering:true});notify('Por favor, crea una cuenta para completar tu inscripción.','info');}else setState({view:'payment'});}
+    });
+  }
+  function closeCourseModal(){modal.classList.add('hidden');document.body.style.overflow='';}
+
   document.addEventListener('click',e=>{
     const el=e.target.closest('.btn-course-detail');
-    if(el){e.preventDefault();e.stopPropagation();setState({view:'login',registering:true});}
+    if(el){e.preventDefault();e.stopPropagation();openCourseModal(el.dataset.id);}
+  });
+
+  // Purchase — opens course detail modal
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('.btn-purchase');
+    if(btn){e.preventDefault();openCourseModal(btn.dataset.id);}
   });
 
   // Payment form & methods
