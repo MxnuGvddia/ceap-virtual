@@ -168,7 +168,7 @@ function avatarImg(src,name,cls){
 }
 function loadState(){try{const d=JSON.parse(localStorage.getItem('ceap_state'));if(d)Object.assign(state,d)}catch(e){}}
 function notify(m,t){setState({notification:{msg:m,type:t}});if(m){const n={msg:m,type:t,time:Date.now(),id:Date.now()};const nl=[n,...state.notifList].slice(0,20);setState({notifList:nl,unreadNotifs:state.unreadNotifs+1});}setTimeout(()=>{state.notification=null},4000);}
-function startSlideTimer(){if(slideInterval)clearInterval(slideInterval);slideInterval=setInterval(()=>{if(state.view==='landing')setState({slideIdx:(state.slideIdx+1)%SLIDES.length})},8000);}
+function startSlideTimer(){if(slideInterval)clearInterval(slideInterval);slideInterval=setInterval(()=>{if(state.view==='dashboard')setState({slideIdx:(state.slideIdx+1)%SLIDES.length})},8000);}
 loadState();
 if(state.user)checkStreak();
 
