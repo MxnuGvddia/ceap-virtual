@@ -142,7 +142,6 @@ const BADGES = [
   {id:1,name:'Primer Inicio',desc:'Iniciaste sesión por primera vez',earned:true},
   {id:2,name:'Módulo Completado',desc:'Completaste tu primer módulo',earned:true},
   {id:3,name:'Estrella del Estudio',desc:'7 días consecutivos de estudio',earned:true},
-  {id:4,name:'Racha de 30 Días',desc:'Estudiaste 30 días seguidos',earned:false},
   {id:5,name:'Explorador',desc:'Revisaste 5 cursos diferentes',earned:true},
   {id:6,name:'Certificado Obtenido',desc:'Obtuviste tu primer certificado',earned:false}
 ];
@@ -162,29 +161,20 @@ let state = {
   landingCategory:'Todas',landingSearch:'',newsEmail:'',
   payMethod:'card',calendarMonth:5,calendarYear:2026,
   supportCategory:'Técnico',
-  xp:0, level:1, streak:0, lastLoginDate:'',
+  xp:0, level:1,
   notifList:[], unreadNotifs:0,
   settings:{theme:'light',emailNotifs:true,desktopNotifs:true}
 };
 let slideInterval;
-function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,streak:state.streak,lastLoginDate:state.lastLoginDate,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user}))}catch(e){}render();}
+function setState(p){Object.assign(state,p);try{localStorage.setItem('ceap_state',JSON.stringify({xp:state.xp,level:state.level,notifList:state.notifList,unreadNotifs:state.unreadNotifs,settings:state.settings,user:state.user}))}catch(e){}render();}
 function avatarImg(src,name,cls){
   if(src&&(src.startsWith('data:')||src.startsWith('http')))return `<img src="${src}" alt="${name||''}" class="${cls} object-cover">`;
   return `<div class="${cls} bg-slate-200 flex items-center justify-center text-slate-500">${ic('User','w-6 h-6')}</div>`;
 }
-function loadState(){try{const d=JSON.parse(localStorage.getItem('ceap_state'));if(d)Object.assign(state,d)}catch(e){}}
+function loadState(){try{const d=JSON.parse(localStorage.getItem('ceap_state'));if(d){delete d.streak;delete d.lastLoginDate;Object.assign(state,d);localStorage.setItem('ceap_state',JSON.stringify(d))}}catch(e){}}
 function notify(m,t){setState({notification:{msg:m,type:t}});if(m){const n={msg:m,type:t,time:Date.now(),id:Date.now()};const nl=[n,...state.notifList].slice(0,20);setState({notifList:nl,unreadNotifs:state.unreadNotifs+1});}setTimeout(()=>{state.notification=null},4000);}
 function startSlideTimer(){if(slideInterval)clearInterval(slideInterval);slideInterval=setInterval(()=>{if(state.view==='landing')setState({slideIdx:(state.slideIdx+1)%SLIDES.length})},8000);}
 loadState();
-if(state.user)checkStreak();
-function checkStreak(){
-  const today=new Date().toDateString();
-  if(state.lastLoginDate!==today){
-    const yesterday=new Date(Date.now()-86400000).toDateString();
-    if(state.lastLoginDate===yesterday)setState({streak:state.streak+1,lastLoginDate:today});
-    else setState({streak:1,lastLoginDate:today});
-  }
-}
 function addXP(n){
   let xp=state.xp+n,level=state.level;
   const next=level*100;
@@ -636,7 +626,6 @@ function renderDashTab(){
           <h3 class="text-2xl font-black">${s.user.name}</h3>
           <div class="flex items-center gap-3 text-xs text-slate-300">
             <span class="flex items-center gap-1">${ic('Zap','w-3.5 h-3.5 text-amber-400')} Nv. ${s.level}</span>
-            <span class="flex items-center gap-1">🔥 ${s.streak} días seg.</span>
             <span class="flex items-center gap-1">${ic('Award','w-3.5 h-3.5 text-emerald-400')} ${cc} certificados</span>
           </div>
         </div>
@@ -1009,7 +998,6 @@ function renderSettingsTab(){
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">${s.level}</p><p class="text-[10px] text-slate-500 font-bold">Nivel</p></div>
           <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">${s.xp} XP</p><p class="text-[10px] text-slate-500 font-bold">Puntos</p></div>
-          <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">🔥 ${s.streak}</p><p class="text-[10px] text-slate-500 font-bold">Racha</p></div>
           <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">${s.notifList.length}</p><p class="text-[10px] text-slate-500 font-bold">Notificaciones</p></div>
         </div>
       </div>
@@ -1110,7 +1098,7 @@ function attachEvents(){
       const name=nameInput?nameInput.value.trim():'Carlos Ramírez';
       const fu={name,email:name.toLowerCase().replace(/\s/g,'')+'@ceap.edu.sv',phone:'',avatar:'',currentProgram:isReg?'Matriculado CEAP Virtual':'Diplomado en Gestión de Proyectos'};
       if(isReg){setState({user:fu});addXP(50);notify('Cuenta creada con éxito. +50 XP','success');if(state.courseToPurchase)setState({view:'payment'});else setState({view:'dashboard',tab:'dashboard'});}
-      else{checkStreak();addXP(10);setState({user:fu,view:'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'! +10 XP','success');}
+      else{addXP(10);setState({user:fu,view:'dashboard',tab:'dashboard'});notify('¡Bienvenido de nuevo, '+fu.name+'! +10 XP','success');}
     });
     document.querySelectorAll('.btn-toggle-pw').forEach(el=>el.addEventListener('click',function(){
       const pw=document.querySelector('.input-password');
@@ -1125,7 +1113,7 @@ function attachEvents(){
   // Google
   document.querySelectorAll('.btn-google').forEach(el=>el.addEventListener('click',()=>{
     const fu={name:'Carlos Ramírez',email:'carlos.ramirez@ceap.edu.sv',phone:'+503 7000-1234',avatar:'',currentProgram:'Diplomado en Gestión de Proyectos'};
-    checkStreak();addXP(10);
+    addXP(10);
     setState({user:fu});if(state.courseToPurchase)setState({view:'payment'});else setState({view:'dashboard',tab:'dashboard'});
     notify('Sesión iniciada correctamente con Google. +10 XP','success');
   }));
