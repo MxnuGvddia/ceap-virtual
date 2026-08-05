@@ -1625,6 +1625,11 @@ function renderProfile(){
 </div>`;}
 function renderSettingsTab(){
   const s=state,st=s.settings;
+  const ac=s.courses.filter(c=>c.progress>0&&c.progress<100);
+  const tm=s.courses.reduce((a,c)=>a+c.modules.length,0);
+  const cm=s.courses.reduce((a,c)=>a+c.modules.filter(m=>m.completed).length,0);
+  const nextLvl=s.level*100;
+  const pct=Math.min(100,Math.round(s.xp/nextLvl*100));
   return `
 <div class="max-w-3xl mx-auto space-y-6 animate-fade-up">
   <div class="space-y-2"><h3 class="text-2xl font-black text-[#021b3d]">Configuración</h3><p class="text-xs text-slate-500">Personaliza tu experiencia en CEAP Virtual.</p></div>
@@ -1637,10 +1642,15 @@ function renderSettingsTab(){
       </div>
       <div class="border-t border-slate-200 pt-6 space-y-4">
         <h4 class="font-black text-sm text-[#021b3d] flex items-center gap-2">${ic('Zap','w-4 h-4 text-amber-500')} Progreso</h4>
+        <div class="bg-slate-50 rounded-xl p-4 space-y-1.5">
+          <div class="flex justify-between text-[11px]"><span class="font-semibold text-slate-600">Progreso ${pct}%</span><span class="font-bold text-[#021b3d]">${cm}/${tm} módulos completados</span></div>
+          <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-emerald-400 to-[#4bae4f] h-full rounded-full transition-all" style="width:${pct}%"></div></div>
+        </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">${s.level}</p><p class="text-[10px] text-slate-500 font-bold">Nivel</p></div>
           <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">${s.xp} XP</p><p class="text-[10px] text-slate-500 font-bold">Puntos</p></div>
-          <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">${s.notifList.length}</p><p class="text-[10px] text-slate-500 font-bold">Notificaciones</p></div>
+          <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">${ac.length}</p><p class="text-[10px] text-slate-500 font-bold">Cursos en curso</p></div>
+          <div class="bg-slate-50 rounded-xl p-4 text-center"><p class="text-2xl font-black text-[#021b3d]">${cm}</p><p class="text-[10px] text-slate-500 font-bold">Módulos completados</p></div>
         </div>
       </div>
       <div class="border-t border-slate-200 pt-6 space-y-4">
