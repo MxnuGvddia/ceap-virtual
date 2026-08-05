@@ -168,7 +168,7 @@ function avatarImg(src,name,cls){
 }
 function loadState(){try{const d=JSON.parse(localStorage.getItem('ceap_state'));if(d)Object.assign(state,d)}catch(e){}}
 function notify(m,t){setState({notification:{msg:m,type:t}});if(m){const n={msg:m,type:t,time:Date.now(),id:Date.now()};const nl=[n,...state.notifList].slice(0,20);setState({notifList:nl,unreadNotifs:state.unreadNotifs+1});}setTimeout(()=>{state.notification=null},4000);}
-function startSlideTimer(){if(slideInterval)clearInterval(slideInterval);slideInterval=setInterval(()=>{if(state.view==='dashboard')setState({slideIdx:(state.slideIdx+1)%SLIDES.length})},8000);}
+function updateSlideUI(){const s=SLIDES[state.slideIdx];const img=document.querySelector('#slide-img');const title=document.querySelector('#slide-title');const desc=document.querySelector('#slide-desc');if(!img&&!title&&!desc)return;if(img)img.src=s.image;if(title){const sp=s.title.split(s.highlight);title.innerHTML=sp[0]+'<span class="text-[#4bae4f]">'+s.highlight+'</span>'+(sp[1]||'');}if(desc)desc.textContent=s.desc;document.querySelectorAll('.slide-dot').forEach(d=>{const active=parseInt(d.dataset.slide)===state.slideIdx;d.className='slide-dot w-2 h-2 rounded-full transition-all '+(active?'bg-[#4bae4f] w-5':'bg-white/40');});}function startSlideTimer(){if(slideInterval)clearInterval(slideInterval);slideInterval=setInterval(()=>{if(state.view==='dashboard'&&document.querySelector('.slide-dot')){state.slideIdx=(state.slideIdx+1)%SLIDES.length;updateSlideUI();}},8000);}
 loadState();
 if(state.user)checkStreak();
 
@@ -1322,12 +1322,12 @@ function renderDashTab(){
   <div class="grid lg:grid-cols-12 gap-8 items-start">
   <div class="lg:col-span-8 space-y-8">
     <div class="relative rounded-2xl overflow-hidden h-64 shadow-lg text-white">
-      <img src="${slide.image}" alt="" class="absolute inset-0 w-full h-full object-cover">
+      <img id="slide-img" src="${slide.image}" alt="" class="absolute inset-0 w-full h-full object-cover">
       <div class="absolute inset-0 bg-gradient-to-r from-[#021b3d]/90 via-[#021b3d]/70 to-transparent"></div>
       <div class="absolute inset-0 p-8 flex flex-col justify-between z-10">
         <div class="max-w-md space-y-3">
-          <h4 class="text-2xl md:text-3xl font-black leading-tight">${sp[0]}<span class="text-[#4bae4f]">${slide.highlight}</span>${sp[1]||''}</h4>
-          <p class="text-xs text-slate-300 leading-relaxed">${slide.desc}</p>
+          <h4 id="slide-title" class="text-2xl md:text-3xl font-black leading-tight">${sp[0]}<span class="text-[#4bae4f]">${slide.highlight}</span>${sp[1]||''}</h4>
+          <p id="slide-desc" class="text-xs text-slate-300 leading-relaxed">${slide.desc}</p>
         </div>
         <button class="bg-[#4bae4f] hover:bg-emerald-500 text-[#021b3d] text-xs font-bold px-5 py-2.5 rounded-lg w-fit transition-all flex items-center gap-2">Ver Diplomados ${ic('ChevronRight','w-4 h-4')}</button>
       </div>
@@ -1968,7 +1968,7 @@ function attachEvents(){
   document.querySelectorAll('.btn-toggle-menu').forEach(el=>el.addEventListener('click',()=>setState({menuOpen:!state.menuOpen})));
 
   // Slide dots
-  document.querySelectorAll('.slide-dot').forEach(el=>el.addEventListener('click',()=>setState({slideIdx:parseInt(el.dataset.slide)})));
+  document.querySelectorAll('.slide-dot').forEach(el=>el.addEventListener('click',()=>{state.slideIdx=parseInt(el.dataset.slide);updateSlideUI();}));
 
   // Open viewer
   document.querySelectorAll('.btn-open-viewer').forEach(el=>el.addEventListener('click',()=>{
