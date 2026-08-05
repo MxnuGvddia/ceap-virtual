@@ -1273,6 +1273,7 @@ function renderDashTab(){
   const slide=SLIDES[s.slideIdx];
   const sp=slide.title.split(slide.highlight);
   const nextLvl=s.level*100;
+  const pct=Math.min(100,Math.round(s.xp/nextLvl*100));
   return `
 <div class="space-y-8 animate-fade-up">
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -1284,15 +1285,15 @@ function renderDashTab(){
           <p class="text-[10px] text-emerald-300 font-bold uppercase tracking-wider">Bienvenido de vuelta</p>
           <h3 class="text-2xl font-black">${s.user.name}</h3>
           <div class="flex items-center gap-3 text-xs text-slate-300">
-            <span class="flex items-center gap-1">${ic('Zap','w-3.5 h-3.5 text-amber-400')} Nv. ${s.level}</span>
+            <span class="flex items-center gap-1">${ic('BookOpen','w-3.5 h-3.5 text-sky-400')} ${ac.length} en curso</span>
             <span class="flex items-center gap-1">🔥 ${s.streak} días seg.</span>
             <span class="flex items-center gap-1">${ic('Award','w-3.5 h-3.5 text-emerald-400')} ${cc} certificados</span>
           </div>
         </div>
       </div>
       <div class="mt-4 space-y-1.5 relative z-10">
-        <div class="flex justify-between text-[11px]"><span class="font-semibold text-emerald-200">XP ${s.xp}/${nextLvl}</span><span class="font-bold text-white">Nivel ${s.level}</span></div>
-        <div class="w-full bg-white/20 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-emerald-400 to-[#4bae4f] h-full rounded-full transition-all" style="width:${Math.min(100,s.xp/nextLvl*100)}%"></div></div>
+        <div class="flex justify-between text-[11px]"><span class="font-semibold text-emerald-200">Progreso ${pct}%</span><span class="font-bold text-white">${ac.length?ac.map(c=>c.title).join(' · '):'Aún no inicias cursos'}</span></div>
+        <div class="w-full bg-white/20 rounded-full h-2 overflow-hidden"><div class="bg-gradient-to-r from-emerald-400 to-[#4bae4f] h-full rounded-full transition-all" style="width:${pct}%"></div></div>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-3">
